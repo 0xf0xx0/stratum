@@ -11,14 +11,14 @@ type AuthorizeParams struct {
 	Password *string
 }
 
-func (p *AuthorizeParams) Read(r *request) error {
-	l := len(r.params)
+func (p *AuthorizeParams) Read(r *Request) error {
+	l := len(r.Params)
 	if l == 0 || l > 2 {
-		return errors.New("Invalid parameter length; must be 1 or 2")
+		return errors.New("invalid parameter length; must be 1 or 2")
 	}
 
 	var ok bool
-	p.Username, ok = r.params[0].(string)
+	p.Username, ok = r.Params[0].(string)
 	if !ok {
 		return errors.New("invalid username format")
 	}
@@ -28,7 +28,7 @@ func (p *AuthorizeParams) Read(r *request) error {
 		return nil
 	}
 
-	password, ok := r.params[1].(string)
+	password, ok := r.Params[1].(string)
 	if !ok {
 		return errors.New("invalid password format")
 	}
@@ -37,16 +37,16 @@ func (p *AuthorizeParams) Read(r *request) error {
 	return nil
 }
 
-func AuthorizeRequest(id MessageID, r AuthorizeParams) request {
+func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
 	if r.Password == nil {
-		return Request(id, MiningAuthorize, []interface{}{r.Username})
+		return NewRequest(id, MiningAuthorize, []interface{}{r.Username})
 	}
 
-	return Request(id, MiningAuthorize, []interface{}{r.Username, *r.Password})
+	return NewRequest(id, MiningAuthorize, []interface{}{r.Username, *r.Password})
 }
 
 type AuthorizeResult BooleanResult
 
-func AuthorizeResponse(id MessageID, b bool) response {
+func AuthorizeResponse(id MessageID, b bool) Response {
 	return BooleanResponse(id, b)
 }

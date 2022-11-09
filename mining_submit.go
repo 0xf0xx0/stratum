@@ -4,7 +4,7 @@ import "encoding/hex"
 
 type SubmitParams Share
 
-func Submit(id MessageID, share SubmitParams) request {
+func Submit(id MessageID, share SubmitParams) Request {
 	var sx []interface{}
 	if share.GeneralPurposeBits != nil {
 		sx = make([]interface{}, 6)
@@ -19,11 +19,11 @@ func Submit(id MessageID, share SubmitParams) request {
 	sx[3] = encodeBigEndian(share.Time)
 	sx[4] = encodeBigEndian(share.Nonce)
 
-	return Request(id, MiningSubmit, sx)
+	return NewRequest(id, MiningSubmit, sx)
 }
 
 type SubmitResult BooleanResult
 
-func SubmitResponse(id MessageID, b bool) response {
+func SubmitResponse(id MessageID, b bool) Response {
 	return BooleanResponse(id, b)
 }

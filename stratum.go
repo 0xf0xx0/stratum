@@ -8,134 +8,134 @@ import (
 // Stratum has three types of messages: notification, request, and response.
 
 // Notification for methods that do not require a response.
-type notification struct {
-	method string        `json:"method"`
-	params []interface{} `json:"params"`
+type Notification struct {
+	Method string        `json:"method"`
+	Params []interface{} `json:"params"`
 }
 
-func Notification(m Method, params []interface{}) notification {
+func NewNotification(m Method, params []interface{}) Notification {
 	n, _ := EncodeMethod(m)
-	return notification{
-		method: n,
-		params: params,
+	return Notification{
+		Method: n,
+		Params: params,
 	}
 }
 
-func (n *notification) Method() Method {
-	m, _ := DecodeMethod(n.method)
+func (n *Notification) GetMethod() Method {
+	m, _ := DecodeMethod(n.Method)
 	return m
 }
 
 // request is for methods that require a response.
-type request struct {
+type Request struct {
 	MessageID MessageID     `json:"id"`
-	method    string        `json:"method"`
-	params    []interface{} `json:"params"`
+	Method    string        `json:"method"`
+	Params    []interface{} `json:"params"`
 }
 
-func Request(id MessageID, m Method, params []interface{}) request {
+func NewRequest(id MessageID, m Method, params []interface{}) Request {
 	n, _ := EncodeMethod(m)
-	return request{
+	return Request{
 		MessageID: id,
-		method:    n,
-		params:    params,
+		Method:    n,
+		Params:    params,
 	}
 }
 
-func (n *request) Method() Method {
-	m, _ := DecodeMethod(n.method)
+func (n *Request) GetMethod() Method {
+	m, _ := DecodeMethod(n.Method)
 	return m
 }
 
 // Response is what is sent back in response to requests.
-type response struct {
+type Response struct {
 	MessageID MessageID   `json:"id"`
-	result    interface{} `json:"result"`
+	Result    interface{} `json:"result"`
 	Error     *Error      `json:"error"`
 }
 
-func Response(id MessageID, r interface{}) response {
-	return response{
+func NewResponse(id MessageID, r interface{}) Response {
+	return Response{
 		MessageID: id,
-		result:    r,
+		Result:    r,
 		Error:     nil,
 	}
 }
 
-func ErrorResponse(id MessageID, e Error) response {
-	return response{
+func NewErrorResponse(id MessageID, e Error) Response {
+	return Response{
 		MessageID: id,
-		result:    nil,
+		Result:    nil,
 		Error:     &e,
 	}
 }
 
-func (r *request) MarshallJSON() ([]byte, error) {
+func (r *Request) MarshallJSON() ([]byte, error) {
 	if !ValidMessageID(r.MessageID) {
-		return []byte{}, errors.New("Invalid id")
+		return []byte{}, errors.New("invalid id")
 	}
 
-	if r.method == "" {
-		return []byte{}, errors.New("Invalid method")
+	if r.Method == "" {
+		return []byte{}, errors.New("invalid method")
 	}
 
 	return json.Marshal(r)
 }
 
-func (r *request) UnmarshallJSON(j []byte) error {
+func (r *Request) UnmarshallJSON(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
 
 	if !ValidMessageID(r.MessageID) {
-		return errors.New("Invalid id")
+		return errors.New("invalid id")
 	}
 
-	if r.Method() == Unset {
-		return errors.New("Invalid method")
+	if r.GetMethod() == Unset {
+		return errors.New("invalid method")
 	}
 
 	return nil
 }
 
-func (r *response) MarshallJSON() ([]byte, error) {
+func (r *Response) MarshallJSON() ([]byte, error) {
 	if !ValidMessageID(r.MessageID) {
-		return []byte{}, errors.New("Invalid id")
+		return []byte{}, errors.New("invalid id")
 	}
 
 	return json.Marshal(r)
 }
 
-func (r *response) UnmarshallJSON(j []byte) error {
+func (r *Response) UnmarshallJSON(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
 
 	if !ValidMessageID(r.MessageID) {
-		return errors.New("Invalid id")
+		return errors.New("invalid id")
 	}
 
 	return nil
 }
 
-func (r *notification) MarshallJSON() ([]byte, error) {
-	if r.method == "" {
-		return []byte{}, errors.New("Invalid method")
+func (r *Notification) MarshallJSON() ([]byte, error) {
+	if r.Method == "" {
+		return []byte{}, errors.New("invalid method")
 	}
 
 	return json.Marshal(r)
 }
 
-func (r *notification) UnmarshallJSON(j []byte) error {
+func (r *Notification) UnmarshallJSON(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
 
-	if r.Method() == Unset {
-		return errors.New("Invalid method")
+	if r.GetMethod() == Unset {
+		return errors.New("invalid method")
 	}
 
 	return nil

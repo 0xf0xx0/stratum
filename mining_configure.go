@@ -369,7 +369,7 @@ func (p *ConfigureParams) Add(z interface{}) error {
 	case InfoConfigurationRequest:
 		return p.addInfo(x)
 	default:
-		return errors.New("Unrecognized extension request")
+		return errors.New("unrecognized extension request")
 	}
 }
 
@@ -384,17 +384,17 @@ func (p *ConfigureResult) Add(z interface{}) error {
 	case InfoConfigurationResult:
 		return p.addInfo(x)
 	default:
-		return errors.New("Unrecognized extension request")
+		return errors.New("unrecognized extension request")
 	}
 }
 
-func ConfigureRequest(id MessageID, p ConfigureParams) request {
+func ConfigureRequest(id MessageID, p ConfigureParams) Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters
-	return Request(id, MiningConfigure, params)
+	return NewRequest(id, MiningConfigure, params)
 }
 
-func ConfigureResponse(id MessageID, r ConfigureResult) response {
-	return Response(id, r)
+func ConfigureResponse(id MessageID, r ConfigureResult) Response {
+	return NewResponse(id, r)
 }

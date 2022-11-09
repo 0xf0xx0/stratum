@@ -25,7 +25,7 @@ func decodeBigEndian(s string) (uint32, error) {
 	}
 
 	if len(b) != 4 {
-		return 0, errors.New("Invalid format")
+		return 0, errors.New("invalid format")
 	}
 
 	var x uint32
@@ -46,7 +46,7 @@ func decodeLittleEndian(s string) (uint32, error) {
 	}
 
 	if len(b) != 4 {
-		return 0, errors.New("Invalid format")
+		return 0, errors.New("invalid format")
 	}
 
 	var x uint32

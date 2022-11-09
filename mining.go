@@ -26,40 +26,40 @@ type Share struct {
 	work.Share
 }
 
-func (p *Share) read(r *request) error {
-	if len(r.params) < 5 || len(r.params) > 6 {
-		return errors.New("Invalid format")
+func (p *Share) read(r *Request) error {
+	if len(r.Params) < 5 || len(r.Params) > 6 {
+		return errors.New("invalid format")
 	}
 
-	name, ok := r.params[0].(string)
+	name, ok := r.Params[0].(string)
 	if !ok {
-		return errors.New("Invalid format")
+		return errors.New("invalid format")
 	}
 
-	jobID, ok := r.params[1].(string)
+	jobID, ok := r.Params[1].(string)
 	if !ok {
-		return errors.New("Invalid format")
+		return errors.New("invalid format")
 	}
 
-	extraNonce2, ok := r.params[2].(string)
+	extraNonce2, ok := r.Params[2].(string)
 	if !ok {
-		return errors.New("Invalid format")
+		return errors.New("invalid format")
 	}
 
-	time, ok := r.params[3].(string)
+	time, ok := r.Params[3].(string)
 	if !ok {
-		return errors.New("Invalid format")
+		return errors.New("invalid format")
 	}
 
-	nonce, ok := r.params[4].(string)
+	nonce, ok := r.Params[4].(string)
 	if !ok {
-		return errors.New("Invalid format")
+		return errors.New("invalid format")
 	}
 
-	if len(r.params) == 6 {
-		gpr, ok := r.params[5].(string)
+	if len(r.Params) == 6 {
+		gpr, ok := r.Params[5].(string)
 		if !ok {
-			return errors.New("Invalid format")
+			return errors.New("invalid format")
 		}
 
 		GPR, err := decodeLittleEndian(gpr)

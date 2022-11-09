@@ -17,52 +17,52 @@ type NotifyParams struct {
 	Clean         bool
 }
 
-func (p *NotifyParams) read(n *notification) error {
-	if len(n.params) != 9 {
+func (p *NotifyParams) read(n *Notification) error {
+	if len(n.Params) != 9 {
 		return errors.New("invalid format")
 	}
 
-	jobID, ok := n.params[0].(string)
+	jobID, ok := n.Params[0].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	digest, ok := n.params[1].(string)
+	digest, ok := n.Params[1].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	gtx1, ok := n.params[2].(string)
+	gtx1, ok := n.Params[2].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	gtx2, ok := n.params[3].(string)
+	gtx2, ok := n.Params[3].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	path, ok := n.params[4].([]string)
+	path, ok := n.Params[4].([]string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	version, ok := n.params[5].(string)
+	version, ok := n.Params[5].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	target, ok := n.params[6].(string)
+	target, ok := n.Params[6].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	time, ok := n.params[7].(string)
+	time, ok := n.Params[7].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	p.Clean, ok = n.params[8].(bool)
+	p.Clean, ok = n.Params[8].(bool)
 	if !ok {
 		return errors.New("invalid format")
 	}
@@ -114,7 +114,7 @@ func (p *NotifyParams) read(n *notification) error {
 	return nil
 }
 
-func Notify(n NotifyParams) notification {
+func Notify(n NotifyParams) Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = encodeID(n.JobID)
@@ -133,5 +133,5 @@ func Notify(n NotifyParams) notification {
 	params[7] = encodeBigEndian(n.Timestamp)
 	params[8] = n.Clean
 
-	return Notification(MiningNotify, params)
+	return NewNotification(MiningNotify, params)
 }

@@ -55,7 +55,7 @@ func EncodeMethod(m Method) (string, error) {
 	case ClientShowMessage:
 		return "mining.show_message", nil
 	default:
-		return "", errors.New("Unkown Stratum method")
+		return "", errors.New("unkown Stratum method")
 	}
 }
 
@@ -90,6 +90,6 @@ func DecodeMethod(m string) (Method, error) {
 	case "mining.show_message":
 		return ClientShowMessage, nil
 	default:
-		return Unset, errors.New("Unkown Stratum method")
+		return Unset, errors.New("unkown Stratum method")
 	}
 }
