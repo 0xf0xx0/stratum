@@ -11,6 +11,9 @@ func ValidMessageID(id MessageID) bool {
 		return true
 	case string:
 		return true
+	// Some mining pools use "null" messageID for mining.notify method
+	case nil:
+		return true
 	default:
 		return false
 	}
