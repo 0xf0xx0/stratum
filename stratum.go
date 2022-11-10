@@ -3,6 +3,7 @@ package Stratum
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 // Stratum has three types of messages: notification, request, and response.
@@ -70,7 +71,7 @@ func NewErrorResponse(id MessageID, e Error) Response {
 	}
 }
 
-func (r *Request) MarshallJSON() ([]byte, error) {
+func (r *Request) Marshal() ([]byte, error) {
 	if !ValidMessageID(r.MessageID) {
 		return []byte{}, errors.New("invalid id")
 	}
@@ -82,10 +83,15 @@ func (r *Request) MarshallJSON() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *Request) UnmarshallJSON(j []byte) error {
+func (r *Request) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
+	}
+
+	//json.Umarshal threat numbers as float64 so we need to do type assetration for correct validation
+	if fmt.Sprintf("%T", r.MessageID) == "float64" {
+		r.MessageID = uint64(r.MessageID.(float64))
 	}
 
 	if !ValidMessageID(r.MessageID) {
@@ -99,7 +105,7 @@ func (r *Request) UnmarshallJSON(j []byte) error {
 	return nil
 }
 
-func (r *Response) MarshallJSON() ([]byte, error) {
+func (r *Response) Marshal() ([]byte, error) {
 	if !ValidMessageID(r.MessageID) {
 		return []byte{}, errors.New("invalid id")
 	}
@@ -107,10 +113,15 @@ func (r *Response) MarshallJSON() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *Response) UnmarshallJSON(j []byte) error {
+func (r *Response) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
+	}
+
+	//json.Umarshal threat numbers as float64 so we need to do type assetration for correct validation
+	if fmt.Sprintf("%T", r.MessageID) == "float64" {
+		r.MessageID = uint64(r.MessageID.(float64))
 	}
 
 	if !ValidMessageID(r.MessageID) {
@@ -120,7 +131,7 @@ func (r *Response) UnmarshallJSON(j []byte) error {
 	return nil
 }
 
-func (r *Notification) MarshallJSON() ([]byte, error) {
+func (r *Notification) Marshal() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
@@ -128,7 +139,7 @@ func (r *Notification) MarshallJSON() ([]byte, error) {
 	return json.Marshal(r)
 }
 
-func (r *Notification) UnmarshallJSON(j []byte) error {
+func (r *Notification) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
