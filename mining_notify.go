@@ -17,7 +17,7 @@ type NotifyParams struct {
 	Clean         bool
 }
 
-func (p *NotifyParams) read(n *Notification) error {
+func (p *NotifyParams) Read(n *Notification) error {
 	if len(n.Params) != 9 {
 		return errors.New("invalid format")
 	}
