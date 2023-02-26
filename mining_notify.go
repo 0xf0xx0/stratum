@@ -86,7 +86,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 	}
 
 	p.Target, err = hex.DecodeString(target)
-	if err != nil || len(p.Digest) != 4 {
+	if err != nil || len(p.Target) != 4 {
 		return errors.New("invalid format")
 	}
 
