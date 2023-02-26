@@ -7,7 +7,7 @@ import (
 )
 
 type NotifyParams struct {
-	JobID         ID
+	JobID         string
 	Digest        []byte
 	GenerationTX1 []byte
 	GenerationTX2 []byte
@@ -18,12 +18,13 @@ type NotifyParams struct {
 	Clean         bool
 }
 
-func (p *NotifyParams) Read(n Notification) error {
+func (p *NotifyParams) Read(n *Notification) error {
 	if len(n.Params) != 9 {
 		return errors.New("invalid format")
 	}
 
-	jobID, ok := n.Params[0].(string)
+	var ok bool
+	p.JobID, ok = n.Params[0].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
@@ -89,11 +90,6 @@ func (p *NotifyParams) Read(n Notification) error {
 		return errors.New("invalid format")
 	}
 
-	p.JobID, err = decodeID(jobID)
-	if err != nil {
-		return errors.New("invalid format")
-	}
-
 	p.GenerationTX1, err = hex.DecodeString(gtx1)
 	if err != nil {
 		return errors.New("invalid format")
@@ -128,7 +124,7 @@ func (p *NotifyParams) Read(n Notification) error {
 func Notify(n NotifyParams) Notification {
 	params := make([]interface{}, 9)
 
-	params[0] = encodeID(n.JobID)
+	params[0] = n.JobID
 	params[1] = hex.EncodeToString(n.Digest)
 	params[2] = hex.EncodeToString(n.GenerationTX1)
 	params[3] = hex.EncodeToString(n.GenerationTX2)

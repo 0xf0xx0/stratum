@@ -22,11 +22,11 @@ type Worker struct {
 // A share is the data returned by the worker in mining.submit.
 type Share struct {
 	Name  WorkerName
-	JobID ID
+	JobID string
 	work.Share
 }
 
-func (p *Share) read(r *Request) error {
+func (p *Share) Read(r *Request) error {
 	if len(r.Params) < 5 || len(r.Params) > 6 {
 		return errors.New("invalid format")
 	}
@@ -36,7 +36,7 @@ func (p *Share) read(r *Request) error {
 		return errors.New("invalid format")
 	}
 
-	jobID, ok := r.Params[1].(string)
+	p.JobID, ok = r.Params[1].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
@@ -82,11 +82,6 @@ func (p *Share) read(r *Request) error {
 	}
 
 	p.ExtraNonce2, err = hex.DecodeString(extraNonce2)
-	if err != nil {
-		return err
-	}
-
-	p.JobID, err = decodeID(jobID)
 	if err != nil {
 		return err
 	}

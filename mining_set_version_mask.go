@@ -6,7 +6,7 @@ type SetVersionMaskParams struct {
 	Mask uint32
 }
 
-func (p *SetVersionMaskParams) read(n *Notification) error {
+func (p *SetVersionMaskParams) Read(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("invalid format")
 	}

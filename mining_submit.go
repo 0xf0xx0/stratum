@@ -14,7 +14,7 @@ func Submit(id MessageID, share SubmitParams) Request {
 	}
 
 	sx[0] = string(share.Name)
-	sx[1] = encodeID(share.JobID)
+	sx[1] = share.JobID
 	sx[2] = hex.EncodeToString(share.ExtraNonce2)
 	sx[3] = encodeBigEndian(share.Time)
 	sx[4] = encodeBigEndian(share.Nonce)
