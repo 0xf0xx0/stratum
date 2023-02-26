@@ -3,6 +3,7 @@ package Stratum
 import (
 	"encoding/hex"
 	"errors"
+	"reflect"
 )
 
 type NotifyParams struct {
@@ -17,7 +18,7 @@ type NotifyParams struct {
 	Clean         bool
 }
 
-func (p *NotifyParams) Read(n *Notification) error {
+func (p *NotifyParams) Read(n Notification) error {
 	if len(n.Params) != 9 {
 		return errors.New("invalid format")
 	}
@@ -42,10 +43,20 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
-	path, ok := n.Params[4].([]string)
-	if !ok {
+	path := make([]string, 0, 16)
+	rv := reflect.ValueOf(n.Params[4])
+	if rv.Kind() == reflect.Slice {
+		for i := 0; i < rv.Len(); i++ {
+			path = append(path, rv.Index(i).Elem().String())
+		}
+	} else {
 		return errors.New("invalid format")
 	}
+
+	// ok, path := n.Params[4].([]string)
+	// if !ok {
+	// 	return errors.New("invalid format")
+	// }
 
 	version, ok := n.Params[5].(string)
 	if !ok {
