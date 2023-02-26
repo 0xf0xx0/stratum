@@ -1,10 +1,9 @@
 package Stratum
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
-
-	"github.com/DanielKrawisz/go-work"
 )
 
 type WorkerName string
@@ -23,7 +22,7 @@ type Worker struct {
 type Share struct {
 	Name  WorkerName
 	JobID ID
-	work.Share
+	MinerShare
 }
 
 func (p *Share) Read(r *Request) error {
@@ -94,4 +93,34 @@ func (p *Share) Read(r *Request) error {
 
 	p.Name = WorkerName(name)
 	return nil
+}
+
+// A share is the data returned by the worker. Job + Share = Proof
+type MinerShare struct {
+	Time               uint32
+	Nonce              uint32
+	ExtraNonce2        []byte
+	GeneralPurposeBits *uint32
+}
+
+func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {
+	n2 := make([]byte, 8)
+	binary.BigEndian.PutUint64(n2, extraNonce2)
+	return MinerShare{
+		Time:               time,
+		Nonce:              nonce,
+		ExtraNonce2:        n2,
+		GeneralPurposeBits: nil}
+}
+
+func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, gpb uint32) MinerShare {
+	bits := new(uint32)
+	*bits = gpb
+	n2 := make([]byte, 8)
+	binary.BigEndian.PutUint64(n2, extraNonce2)
+	return MinerShare{
+		Time:               time,
+		Nonce:              nonce,
+		ExtraNonce2:        n2,
+		GeneralPurposeBits: bits}
 }
