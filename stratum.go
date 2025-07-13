@@ -79,8 +79,11 @@ func (r *Request) Marshal() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
-
-	return json.Marshal(r)
+	marshalled, err := json.Marshal(r)
+	if err != nil {
+		return []byte{}, err
+	}
+	return append(marshalled, '\n'), nil
 }
 
 func (r *Request) Unmarshal(j []byte) error {
@@ -110,7 +113,11 @@ func (r *Response) Marshal() ([]byte, error) {
 		return []byte{}, errors.New("invalid id")
 	}
 
-	return json.Marshal(r)
+	marshalled, err := json.Marshal(r)
+	if err != nil {
+		return []byte{}, err
+	}
+	return append(marshalled, '\n'), nil
 }
 
 func (r *Response) Unmarshal(j []byte) error {
