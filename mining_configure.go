@@ -216,7 +216,7 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	return &SubscribeExtranonceConfigurationRequest{}
 }
 
-func (p *ConfigureParams) addSubscribeExtranonce() error {
+func (p *ConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
 	if p.supports("subscribe_extranonce") {
 		return errors.New("request already contains subscribe_extranonce")
 	}
