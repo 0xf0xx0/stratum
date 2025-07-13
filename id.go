@@ -57,7 +57,9 @@ func decodeLittleEndian(s string) (uint32, error) {
 func encodeID(id ID) string {
 	return encodeBigEndian(uint32(id))
 }
-
+func (id ID) String() string {
+	return encodeID(id)
+}
 func decodeID(s string) (ID, error) {
 	x, err := decodeBigEndian(s)
 	if err != nil {
@@ -65,4 +67,7 @@ func decodeID(s string) (ID, error) {
 	}
 
 	return ID(x), nil
+}
+func DecodeID(s string) (ID, error) {
+	return decodeID(s)
 }
