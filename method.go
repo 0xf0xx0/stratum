@@ -24,6 +24,11 @@ const (
 	ClientShowMessage
 )
 
+func (m Method) String() string {
+	str, _ := EncodeMethod(m)
+	return str
+}
+
 func EncodeMethod(m Method) (string, error) {
 	switch m {
 	case MiningAuthorize:
