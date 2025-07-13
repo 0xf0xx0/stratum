@@ -36,11 +36,11 @@ type VersionRollingConfigurationRequest struct {
 }
 
 func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
-	if !p.supports("version_rolling") {
+	if !p.supports("version-rolling") {
 		return nil
 	}
 
-	m, ok := p.Parameters["version_rolling.mask"]
+	m, ok := p.Parameters["version-rolling.mask"]
 	if !ok {
 		return nil
 	}
@@ -76,13 +76,13 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 }
 
 func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
-	if !p.supports("version_rolling") {
-		return errors.New("request already contains version_rolling")
+	if p.supports("version-rolling") {
+		return errors.New("request already contains version-rolling")
 	}
 
-	p.Supported = append(p.Supported, "version_rolling")
+	p.Supported = append(p.Supported, "version-rolling")
 
-	p.Parameters["version_rolling.mask"] = encodeLittleEndian(x.Mask)
+	p.Parameters["version-rolling.mask"] = encodeLittleEndian(x.Mask)
 	p.Parameters["version-rolling.min-bit-count"] = x.MinBitCount
 
 	return nil
@@ -94,7 +94,7 @@ type VersionRollingConfigurationResult struct {
 }
 
 func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResult {
-	v, ok := (*p)["version_rolling"]
+	v, ok := (*p)["version-rolling"]
 	if !ok {
 		return nil
 	}
@@ -111,7 +111,7 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 		}
 	}
 
-	m, ok := (*p)["version_rolling.mask"]
+	m, ok := (*p)["version-rolling.mask"]
 	if !ok {
 		return nil
 	}
@@ -133,13 +133,13 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 }
 
 func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
-	if !p.supports("version_rolling") {
-		return errors.New("result already contains version_rolling")
+	if p.supports("version-rolling") {
+		return errors.New("result already contains version-rolling")
 	}
 
-	map[string]interface{}(*p)["version_rolling"] = x.Accepted
+	map[string]interface{}(*p)["version-rolling"] = x.Accepted
 	if x.Accepted {
-		map[string]interface{}(*p)["version_rolling.mask"] = encodeLittleEndian(x.Mask)
+		map[string]interface{}(*p)["version-rolling.mask"] = encodeLittleEndian(x.Mask)
 	}
 
 	return nil

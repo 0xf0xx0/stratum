@@ -19,7 +19,7 @@ const (
 func EncodeExtension(m Extension) (string, error) {
 	switch m {
 	case VersionRolling:
-		return "version_rolling", nil
+		return "version-rolling", nil
 	case MinimumDifficulty:
 		return "minimum_difficulty", nil
 	case SubscribeExtranonce:
@@ -33,7 +33,7 @@ func EncodeExtension(m Extension) (string, error) {
 
 func DecodeExtension(m string) (Extension, error) {
 	switch m {
-	case "version_rolling":
+	case "version-rolling":
 		return VersionRolling, nil
 	case "minimum_difficulty":
 		return MinimumDifficulty, nil
