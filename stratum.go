@@ -10,8 +10,9 @@ import (
 
 // Notification for methods that do not require a response.
 type Notification struct {
-	Method string        `json:"method"`
-	Params []interface{} `json:"params"`
+	MessageID MessageID     `json:"id"`
+	Method    string        `json:"method"`
+	Params    []interface{} `json:"params"`
 }
 
 func NewNotification(m Method, params []interface{}) Notification {
@@ -143,7 +144,11 @@ func (r *Notification) Marshal() ([]byte, error) {
 		return []byte{}, errors.New("invalid method")
 	}
 
-	return json.Marshal(r)
+	marshalled, err := json.Marshal(r)
+	if err != nil {
+		return nil, err
+	}
+	return append(marshalled, '\n'), nil
 }
 
 func (r *Notification) Unmarshal(j []byte) error {
