@@ -165,7 +165,7 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
-	if !p.supports("minimum_difficulty") {
+	if p.supports("minimum_difficulty") {
 		return errors.New("request already contains minimum_difficulty")
 	}
 
@@ -197,7 +197,7 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
-	if !p.supports("minimum_difficulty") {
+	if p.supports("minimum_difficulty") {
 		return errors.New("result already contains minimum_difficulty")
 	}
 
@@ -216,11 +216,10 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	return &SubscribeExtranonceConfigurationRequest{}
 }
 
-func (p *ConfigureParams) addSubscribeExtranonce(x SubscribeExtranonceConfigurationRequest) error {
-	if !p.supports("subscribe_extranonce") {
+func (p *ConfigureParams) addSubscribeExtranonce() error {
+	if p.supports("subscribe_extranonce") {
 		return errors.New("request already contains subscribe_extranonce")
 	}
-
 	p.Supported = append(p.Supported, "subscribe_extranonce")
 
 	return nil
@@ -247,7 +246,7 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 }
 
 func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
-	if !p.supports("subscribe_extranonce") {
+	if p.supports("subscribe_extranonce") {
 		return errors.New("result already contains subscribe_extranonce")
 	}
 
@@ -314,7 +313,7 @@ func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
 }
 
 func (p *ConfigureParams) addInfo(x InfoConfigurationRequest) error {
-	if !p.supports("info") {
+	if p.supports("info") {
 		return errors.New("request already contains info")
 	}
 
@@ -349,7 +348,7 @@ func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 }
 
 func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
-	if !p.supports("info") {
+	if p.supports("info") {
 		return errors.New("result already contains info")
 	}
 
