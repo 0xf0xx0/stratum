@@ -73,20 +73,14 @@ func (p *SubscribeResult) Read(r *Response) error {
 		return errors.New("invalid parameter length; must be 3")
 	}
 
-	subscriptions, ok := result[0].([][]string)
-	if !ok {
-		return errors.New("invalid subscriptions format")
-	}
+	subscriptions := result[0].([]interface{})
 
 	idstr, ok := result[1].(string)
 	if !ok {
 		return errors.New("invalid session id")
 	}
 
-	extraNonce2Size, ok := result[2].(uint64)
-	if !ok {
-		return errors.New("invalid ExtraNonces2_size")
-	}
+	extraNonce2Size := uint64(result[2].(float64))
 
 	if extraNonce2Size > math.MaxUint32 {
 		return errors.New("extraNonce2_size too big")
@@ -97,16 +91,17 @@ func (p *SubscribeResult) Read(r *Response) error {
 	var err error
 	p.Subscriptions = make([]Subscription, len(subscriptions))
 	for i := 0; i < len(subscriptions); i++ {
-		if len(subscriptions[i]) != 2 {
+		sub := subscriptions[i].([]interface{})
+		if len(sub) != 2 {
 			return errors.New("invalid subscriptions format")
 		}
 
-		p.Subscriptions[i].Method, err = DecodeMethod(subscriptions[i][0])
+		p.Subscriptions[i].Method, err = DecodeMethod(sub[0].(string))
 		if err != nil {
 			return err
 		}
 
-		p.Subscriptions[i].SessionID, err = decodeID(subscriptions[i][1])
+		p.Subscriptions[i].SessionID, err = decodeID(sub[1].(string))
 		if err != nil {
 			return err
 		}
