@@ -4,18 +4,19 @@ import (
 	"encoding/hex"
 	"errors"
 	"reflect"
+	"time"
 )
 
 type NotifyParams struct {
-	JobID         string
-	Digest        []byte
-	GenerationTX1 []byte
-	GenerationTX2 []byte
-	Path          [][]byte
-	Version       uint32
-	Target        []byte
-	Timestamp     uint32
-	Clean         bool
+	JobID          string
+	PrevBlockHash  []byte
+	CoinbasePart1  []byte
+	CoinbasePart2  []byte
+	MerkleBranches [][]byte
+	Version        uint32
+	Bits           []byte
+	Timestamp      time.Time
+	Clean          bool
 }
 
 func (p *NotifyParams) Read(n *Notification) error {
@@ -64,38 +65,42 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
-	target, ok := n.Params[6].(string)
+	bits, ok := n.Params[6].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	time, ok := n.Params[7].(string)
+	timestamp, ok := n.Params[7].(string)
 	if !ok {
 		return errors.New("invalid format")
 	}
+	ts, err := decodeBigEndian(timestamp)
+	if err != nil {
+		return errors.New("invalid format")
+	}
+	p.Timestamp = time.Unix(int64(ts), 0)
 
 	p.Clean, ok = n.Params[8].(bool)
 	if !ok {
 		return errors.New("invalid format")
 	}
 
-	var err error
-	p.Digest, err = hex.DecodeString(digest)
-	if err != nil || len(p.Digest) != 32 {
+	p.PrevBlockHash, err = hex.DecodeString(digest)
+	if err != nil || len(p.PrevBlockHash) != 32 {
 		return errors.New("invalid format")
 	}
 
-	p.Target, err = hex.DecodeString(target)
-	if err != nil || len(p.Target) != 4 {
+	p.Bits, err = hex.DecodeString(bits)
+	if err != nil || len(p.Bits) != 4 {
 		return errors.New("invalid format")
 	}
 
-	p.GenerationTX1, err = hex.DecodeString(gtx1)
+	p.CoinbasePart1, err = hex.DecodeString(gtx1)
 	if err != nil {
 		return errors.New("invalid format")
 	}
 
-	p.GenerationTX2, err = hex.DecodeString(gtx2)
+	p.CoinbasePart2, err = hex.DecodeString(gtx2)
 	if err != nil {
 		return errors.New("invalid format")
 	}
@@ -105,15 +110,11 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
-	p.Timestamp, err = decodeBigEndian(time)
-	if err != nil {
-		return errors.New("invalid format")
-	}
 
-	p.Path = make([][]byte, len(path))
+	p.MerkleBranches = make([][]byte, len(path))
 	for i := 0; i < len(path); i++ {
-		p.Path[i], err = hex.DecodeString(path[i])
-		if err != nil || len(p.Digest) != 32 {
+		p.MerkleBranches[i], err = hex.DecodeString(path[i])
+		if err != nil || len(p.PrevBlockHash) != 32 {
 			return errors.New("invalid format")
 		}
 	}
@@ -125,19 +126,19 @@ func Notify(n NotifyParams) Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = n.JobID
-	params[1] = hex.EncodeToString(n.Digest)
-	params[2] = hex.EncodeToString(n.GenerationTX1)
-	params[3] = hex.EncodeToString(n.GenerationTX2)
+	params[1] = hex.EncodeToString(n.PrevBlockHash)
+	params[2] = hex.EncodeToString(n.CoinbasePart1)
+	params[3] = hex.EncodeToString(n.CoinbasePart2)
 
-	path := make([]string, len(n.Path))
-	for i := 0; i < len(n.Path); i++ {
-		path[i] = hex.EncodeToString(n.Path[i])
+	path := make([]string, len(n.MerkleBranches))
+	for i := 0; i < len(n.MerkleBranches); i++ {
+		path[i] = hex.EncodeToString(n.MerkleBranches[i])
 	}
 
 	params[4] = path
 	params[5] = encodeBigEndian(n.Version)
-	params[6] = hex.EncodeToString(n.Target)
-	params[7] = encodeBigEndian(n.Timestamp)
+	params[6] = hex.EncodeToString(n.Bits)
+	params[7] = encodeBigEndian(uint32(n.Timestamp.Unix()))
 	params[8] = n.Clean
 
 	return NewNotification(MiningNotify, params)
