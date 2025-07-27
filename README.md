@@ -7,6 +7,10 @@ and
 [here for Stratum extensions](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki).
 Extensions are necessary to support ASIC Boost.
 
+## TODO
+- [ ] Implement everything to get up to stratum 1.1 support
+- [ ] Use a GPL licence (mit-likes risk proprietary takeover)
+
 ## Supported Methods
 
 * mining.configure
