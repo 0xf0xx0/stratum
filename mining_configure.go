@@ -9,6 +9,24 @@ type ConfigureParams struct {
 	Parameters map[string]interface{}
 }
 
+func (p *ConfigureParams) Read(r *Request) error {
+	l := len(r.Params)
+	if l != 2 {
+		return errors.New("invalid parameter length; must be 2")
+	}
+
+	supported, ok := r.Params[0].([]interface{})
+	if !ok {
+		return errors.New("invalid supported format")
+	}
+	p.Supported = make([]string, len(supported))
+	for idx,s := range supported {
+		p.Supported[idx] = s.(string)
+	}
+	p.Parameters = r.Params[1].(map[string]interface{})
+	return nil
+}
+
 func (p *ConfigureParams) supports(extension string) bool {
 	for _, supported := range p.Supported {
 		if supported == extension {
