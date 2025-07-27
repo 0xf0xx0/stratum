@@ -21,60 +21,55 @@ type Worker struct {
 // A share is the data returned by the worker in mining.submit.
 type Share struct {
 	Name  WorkerName
-	JobID ID
+	JobID string
 	MinerShare
 }
 
 func (p *Share) Read(r *Request) error {
 	if len(r.Params) < 5 || len(r.Params) > 6 {
-		return errors.New("invalid format")
+		return errors.New("invalid format param len")
 	}
 
 	name, ok := r.Params[0].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid format param[0]")
 	}
 
-	jobID, ok := r.Params[1].(string)
+	p.JobID, ok = r.Params[1].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid format param[1]")
 	}
 
 	extraNonce2, ok := r.Params[2].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid format param[2]")
 	}
 
 	time, ok := r.Params[3].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid format param[3]")
 	}
 
 	nonce, ok := r.Params[4].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid format param[4]")
 	}
 
 	if len(r.Params) == 6 {
-		gpr, ok := r.Params[5].(string)
+		rawVersionMask, ok := r.Params[5].(string)
 		if !ok {
-			return errors.New("invalid format")
+			return errors.New("invalid format param[5]")
 		}
 
-		GPR, err := decodeLittleEndian(gpr)
+		versionMask, err := decodeLittleEndian(rawVersionMask)
 		if err != nil {
 			return err
 		}
 
-		p.GeneralPurposeBits = &GPR
+		p.VersionMask = &versionMask
 	}
 
 	var err error
-
-	p.JobID, err = decodeID(jobID)
-	if err != nil {
-		return err
-	}
 
 	p.Nonce, err = decodeBigEndian(nonce)
 	if err != nil {
@@ -97,30 +92,31 @@ func (p *Share) Read(r *Request) error {
 
 // A share is the data returned by the worker. Job + Share = Proof
 type MinerShare struct {
-	Time               uint32
-	Nonce              uint32
-	ExtraNonce2        []byte
-	GeneralPurposeBits *uint32
+	Time        uint32
+	Nonce       uint32
+	ExtraNonce2 []byte
+	// TODO: does this need to be a pointer?
+	VersionMask *uint32
 }
 
 func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {
 	n2 := make([]byte, 8)
 	binary.BigEndian.PutUint64(n2, extraNonce2)
 	return MinerShare{
-		Time:               time,
-		Nonce:              nonce,
-		ExtraNonce2:        n2,
-		GeneralPurposeBits: nil}
+		Time:        time,
+		Nonce:       nonce,
+		ExtraNonce2: n2,
+		VersionMask: nil}
 }
 
-func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, gpb uint32) MinerShare {
+func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, versionMask uint32) MinerShare {
 	bits := new(uint32)
-	*bits = gpb
+	*bits = versionMask
 	n2 := make([]byte, 8)
 	binary.BigEndian.PutUint64(n2, extraNonce2)
 	return MinerShare{
-		Time:               time,
-		Nonce:              nonce,
-		ExtraNonce2:        n2,
-		GeneralPurposeBits: bits}
+		Time:        time,
+		Nonce:       nonce,
+		ExtraNonce2: n2,
+		VersionMask: bits}
 }
