@@ -13,6 +13,7 @@ for Stratum extensions. Extensions are necessary to support ASIC Boost.
 * mining.authorize
 * mining.subscribe
 * mining.set_difficulty
+* mining.suggest_difficulty
 * mining.set_version_mask
 * mining.notify
 * mining.submit
@@ -20,7 +21,7 @@ for Stratum extensions. Extensions are necessary to support ASIC Boost.
 ## Unsupported methods
 
 * mining.set_extranonce
-* mining.suggest_difficulty
+* mining.extranonce.subscribe
 * mining.suggest_target
 * mining.get_transactions
 * client.get_version
@@ -35,7 +36,7 @@ require a response, others do not.
 ### Client-to-server
 
 | method | type |
-|--|--|
+|---------------------------|--------------------|
 | mining.configure          | request / response |
 | mining.authorize          | request / response |
 | mining.subscribe          | request / response |
@@ -47,7 +48,7 @@ require a response, others do not.
 ### Server-to-client
 
 | method | type |
-|--|--|
+|---------------------------|--------------------|
 | mining.set_difficulty     |       notification |
 | mining.set_version_mask   |       notification |
 | mining.notify             |       notification |
