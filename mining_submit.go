@@ -4,11 +4,11 @@ import "encoding/hex"
 
 type SubmitParams Share
 
-func Submit(id MessageID, share SubmitParams) Request {
+func Submit(id MessageID, share Share) Request {
 	var sx []interface{}
-	if share.GeneralPurposeBits != nil {
+	if share.VersionMask != nil {
 		sx = make([]interface{}, 6)
-		sx[5] = encodeLittleEndian(*share.GeneralPurposeBits)
+		sx[5] = encodeLittleEndian(*share.VersionMask)
 	} else {
 		sx = make([]interface{}, 5)
 	}
