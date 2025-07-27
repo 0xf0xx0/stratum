@@ -42,6 +42,6 @@ func DecodeExtension(m string) (Extension, error) {
 	case "info":
 		return Info, nil
 	default:
-		return Unknown, errors.New("unkown Stratum extension")
+		return Unknown, errors.New("unknown Stratum extension")
 	}
 }
