@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"fmt"
 )
 
 // A stratum session id is assigned by the mining pool to a miner and it
@@ -25,7 +26,7 @@ func decodeBigEndian(s string) (uint32, error) {
 	}
 
 	if len(b) != 4 {
-		return 0, errors.New("invalid format")
+		return 0, errors.New(fmt.Sprintf("invalid format: %s", s))
 	}
 
 	var x uint32
