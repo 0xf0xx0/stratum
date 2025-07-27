@@ -8,7 +8,7 @@ type AuthorizeParams struct {
 	Username string
 
 	// Password is optional. Pools don't necessarily require a miner to log in to mine.
-	Password *string
+	Password string
 }
 
 func (p *AuthorizeParams) Read(r *Request) error {
@@ -24,7 +24,7 @@ func (p *AuthorizeParams) Read(r *Request) error {
 	}
 
 	if l == 1 {
-		p.Password = nil
+		p.Password = ""
 		return nil
 	}
 
@@ -33,16 +33,16 @@ func (p *AuthorizeParams) Read(r *Request) error {
 		return errors.New("invalid password format")
 	}
 
-	p.Password = &password
+	p.Password = password
 	return nil
 }
 
 func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
-	if r.Password == nil {
+	if r.Password == "" {
 		return NewRequest(id, MiningAuthorize, []interface{}{r.Username})
 	}
 
-	return NewRequest(id, MiningAuthorize, []interface{}{r.Username, *r.Password})
+	return NewRequest(id, MiningAuthorize, []interface{}{r.Username, r.Password})
 }
 
 type AuthorizeResult BooleanResult
