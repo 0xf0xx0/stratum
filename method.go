@@ -11,6 +11,7 @@ const (
 	MiningAuthorize
 	MiningConfigure
 	MiningSubscribe
+	MiningExtranonceSubscribe
 	MiningNotify
 	MiningSubmit
 	MiningSetDifficulty
@@ -37,6 +38,8 @@ func EncodeMethod(m Method) (string, error) {
 		return "mining.configure", nil
 	case MiningSubscribe:
 		return "mining.subscribe", nil
+	case MiningExtranonceSubscribe:
+		return "mining.extranonce.subscribe", nil
 	case MiningNotify:
 		return "mining.notify", nil
 	case MiningSubmit:
@@ -72,6 +75,8 @@ func DecodeMethod(m string) (Method, error) {
 		return MiningConfigure, nil
 	case "mining.subscribe":
 		return MiningSubscribe, nil
+	case "mining.extranonce.subscribe":
+		return MiningExtranonceSubscribe, nil
 	case "mining.notify":
 		return MiningNotify, nil
 	case "mining.submit":
