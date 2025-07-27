@@ -5,11 +5,13 @@ import (
 	"errors"
 	"reflect"
 	"time"
+
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 )
 
 type NotifyParams struct {
 	JobID          string
-	PrevBlockHash  []byte
+	PrevBlockHash  *chainhash.Hash
 	CoinbasePart1  []byte
 	CoinbasePart2  []byte
 	MerkleBranches [][]byte
@@ -45,6 +47,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
+	/// FIXME
 	path := make([]string, 0, 16)
 	rv := reflect.ValueOf(n.Params[4])
 	if rv.Kind() == reflect.Slice {
@@ -85,7 +88,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
-	p.PrevBlockHash, err = hex.DecodeString(digest)
+	p.PrevBlockHash, err = chainhash.NewHashFromStr(digest)
 	if err != nil || len(p.PrevBlockHash) != 32 {
 		return errors.New("invalid format")
 	}
@@ -126,7 +129,7 @@ func Notify(n NotifyParams) Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = n.JobID
-	params[1] = hex.EncodeToString(n.PrevBlockHash)
+	params[1] = hex.EncodeToString(SwapWordEndianness(n.PrevBlockHash[:]))
 	params[2] = hex.EncodeToString(n.CoinbasePart1)
 	params[3] = hex.EncodeToString(n.CoinbasePart2)
 
@@ -142,4 +145,17 @@ func Notify(n NotifyParams) Notification {
 	params[8] = n.Clean
 
 	return NewNotification(MiningNotify, params)
+}
+
+// ported from public-pool
+func SwapWordEndianness(buf []byte) []byte {
+	swapped := make([]byte, len(buf))
+
+	for i := 0; i < len(buf); i += 4 {
+		swapped[i] = buf[i+3]
+		swapped[i+1] = buf[i+2]
+		swapped[i+2] = buf[i+1]
+		swapped[i+3] = buf[i]
+	}
+	return swapped
 }
