@@ -93,7 +93,7 @@ func (r *Request) Unmarshal(j []byte) error {
 		return err
 	}
 
-	//json.Umarshal threat numbers as float64 so we need to do type assetration for correct validation
+	// json.Unmarshal treat numbers as float64 so we need to do type assertation for correct validation
 	if fmt.Sprintf("%T", r.MessageID) == "float64" {
 		r.MessageID = uint64(r.MessageID.(float64))
 	}

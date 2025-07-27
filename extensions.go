@@ -21,13 +21,13 @@ func EncodeExtension(m Extension) (string, error) {
 	case VersionRolling:
 		return "version-rolling", nil
 	case MinimumDifficulty:
-		return "minimum_difficulty", nil
+		return "minimum-difficulty", nil
 	case SubscribeExtranonce:
-		return "subscribe_extranonce", nil
+		return "subscribe-extranonce", nil
 	case Info:
 		return "info", nil
 	default:
-		return "", errors.New("unkown Stratum extension")
+		return "", errors.New("unknown Stratum extension")
 	}
 }
 
@@ -35,9 +35,9 @@ func DecodeExtension(m string) (Extension, error) {
 	switch m {
 	case "version-rolling":
 		return VersionRolling, nil
-	case "minimum_difficulty":
+	case "minimum-difficulty":
 		return MinimumDifficulty, nil
-	case "subscribe_extranonce":
+	case "subscribe-extranonce":
 		return SubscribeExtranonce, nil
 	case "info":
 		return Info, nil
