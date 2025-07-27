@@ -1,4 +1,4 @@
-module github.com/kbnchk/go-Stratum
+module github.com/0xf0xx0/stratum
 
 go 1.19
 

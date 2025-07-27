@@ -1,4 +1,4 @@
-package Stratum
+package stratum
 
 // MessageID is a unique identifier that is different for each notification
 // and request / response.

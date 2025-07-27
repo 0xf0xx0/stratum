@@ -1,4 +1,4 @@
-package Stratum
+package stratum
 
 import "encoding/hex"
 

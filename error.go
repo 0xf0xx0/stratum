@@ -1,4 +1,4 @@
-package Stratum
+package stratum
 
 type ErrorCode uint32
 

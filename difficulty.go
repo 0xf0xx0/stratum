@@ -1,4 +1,4 @@
-package Stratum
+package stratum
 
 type Difficulty interface{}
 
