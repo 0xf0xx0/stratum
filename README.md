@@ -2,10 +2,10 @@
 
 Stratum is how Bitcoin miners connect with mining pools.
 
-See [here](https://web.archive.org/web/20210224235216/https://braiins.com/stratum-v1/docs)
-for a description of Stratum and
-[here](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki)
-for Stratum extensions. Extensions are necessary to support ASIC Boost.
+See [here for a description of Stratum](https://web.archive.org/web/20210224235216/https://braiins.com/stratum-v1/docs)
+and
+[here for Stratum extensions](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki).
+Extensions are necessary to support ASIC Boost.
 
 ## Supported Methods
 
@@ -35,19 +35,20 @@ require a response, others do not.
 
 ### Client-to-server
 
-| method | type |
-|---------------------------|--------------------|
-| mining.configure          | request / response |
-| mining.authorize          | request / response |
-| mining.subscribe          | request / response |
-| mining.submit             | request / response |
-| mining.suggest_difficulty |       notification |
-| mining.suggest_target     |       notification |
-| mining.get_transactions   | request / response |
+| method                      | type               |
+|-----------------------------|--------------------|
+| mining.configure            | request / response |
+| mining.authorize            | request / response |
+| mining.subscribe            | request / response |
+| mining.extranonce.subscribe | request / response |
+| mining.submit               | request / response |
+| mining.suggest_difficulty   |       notification |
+| mining.suggest_target       |       notification |
+| mining.get_transactions     | request / response |
 
 ### Server-to-client
 
-| method | type |
+| method                    | type               |
 |---------------------------|--------------------|
 | mining.set_difficulty     |       notification |
 | mining.set_version_mask   |       notification |
