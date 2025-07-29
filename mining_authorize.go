@@ -2,11 +2,14 @@ package stratum
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 )
 
 type AuthorizeParams struct {
 	Username string
-
+	// optional, typically appened to the username with `.`
+	Worker string
 	// Password is optional. Pools don't necessarily require a miner to log in to mine.
 	Password string
 }
@@ -17,10 +20,15 @@ func (p *AuthorizeParams) Read(r *Request) error {
 		return errors.New("invalid parameter length; must be 1 or 2")
 	}
 
-	var ok bool
-	p.Username, ok = r.Params[0].(string)
+	username, ok := r.Params[0].(string)
 	if !ok {
 		return errors.New("invalid username format")
+	}
+
+	split := strings.Split(username, ".")
+	p.Username = split[0]
+	if len(split) > 1 {
+		p.Worker = split[1]
 	}
 
 	if l == 1 {
@@ -38,11 +46,15 @@ func (p *AuthorizeParams) Read(r *Request) error {
 }
 
 func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
+	username := r.Username
+	if r.Worker != "" {
+		username += fmt.Sprintf(".%s", r.Worker)
+	}
 	if r.Password == "" {
-		return NewRequest(id, MiningAuthorize, []interface{}{r.Username})
+		return NewRequest(id, MiningAuthorize, []interface{}{username})
 	}
 
-	return NewRequest(id, MiningAuthorize, []interface{}{r.Username, r.Password})
+	return NewRequest(id, MiningAuthorize, []interface{}{username, r.Password})
 }
 
 type AuthorizeResult BooleanResult
