@@ -61,12 +61,19 @@ func (p *Share) Read(r *Request) error {
 			return errors.New("invalid format param[5]")
 		}
 
-		versionMask, err := decodeLittleEndian(rawVersionMask)
+
+		y, err := hex.DecodeString(rawVersionMask)
+		if err != nil {
+			return err
+		}
+		/// this seems to be parsed the wrong way round? i dont know why
+		swappedVersionMask := hex.EncodeToString(SwapWordEndianness(y))
+		versionMask, err := decodeLittleEndian(swappedVersionMask)
 		if err != nil {
 			return err
 		}
 
-		p.VersionMask = &versionMask
+		p.VersionMask = versionMask
 	}
 
 	var err error
@@ -95,8 +102,7 @@ type MinerShare struct {
 	Time        uint32
 	Nonce       uint32
 	ExtraNonce2 []byte
-	// TODO: does this need to be a pointer?
-	VersionMask *uint32
+	VersionMask uint32
 }
 
 func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {
@@ -106,17 +112,16 @@ func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {
 		Time:        time,
 		Nonce:       nonce,
 		ExtraNonce2: n2,
-		VersionMask: nil}
+	}
 }
 
 func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, versionMask uint32) MinerShare {
-	bits := new(uint32)
-	*bits = versionMask
 	n2 := make([]byte, 8)
 	binary.BigEndian.PutUint64(n2, extraNonce2)
 	return MinerShare{
 		Time:        time,
 		Nonce:       nonce,
 		ExtraNonce2: n2,
-		VersionMask: bits}
+		VersionMask: versionMask,
+	}
 }

@@ -6,9 +6,9 @@ type SubmitParams Share
 
 func Submit(id MessageID, share Share) Request {
 	var sx []interface{}
-	if share.VersionMask != nil {
+	if share.VersionMask != 0 {
 		sx = make([]interface{}, 6)
-		sx[5] = encodeLittleEndian(*share.VersionMask)
+		sx[5] = encodeLittleEndian(share.VersionMask)
 	} else {
 		sx = make([]interface{}, 5)
 	}
