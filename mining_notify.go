@@ -3,7 +3,6 @@ package stratum
 import (
 	"encoding/hex"
 	"errors"
-	"reflect"
 	"time"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -47,21 +46,14 @@ func (p *NotifyParams) Read(n *Notification) error {
 		return errors.New("invalid format")
 	}
 
-	/// FIXME
-	path := make([]string, 0, 16)
-	rv := reflect.ValueOf(n.Params[4])
-	if rv.Kind() == reflect.Slice {
-		for i := 0; i < rv.Len(); i++ {
-			path = append(path, rv.Index(i).Elem().String())
-		}
-	} else {
+	rv, ok := n.Params[4].([]interface{})
+	if !ok {
 		return errors.New("invalid format")
 	}
-
-	// ok, path := n.Params[4].([]string)
-	// if !ok {
-	// 	return errors.New("invalid format")
-	// }
+	path := make([]string, len(rv))
+	for i := range rv {
+		path[i] = rv[i].(string)
+	}
 
 	version, ok := n.Params[5].(string)
 	if !ok {
@@ -112,7 +104,6 @@ func (p *NotifyParams) Read(n *Notification) error {
 	if err != nil {
 		return errors.New("invalid format")
 	}
-
 
 	p.MerkleBranches = make([][]byte, len(path))
 	for i := 0; i < len(path); i++ {
