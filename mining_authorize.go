@@ -2,7 +2,6 @@ package stratum
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
@@ -48,7 +47,7 @@ func (p *AuthorizeParams) Read(r *Request) error {
 func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
 	username := r.Username
 	if r.Worker != "" {
-		username += fmt.Sprintf(".%s", r.Worker)
+		username += "." + r.Worker
 	}
 	if r.Password == "" {
 		return NewRequest(id, MiningAuthorize, []interface{}{username})
