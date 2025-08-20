@@ -28,6 +28,7 @@ func ValidMessageID(id MessageID) bool {
 // response: server to client
 
 // Notification is for methods that do not require a response.
+// Automatically includes a newline when marshalling.
 type Notification struct {
 	MessageID MessageID     `json:"id"`
 	Method    string        `json:"method"`
@@ -48,6 +49,7 @@ func (n *Notification) GetMethod() Method {
 }
 
 // Request is for methods that require a [Response].
+// Automatically includes a newline when marshalling.
 type Request struct {
 	MessageID MessageID     `json:"id"`
 	Method    string        `json:"method"`
@@ -69,6 +71,7 @@ func (n *Request) GetMethod() Method {
 }
 
 // Response is what is sent back in response to [Request]s.
+// Automatically includes a newline when marshalling.
 type Response struct {
 	MessageID MessageID   `json:"id"`
 	Result    interface{} `json:"result"`
