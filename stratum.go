@@ -6,9 +6,28 @@ import (
 	"fmt"
 )
 
-// Stratum has three types of messages: notification, request, and response.
+// MessageID is a unique identifier that is different for each notification
+// and request / response.
+type MessageID interface{}
 
-// Notification for methods that do not require a response.
+// MessageIDs are allowed to be integers or strings.
+func ValidMessageID(id MessageID) bool {
+	switch id.(type) {
+	case uint64:
+		return true
+	case string:
+		return true
+	default:
+		return false
+	}
+}
+
+// Stratum has three types of messages: notification, request, and response.
+// notification: unprompted, server to client
+// request: client to server
+// response: server to client
+
+// Notification is for methods that do not require a response.
 type Notification struct {
 	MessageID MessageID     `json:"id"`
 	Method    string        `json:"method"`
@@ -28,7 +47,7 @@ func (n *Notification) GetMethod() Method {
 	return m
 }
 
-// request is for methods that require a response.
+// Request is for methods that require a [Response].
 type Request struct {
 	MessageID MessageID     `json:"id"`
 	Method    string        `json:"method"`
@@ -49,7 +68,7 @@ func (n *Request) GetMethod() Method {
 	return m
 }
 
-// Response is what is sent back in response to requests.
+// Response is what is sent back in response to [Request]s.
 type Response struct {
 	MessageID MessageID   `json:"id"`
 	Result    interface{} `json:"result"`
@@ -64,6 +83,23 @@ func NewResponse(id MessageID, r interface{}) Response {
 	}
 }
 
+type BooleanResult struct {
+	Result bool
+}
+
+func (b *BooleanResult) Read(r *Response) error {
+	var ok bool
+	b.Result, ok = r.Result.(bool)
+	if !ok {
+		return errors.New("invalid value")
+	}
+
+	return nil
+}
+
+func NewBooleanResponse(id MessageID, x bool) Response {
+	return NewResponse(id, x)
+}
 func NewErrorResponse(id MessageID, e Error) Response {
 	return Response{
 		MessageID: id,
@@ -72,6 +108,9 @@ func NewErrorResponse(id MessageID, e Error) Response {
 	}
 }
 
+func (r *Request) Respond(d interface{}) Response {
+	return NewResponse(r.MessageID, d)
+}
 func (r *Request) Marshal() ([]byte, error) {
 	if !ValidMessageID(r.MessageID) {
 		return []byte{}, errors.New("invalid id")
@@ -86,7 +125,6 @@ func (r *Request) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
-
 func (r *Request) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
@@ -120,19 +158,16 @@ func (r *Response) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
-
 func (r *Response) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
 
-	//json.Umarshal threat numbers as float64 so we need to do type assetration for correct validation
-	if fmt.Sprintf("%T", r.MessageID) == "float64" {
-		r.MessageID = uint64(r.MessageID.(float64))
-	}
-
-	if !ValidMessageID(r.MessageID) {
+	//json.Umarshal treats numbers as float64 so we need to do type assertion for correct validation
+	if id, ok := r.MessageID.(float64); ok {
+		r.MessageID = uint64(id)
+	} else {
 		return errors.New("invalid id")
 	}
 
@@ -150,7 +185,6 @@ func (r *Notification) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
-
 func (r *Notification) Unmarshal(j []byte) error {
 	err := json.Unmarshal(j, r)
 	if err != nil {

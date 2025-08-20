@@ -59,5 +59,5 @@ func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
 type AuthorizeResult BooleanResult
 
 func AuthorizeResponse(id MessageID, b bool) Response {
-	return BooleanResponse(id, b)
+	return NewBooleanResponse(id, b)
 }

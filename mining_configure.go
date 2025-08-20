@@ -27,7 +27,7 @@ func (p *ConfigureParams) Read(r *Request) error {
 	return nil
 }
 
-func (p *ConfigureParams) supports(extension string) bool {
+func (p *ConfigureParams) Supports(extension string) bool {
 	for _, supported := range p.Supported {
 		if supported == extension {
 			return true
@@ -38,14 +38,10 @@ func (p *ConfigureParams) supports(extension string) bool {
 
 type ConfigureResult map[string]interface{}
 
-func (p *ConfigureResult) supports(extension string) bool {
-	for supported := range *p {
-		if supported == extension {
-			return true
-		}
-	}
-
-	return false
+// exported for your convience
+func (p *ConfigureResult) Supports(extension string) bool {
+	_, ok := (*p)[extension]
+	return ok
 }
 
 type VersionRollingConfigurationRequest struct {
@@ -54,7 +50,7 @@ type VersionRollingConfigurationRequest struct {
 }
 
 func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
-	if !p.supports("version-rolling") {
+	if !p.Supports("version-rolling") {
 		return nil
 	}
 
@@ -73,6 +69,7 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 		return nil
 	}
 
+	/// TODO: optional?
 	b, ok := p.Parameters["version-rolling.min-bit-count"]
 	if !ok {
 		return nil
@@ -94,7 +91,7 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 }
 
 func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
-	if p.supports("version-rolling") {
+	if p.Supports("version-rolling") {
 		return errors.New("request already contains version-rolling")
 	}
 
@@ -151,7 +148,7 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 }
 
 func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
-	if p.supports("version-rolling") {
+	if p.Supports("version-rolling") {
 		return errors.New("result already contains version-rolling")
 	}
 
@@ -168,7 +165,7 @@ type MinimumDifficultyConfigurationRequest struct {
 }
 
 func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
-	if !p.supports("minimum_difficulty") {
+	if !p.Supports("minimum_difficulty") {
 		return nil
 	}
 
@@ -183,7 +180,7 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
-	if p.supports("minimum_difficulty") {
+	if p.Supports("minimum_difficulty") {
 		return errors.New("request already contains minimum_difficulty")
 	}
 
@@ -215,7 +212,7 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 }
 
 func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
-	if p.supports("minimum_difficulty") {
+	if p.Supports("minimum_difficulty") {
 		return errors.New("result already contains minimum_difficulty")
 	}
 
@@ -227,7 +224,7 @@ func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationR
 type SubscribeExtranonceConfigurationRequest struct{}
 
 func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
-	if !p.supports("subscribe_extranonce") {
+	if !p.Supports("subscribe_extranonce") {
 		return nil
 	}
 
@@ -235,7 +232,7 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 }
 
 func (p *ConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
-	if p.supports("subscribe_extranonce") {
+	if p.Supports("subscribe_extranonce") {
 		return errors.New("request already contains subscribe_extranonce")
 	}
 	p.Supported = append(p.Supported, "subscribe_extranonce")
@@ -264,7 +261,7 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 }
 
 func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
-	if p.supports("subscribe_extranonce") {
+	if p.Supports("subscribe_extranonce") {
 		return errors.New("result already contains subscribe_extranonce")
 	}
 
@@ -281,7 +278,7 @@ type InfoConfigurationRequest struct {
 }
 
 func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
-	if !p.supports("info") {
+	if !p.Supports("info") {
 		return nil
 	}
 
@@ -331,7 +328,7 @@ func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
 }
 
 func (p *ConfigureParams) addInfo(x InfoConfigurationRequest) error {
-	if p.supports("info") {
+	if p.Supports("info") {
 		return errors.New("request already contains info")
 	}
 
@@ -366,7 +363,7 @@ func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 }
 
 func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
-	if p.supports("info") {
+	if p.Supports("info") {
 		return errors.New("result already contains info")
 	}
 

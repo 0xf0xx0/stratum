@@ -18,11 +18,11 @@ const (
 	MiningSetVersionMask
 	MiningSetExtraNonce
 	MiningSuggestDifficulty
-	MiningSuggestTarget
+	MiningSuggestTarget // discard?
 	ClientGetVersion
 	ClientReconnect
-	ClientGetTransactions
-	ClientShowMessage
+	ClientGetTransactions // discard?
+	ClientShowMessage // discard?
 )
 
 func (m Method) String() string {
@@ -63,7 +63,7 @@ func EncodeMethod(m Method) (string, error) {
 	case ClientShowMessage:
 		return "mining.show_message", nil
 	default:
-		return "", errors.New("unkown Stratum method")
+		return "", errors.New("unknown stratum method")
 	}
 }
 
@@ -100,6 +100,6 @@ func DecodeMethod(m string) (Method, error) {
 	case "mining.show_message":
 		return ClientShowMessage, nil
 	default:
-		return Unset, errors.New("unkown Stratum method")
+		return Unset, errors.New("unknown stratum method")
 	}
 }

@@ -14,7 +14,7 @@ const (
 	None ErrorCode = iota
 )
 
-// Error is a 2-element json array.
+// Error is a 2(G: or more??? see public-pool)-element json array.
 type Error struct {
 	Code    ErrorCode
 	Message string

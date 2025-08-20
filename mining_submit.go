@@ -25,5 +25,5 @@ func Submit(id MessageID, share Share) Request {
 type SubmitResult BooleanResult
 
 func SubmitResponse(id MessageID, b bool) Response {
-	return BooleanResponse(id, b)
+	return NewBooleanResponse(id, b)
 }

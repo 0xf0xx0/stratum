@@ -99,10 +99,10 @@ func (p *Share) Read(r *Request) error {
 
 // A share is the data returned by the worker. Job + Share = Proof
 type MinerShare struct {
-	Time        uint32
-	Nonce       uint32
-	ExtraNonce2 []byte
-	VersionMask uint32
+	Time        uint32 // proof timestamp
+	Nonce       uint32 // gets put into the block header
+	ExtraNonce2 []byte // gets put into the coinbase
+	VersionMask uint32 // block version + VersionMask = proof version
 }
 
 func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {

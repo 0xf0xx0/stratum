@@ -1,4 +1,4 @@
-# A Golang library for the Stratum Protocol
+# A Golang library for the Bitcoin Stratum Protocol
 
 Stratum is how Bitcoin miners connect with mining pools.
 
@@ -32,6 +32,10 @@ Extensions are necessary to support ASIC Boost.
 * client.show_message
 
 ## Method types
+
+```
+TODO: replace all this with a link to bip-41
+```
 
 Some methods are client-to-server, others are server-to-client. Some methods
 require a response, others do not.
