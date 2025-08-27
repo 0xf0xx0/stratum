@@ -26,7 +26,7 @@ func decodeBigEndian(s string) (uint32, error) {
 	}
 
 	if len(b) != 4 {
-		return 0, errors.New(fmt.Sprintf("invalid format: %s", s))
+		return 0, fmt.Errorf("invalid format: %s", s)
 	}
 
 	var x uint32
