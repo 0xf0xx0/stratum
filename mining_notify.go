@@ -22,56 +22,60 @@ type NotifyParams struct {
 
 func (p *NotifyParams) Read(n *Notification) error {
 	if len(n.Params) != 9 {
-		return errors.New("invalid format")
+		return errors.New("invalid param len (not 9)")
 	}
 
 	var ok bool
 	p.JobID, ok = n.Params[0].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid jobid (not string)")
 	}
 
 	digest, ok := n.Params[1].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid prevblockhash (not string)")
 	}
 
 	gtx1, ok := n.Params[2].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid coinbasept1 (not string)")
 	}
 
 	gtx2, ok := n.Params[3].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid coinbasept2 (not string)")
 	}
 
-	rv, ok := n.Params[4].([]interface{})
+	mb, ok := n.Params[4].([]interface{})
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid merkle branches type (not []string)")
 	}
-	path := make([]string, len(rv))
-	for i := range rv {
-		path[i] = rv[i].(string)
+	branches := make([]string, len(mb))
+	for i := range mb {
+		s, ok := mb[i].(string)
+		if !ok {
+			return errors.New("invalid merkle branch type (not string)")
+		}
+		branches[i] = s
 	}
 
 	version, ok := n.Params[5].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid version (not string)")
 	}
 
 	bits, ok := n.Params[6].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid bits (not string)")
 	}
 
 	timestamp, ok := n.Params[7].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid timestamp (not string)")
 	}
 	ts, err := decodeBigEndian(timestamp)
 	if err != nil {
-		return errors.New("invalid format")
+		return errors.New("invalid timestamp: "+err.Error())
 	}
 	p.Timestamp = time.Unix(int64(ts), 0)
 
@@ -86,30 +90,33 @@ func (p *NotifyParams) Read(n *Notification) error {
 	}
 
 	p.Bits, err = hex.DecodeString(bits)
-	if err != nil || len(p.Bits) != 4 {
-		return errors.New("invalid format")
+	if err != nil {
+		return err
+	}
+	if len(p.Bits) != 4 {
+		return errors.New("invalid bits param size (not 4 bytes)")
 	}
 
 	p.CoinbasePart1, err = hex.DecodeString(gtx1)
 	if err != nil {
-		return errors.New("invalid format")
+		return errors.New("invalid coinbase pt 1: "+err.Error())
 	}
 
 	p.CoinbasePart2, err = hex.DecodeString(gtx2)
 	if err != nil {
-		return errors.New("invalid format")
+		return errors.New("invalid coinbase pt 2: "+err.Error())
 	}
 
 	p.Version, err = decodeBigEndian(version)
 	if err != nil {
-		return errors.New("invalid format")
+		return errors.New("invalid version: "+err.Error())
 	}
 
-	p.MerkleBranches = make([][]byte, len(path))
-	for i := 0; i < len(path); i++ {
-		p.MerkleBranches[i], err = hex.DecodeString(path[i])
-		if err != nil || len(p.PrevBlockHash) != 32 {
-			return errors.New("invalid format")
+	p.MerkleBranches = make([][]byte, len(branches))
+	for i := 0; i < len(branches); i++ {
+		p.MerkleBranches[i], err = hex.DecodeString(branches[i])
+		if err != nil || len(p.MerkleBranches[i]) != 32 {
+			return errors.New("invalid merkle branch length (not 32)")
 		}
 	}
 

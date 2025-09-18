@@ -27,21 +27,21 @@ func EncodeExtension(m Extension) (string, error) {
 	case Info:
 		return "info", nil
 	default:
-		return "", errors.New("unknown Stratum extension")
+		return "", errors.New("unknown stratum extension")
 	}
 }
 
-func DecodeExtension(m string) (Extension, error) {
+func DecodeExtension(m string) Extension {
 	switch m {
 	case "version-rolling":
-		return VersionRolling, nil
+		return VersionRolling
 	case "minimum-difficulty":
-		return MinimumDifficulty, nil
+		return MinimumDifficulty
 	case "subscribe-extranonce":
-		return SubscribeExtranonce, nil
+		return SubscribeExtranonce
 	case "info":
-		return Info, nil
+		return Info
 	default:
-		return Unknown, errors.New("unknown Stratum extension")
+		return Unknown
 	}
 }
