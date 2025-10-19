@@ -22,7 +22,7 @@ const (
 	ClientGetVersion
 	ClientReconnect
 	ClientGetTransactions // discard?
-	ClientShowMessage // discard?
+	ClientShowMessage     // discard?
 )
 
 func (m Method) String() string {

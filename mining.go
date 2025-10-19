@@ -61,7 +61,6 @@ func (p *Share) Read(r *Request) error {
 			return errors.New("invalid format param[5]")
 		}
 
-
 		y, err := hex.DecodeString(rawVersionMask)
 		if err != nil {
 			return err

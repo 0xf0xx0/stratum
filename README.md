@@ -8,28 +8,29 @@ and
 Extensions are necessary to support ASIC Boost.
 
 ## TODO
+
 - [ ] Implement everything to get up to stratum 1.1 support
 
 ## Supported Methods
 
-* mining.configure
-* mining.authorize
-* mining.subscribe
-* mining.set_difficulty
-* mining.suggest_difficulty
-* mining.set_version_mask
-* mining.notify
-* mining.submit
+- mining.configure
+- mining.authorize
+- mining.subscribe
+- mining.set_difficulty
+- mining.suggest_difficulty
+- mining.set_version_mask
+- mining.notify
+- mining.submit
 
 ## Unsupported methods
 
-* mining.set_extranonce
-* mining.extranonce.subscribe
-* mining.suggest_target
-* mining.get_transactions
-* client.get_version
-* client.reconnect
-* client.show_message
+- mining.set_extranonce
+- mining.extranonce.subscribe
+- mining.suggest_target
+- mining.get_transactions
+- client.get_version
+- client.reconnect
+- client.show_message
 
 ## Method types
 
@@ -43,27 +44,27 @@ require a response, others do not.
 ### Client-to-server
 
 | method                      | type               |
-|-----------------------------|--------------------|
+| --------------------------- | ------------------ |
 | mining.configure            | request / response |
 | mining.authorize            | request / response |
 | mining.subscribe            | request / response |
 | mining.extranonce.subscribe | request / response |
 | mining.submit               | request / response |
-| mining.suggest_difficulty   |       notification |
-| mining.suggest_target       |       notification |
+| mining.suggest_difficulty   | notification       |
+| mining.suggest_target       | notification       |
 | mining.get_transactions     | request / response |
 
 ### Server-to-client
 
-| method                    | type               |
-|---------------------------|--------------------|
-| mining.set_difficulty     |       notification |
-| mining.set_version_mask   |       notification |
-| mining.notify             |       notification |
-| mining.set_extranonce     |       notification |
-| client.get_version        | request / response |
-| client.reconnect          |       notification |
-| client.show_message       |       notification |
+| method                  | type               |
+| ----------------------- | ------------------ |
+| mining.set_difficulty   | notification       |
+| mining.set_version_mask | notification       |
+| mining.notify           | notification       |
+| mining.set_extranonce   | notification       |
+| client.get_version      | request / response |
+| client.reconnect        | notification       |
+| client.show_message     | notification       |
 
 ## Message Formats
 

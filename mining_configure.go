@@ -20,7 +20,7 @@ func (p *ConfigureParams) Read(r *Request) error {
 		return errors.New("invalid supported format")
 	}
 	p.Supported = make([]string, len(supported))
-	for idx,s := range supported {
+	for idx, s := range supported {
 		p.Supported[idx] = s.(string)
 	}
 	p.Parameters = r.Params[1].(map[string]interface{})

@@ -4,6 +4,7 @@ package stratum
 // is included in the coinbase script of the block that is produced.
 // we also use ID for job ids. [kbnchk:] bad idea jobID is not always hex-encoded uint32, removed
 type ID uint32
+
 // calls EncodeID()
 func (id ID) String() string {
 	return EncodeID(id)

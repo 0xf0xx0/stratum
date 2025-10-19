@@ -75,7 +75,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 	}
 	ts, err := decodeBigEndian(timestamp)
 	if err != nil {
-		return errors.New("invalid timestamp: "+err.Error())
+		return errors.New("invalid timestamp: " + err.Error())
 	}
 	p.Timestamp = time.Unix(int64(ts), 0)
 
@@ -99,17 +99,17 @@ func (p *NotifyParams) Read(n *Notification) error {
 
 	p.CoinbasePart1, err = hex.DecodeString(gtx1)
 	if err != nil {
-		return errors.New("invalid coinbase pt 1: "+err.Error())
+		return errors.New("invalid coinbase pt 1: " + err.Error())
 	}
 
 	p.CoinbasePart2, err = hex.DecodeString(gtx2)
 	if err != nil {
-		return errors.New("invalid coinbase pt 2: "+err.Error())
+		return errors.New("invalid coinbase pt 2: " + err.Error())
 	}
 
 	p.Version, err = decodeBigEndian(version)
 	if err != nil {
-		return errors.New("invalid version: "+err.Error())
+		return errors.New("invalid version: " + err.Error())
 	}
 
 	p.MerkleBranches = make([][]byte, len(branches))
