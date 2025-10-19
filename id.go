@@ -1,74 +1,22 @@
 package stratum
 
-import (
-	"bytes"
-	"encoding/binary"
-	"encoding/hex"
-	"errors"
-	"fmt"
-)
-
 // A stratum session id is assigned by the mining pool to a miner and it
 // is included in the coinbase script of the block that is produced.
 // we also use ID for job ids. [kbnchk:] bad idea jobID is not always hex-encoded uint32, removed
 type ID uint32
-
-func encodeBigEndian(id uint32) string {
-	b := make([]byte, 4)
-	binary.BigEndian.PutUint32(b, uint32(id))
-	return hex.EncodeToString(b)
+// calls EncodeID()
+func (id ID) String() string {
+	return EncodeID(id)
 }
 
-func decodeBigEndian(s string) (uint32, error) {
-	b, err := hex.DecodeString(s)
-	if err != nil {
-		return 0, err
-	}
-
-	if len(b) != 4 {
-		return 0, fmt.Errorf("invalid format: %s", s)
-	}
-
-	var x uint32
-	binary.Read(bytes.NewBuffer(b), binary.BigEndian, &x)
-	return x, nil
-}
-
-func encodeLittleEndian(id uint32) string {
-	b := make([]byte, 4)
-	binary.LittleEndian.PutUint32(b, uint32(id))
-	return hex.EncodeToString(b)
-}
-
-func decodeLittleEndian(s string) (uint32, error) {
-	b, err := hex.DecodeString(s)
-	if err != nil {
-		return 0, err
-	}
-
-	if len(b) != 4 {
-		return 0, errors.New("invalid format")
-	}
-
-	var x uint32
-	binary.Read(bytes.NewBuffer(b), binary.LittleEndian, &x)
-	return x, nil
-}
-
-func encodeID(id ID) string {
+func EncodeID(id ID) string {
 	return encodeBigEndian(uint32(id))
 }
-func (id ID) String() string {
-	return encodeID(id)
-}
-func decodeID(s string) (ID, error) {
+func DecodeID(s string) (ID, error) {
 	x, err := decodeBigEndian(s)
 	if err != nil {
 		return 0, err
 	}
 
 	return ID(x), nil
-}
-func DecodeID(s string) (ID, error) {
-	return decodeID(s)
 }

@@ -3,7 +3,6 @@ package stratum
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 )
 
 // MessageID is a unique identifier that is different for each notification
@@ -134,10 +133,12 @@ func (r *Request) Unmarshal(j []byte) error {
 		return err
 	}
 
-	// json.Unmarshal treat numbers as float64 so we need to do type assertation for correct validation
-	if fmt.Sprintf("%T", r.MessageID) == "float64" {
-		r.MessageID = uint64(r.MessageID.(float64))
+	// json.Unmarshal treat numbers as float64
+	mid, ok := r.MessageID.(float64)
+	if !ok {
+		return errors.New("invalid id")
 	}
+	r.MessageID = uint64(mid)
 
 	if !ValidMessageID(r.MessageID) {
 		return errors.New("invalid id")
@@ -167,12 +168,12 @@ func (r *Response) Unmarshal(j []byte) error {
 		return err
 	}
 
-	//json.Umarshal treats numbers as float64 so we need to do type assertion for correct validation
-	if id, ok := r.MessageID.(float64); ok {
-		r.MessageID = uint64(id)
-	} else {
+	// json.Umarshal treats numbers as float64
+	mid, ok := r.MessageID.(float64)
+	if !ok {
 		return errors.New("invalid id")
 	}
+	r.MessageID = uint64(mid)
 
 	return nil
 }

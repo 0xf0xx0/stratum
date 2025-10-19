@@ -64,7 +64,7 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 		return nil
 	}
 
-	mask, err := decodeLittleEndian(maskstr)
+	mask, err := decodeBigEndian(maskstr)
 	if err != nil {
 		return nil
 	}
@@ -97,7 +97,7 @@ func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest
 
 	p.Supported = append(p.Supported, "version-rolling")
 
-	p.Parameters["version-rolling.mask"] = encodeLittleEndian(x.Mask)
+	p.Parameters["version-rolling.mask"] = encodeBigEndian(x.Mask)
 	p.Parameters["version-rolling.min-bit-count"] = x.MinBitCount
 
 	return nil
@@ -136,7 +136,7 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 		return nil
 	}
 
-	mask, err := decodeLittleEndian(maskstr)
+	mask, err := decodeBigEndian(maskstr)
 	if err != nil {
 		return nil
 	}
@@ -154,7 +154,7 @@ func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult)
 
 	map[string]interface{}(*p)["version-rolling"] = x.Accepted
 	if x.Accepted {
-		map[string]interface{}(*p)["version-rolling.mask"] = encodeLittleEndian(x.Mask)
+		map[string]interface{}(*p)["version-rolling.mask"] = encodeBigEndian(x.Mask)
 	}
 
 	return nil
