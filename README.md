@@ -7,6 +7,8 @@ and
 [here for Stratum extensions](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki).
 Extensions are necessary to support ASIC Boost.
 
+forked from https://github.com/kbnchk/go-Stratum
+
 ## TODO
 
 - [ ] Implement everything to get up to stratum 1.1 support
