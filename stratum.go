@@ -5,21 +5,9 @@ import (
 	"errors"
 )
 
-// MessageID is a unique identifier that is different for each notification
+// MessageID is a unique numerical identifier that is different for each notification
 // and request / response.
-type MessageID interface{}
-
-// MessageIDs are allowed to be integers or strings.
-func ValidMessageID(id MessageID) bool {
-	switch id.(type) {
-	case uint64:
-		return true
-	case string:
-		return true
-	default:
-		return false
-	}
-}
+type MessageID uint64
 
 // Stratum has three types of messages: notification, request, and response.
 // notification: unprompted, server to client
@@ -58,6 +46,7 @@ type Request struct {
 func NewRequest(id MessageID, m Method, params []interface{}) Request {
 	n, _ := EncodeMethod(m)
 	return Request{
+		/// FIXME/MAYBE: cast to uint64?
 		MessageID: id,
 		Method:    n,
 		Params:    params,
@@ -114,10 +103,6 @@ func (r *Request) Respond(d interface{}) Response {
 	return NewResponse(r.MessageID, d)
 }
 func (r *Request) Marshal() ([]byte, error) {
-	if !ValidMessageID(r.MessageID) {
-		return []byte{}, errors.New("invalid id")
-	}
-
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
@@ -133,17 +118,6 @@ func (r *Request) Unmarshal(j []byte) error {
 		return err
 	}
 
-	// json.Unmarshal treat numbers as float64
-	mid, ok := r.MessageID.(float64)
-	if !ok {
-		return errors.New("invalid id")
-	}
-	r.MessageID = uint64(mid)
-
-	if !ValidMessageID(r.MessageID) {
-		return errors.New("invalid id")
-	}
-
 	if r.GetMethod() == Unset {
 		return errors.New("invalid method")
 	}
@@ -152,10 +126,6 @@ func (r *Request) Unmarshal(j []byte) error {
 }
 
 func (r *Response) Marshal() ([]byte, error) {
-	if !ValidMessageID(r.MessageID) {
-		return []byte{}, errors.New("invalid id")
-	}
-
 	marshalled, err := json.Marshal(r)
 	if err != nil {
 		return []byte{}, err
@@ -167,13 +137,6 @@ func (r *Response) Unmarshal(j []byte) error {
 	if err != nil {
 		return err
 	}
-
-	// json.Umarshal treats numbers as float64
-	mid, ok := r.MessageID.(float64)
-	if !ok {
-		return errors.New("invalid id")
-	}
-	r.MessageID = uint64(mid)
 
 	return nil
 }

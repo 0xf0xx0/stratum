@@ -123,7 +123,7 @@ func SubscribeResponse(m MessageID, r SubscribeResult) Response {
 
 		method, err := EncodeMethod(r.Subscriptions[i].Method)
 		if err != nil {
-			return NewResponse(nil, nil)
+			return NewResponse(0, nil)
 		}
 
 		subscriptions[i][0] = method
