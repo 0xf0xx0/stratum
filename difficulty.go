@@ -1,5 +1,6 @@
 package stratum
 
+// TODO: make a float64?
 type Difficulty interface{}
 
 // Difficulty can be given as a uint or a float.

@@ -7,6 +7,7 @@ import (
 
 // MessageID is a unique numerical identifier that is different for each notification
 // and request / response.
+// TODO: do we even need this as a "type"?
 type MessageID uint64
 
 // Stratum has three types of messages: notification, request, and response.
