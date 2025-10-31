@@ -46,7 +46,7 @@ func SubscribeRequest(id MessageID, r SubscribeParams) Request {
 		return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent})
 	}
 
-	return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent, EncodeID(*r.ExtraNonce1)})
+	return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent, r.ExtraNonce1.String()})
 }
 
 // A Subscription is a 2-element json array containing a method
@@ -127,12 +127,12 @@ func SubscribeResponse(m MessageID, r SubscribeResult) Response {
 		}
 
 		subscriptions[i][0] = method
-		subscriptions[i][1] = EncodeID(r.Subscriptions[i].SessionID)
+		subscriptions[i][1] = r.Subscriptions[i].SessionID.String()
 	}
 
 	result := make([]interface{}, 3)
 	result[0] = subscriptions
-	result[1] = EncodeID(r.ExtraNonce1)
+	result[1] = r.ExtraNonce1.String()
 	result[2] = r.ExtraNonce2Size
 
 	return NewResponse(m, result)
