@@ -9,9 +9,16 @@ Extensions are necessary to support ASIC Boost.
 
 forked from https://github.com/kbnchk/go-Stratum
 
+## Using
+use master for now, eventually ill do a 1.0.0 release
+```
+go get github.com/0xf0xx0/stratum@master
+```
+
 ## TODO
 
-- [ ] Implement everything to get up to stratum 1.1 support
+- Implement everything to get up to stratum 1.1 support
+- work out all the bugs
 
 ## Supported Methods
 
