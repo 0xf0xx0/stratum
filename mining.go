@@ -6,11 +6,9 @@ import (
 	"errors"
 )
 
-type WorkerName string
-
 // A Share is the data returned by the worker in a mining.submit. Job + Share = Proof
 type Share struct {
-	Name        WorkerName
+	Name        string
 	JobID       string
 	Time        uint32 // proof timestamp
 	Nonce       uint32 // gets put into the block header
@@ -23,7 +21,9 @@ func (p *Share) Read(r *Request) error {
 		return errors.New("invalid format param len")
 	}
 
-	name, ok := r.Params[0].(string)
+	ok := false
+
+	p.Name, ok = r.Params[0].(string)
 	if !ok {
 		return errors.New("invalid format param[0]")
 	}
@@ -84,8 +84,6 @@ func (p *Share) Read(r *Request) error {
 	if err != nil {
 		return err
 	}
-
-	p.Name = WorkerName(name)
 	return nil
 }
 
