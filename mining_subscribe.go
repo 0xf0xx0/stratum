@@ -6,8 +6,8 @@ import (
 )
 
 type SubscribeParams struct {
-	UserAgent   string
-	ExtraNonce1 *ID
+	UserAgent   string // required
+	ExtraNonce1 *ID // optional extranonce subscription
 }
 
 func (p *SubscribeParams) Read(r *Request) error {
@@ -53,7 +53,7 @@ func SubscribeRequest(id MessageID, r SubscribeParams) Request {
 // and a session id.
 type Subscription struct {
 	Method    Method
-	SessionID ID
+	SessionID ID // TODO: hex string?
 }
 
 type SubscribeResult struct {

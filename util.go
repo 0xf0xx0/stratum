@@ -7,6 +7,10 @@ import (
 	"errors"
 )
 
+// TODO: use defined stratum types
+// case independent hexadecimal string of length 8, encoding an unsigned 32-bit integer (`~[0-9a-fA-F]{8}`)
+type TMask string
+
 // common util funcs
 
 func encodeBigEndian(n uint32) string {

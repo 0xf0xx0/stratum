@@ -46,7 +46,7 @@ func (p *ConfigureResult) Supports(extension string) bool {
 
 type VersionRollingConfigurationRequest struct {
 	Mask        uint32
-	MinBitCount byte
+	MinBitCount uint8
 }
 
 func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
@@ -54,9 +54,10 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 		return nil
 	}
 
+	/// optional mask
 	m, ok := p.Parameters["version-rolling.mask"]
 	if !ok {
-		return nil
+		m = "ffffffff" // default value
 	}
 
 	maskstr, ok := m.(string)
