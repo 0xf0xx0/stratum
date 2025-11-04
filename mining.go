@@ -18,11 +18,14 @@ type Worker struct {
 	VersionMask     *uint32
 }
 
-// A share is the data returned by the worker in mining.submit.
+// A Share is the data returned by the worker in a mining.submit. Job + Share = Proof
 type Share struct {
-	Name  WorkerName
-	JobID string
-	MinerShare
+	Name        WorkerName
+	JobID       string
+	Time        uint32 // proof timestamp
+	Nonce       uint32 // gets put into the block header
+	ExtraNonce2 []byte // gets put into the coinbase
+	VersionMask uint32 // block version + VersionMask = proof version
 }
 
 func (p *Share) Read(r *Request) error {
@@ -96,28 +99,25 @@ func (p *Share) Read(r *Request) error {
 	return nil
 }
 
-// A share is the data returned by the worker. Job + Share = Proof
-type MinerShare struct {
-	Time        uint32 // proof timestamp
-	Nonce       uint32 // gets put into the block header
-	ExtraNonce2 []byte // gets put into the coinbase
-	VersionMask uint32 // block version + VersionMask = proof version
-}
-
-func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) MinerShare {
+/* Makes a mining.submit share
+TODO: extraNonce2 should be []byte? maybe just drop this entire func
+replace with a extranonce2 helper func?
+*/
+func MakeShare(time uint32, nonce uint32, extraNonce2 uint64) Share {
 	n2 := make([]byte, 8)
 	binary.BigEndian.PutUint64(n2, extraNonce2)
-	return MinerShare{
+	return Share{
 		Time:        time,
 		Nonce:       nonce,
 		ExtraNonce2: n2,
 	}
 }
 
-func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, versionMask uint32) MinerShare {
+// MakeShare with the version rolling DLC
+func MakeShareASICBoost(time uint32, nonce uint32, extraNonce2 uint64, versionMask uint32) Share {
 	n2 := make([]byte, 8)
 	binary.BigEndian.PutUint64(n2, extraNonce2)
-	return MinerShare{
+	return Share{
 		Time:        time,
 		Nonce:       nonce,
 		ExtraNonce2: n2,
