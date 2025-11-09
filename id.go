@@ -2,8 +2,7 @@ package stratum
 
 import "encoding/binary"
 
-// A stratum session id is assigned by the mining pool to a miner and it
-// is included in the coinbase script of the block that is produced as extranonce1.
+// A stratum session id is a uint32 used for the client id and extranonce1
 type ID uint32
 
 // returns the id as a big-endian hex string
