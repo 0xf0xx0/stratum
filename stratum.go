@@ -44,8 +44,8 @@ type Request struct {
 	Params    []interface{} `json:"params"`
 }
 
-func NewRequest(id MessageID, m Method, params []interface{}) Request {
-	n, _ := EncodeMethod(m)
+func NewRequest(id MessageID, method Method, params []interface{}) Request {
+	n, _ := EncodeMethod(method)
 	return Request{
 		/// FIXME/MAYBE: cast to uint64?
 		MessageID: id,
@@ -54,8 +54,8 @@ func NewRequest(id MessageID, m Method, params []interface{}) Request {
 	}
 }
 
-func (n *Request) GetMethod() Method {
-	m, _ := DecodeMethod(n.Method)
+func (req *Request) GetMethod() Method {
+	m, _ := DecodeMethod(req.Method)
 	return m
 }
 
@@ -63,8 +63,8 @@ func (n *Request) GetMethod() Method {
 // Automatically includes a newline when marshalling.
 type Response struct {
 	MessageID MessageID   `json:"id"`
-	Result    interface{} `json:"result"`
-	Error     *Error      `json:"error"`
+	Result    interface{} `json:"result,omitempty"`
+	Error     *Error      `json:"error,omitempty"`
 }
 
 func NewResponse(id MessageID, r interface{}) Response {
