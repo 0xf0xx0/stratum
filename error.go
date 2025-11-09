@@ -20,6 +20,11 @@ type Error struct {
 	Message string
 }
 
+// error interface
+func (e *Error) Error() string {
+	return strconv.Itoa(int(e.Code)) + ": "+e.Message
+}
+
 func (e *Error) UnmarshalJSON(b []byte) error {
 	res := [2]string{}
 	err := json.Unmarshal(b, &res)
@@ -38,6 +43,6 @@ func (e *Error) UnmarshalJSON(b []byte) error {
 	return nil
 }
 func (e *Error) MarshalJSON() ([]byte, error) {
-	res := [2]string{strconv.FormatUint(uint64(e.Code), 10), e.Message}
+	res := [2]string{strconv.Itoa(int(e.Code)), e.Message}
 	return json.Marshal(res)
 }
