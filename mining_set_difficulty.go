@@ -5,7 +5,7 @@ import (
 )
 
 type SetDifficultyParams struct {
-	Difficulty Difficulty
+	Difficulty float64
 }
 
 func (p *SetDifficultyParams) Read(n *Notification) error {
@@ -13,15 +13,15 @@ func (p *SetDifficultyParams) Read(n *Notification) error {
 		return errors.New("incorrect parameter length")
 	}
 
-	if !ValidDifficulty(n.Params[0]) {
+	if !validDifficulty(n.Params[0]) {
 		return errors.New("invalid difficulty")
 	}
 
-	p.Difficulty = n.Params[0]
+	p.Difficulty = n.Params[0].(float64)
 
 	return nil
 }
 
-func SetDifficulty(d Difficulty) Notification {
+func SetDifficulty(d float64) Notification {
 	return NewNotification(MiningSetDifficulty, []interface{}{d})
 }

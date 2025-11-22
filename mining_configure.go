@@ -70,7 +70,7 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 		return nil
 	}
 
-	/// TODO: optional?
+	/// TODO: optional
 	b, ok := p.Parameters["version-rolling.min-bit-count"]
 	if !ok {
 		return nil
@@ -162,7 +162,7 @@ func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult)
 }
 
 type MinimumDifficultyConfigurationRequest struct {
-	Difficulty Difficulty
+	Difficulty float64
 }
 
 func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
@@ -171,12 +171,12 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	}
 
 	d, ok := p.Parameters["minimum_difficulty.value"]
-	if !ok || !ValidDifficulty(d) {
+	if !ok || !validDifficulty(d) {
 		return nil
 	}
 
 	return &MinimumDifficultyConfigurationRequest{
-		Difficulty: d,
+		Difficulty: d.(float64),
 	}
 }
 
