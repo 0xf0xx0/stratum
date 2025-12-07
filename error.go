@@ -1,9 +1,10 @@
 package stratum
 
 import (
-	"encoding/json"
 	"errors"
 	"strconv"
+
+	"github.com/bytedance/sonic"
 )
 
 type ErrorCode uint32
@@ -22,12 +23,12 @@ type Error struct {
 
 // error interface
 func (e *Error) Error() string {
-	return strconv.Itoa(int(e.Code)) + ": "+e.Message
+	return strconv.Itoa(int(e.Code)) + ": " + e.Message
 }
 
 func (e *Error) UnmarshalJSON(b []byte) error {
 	res := [2]string{}
-	err := json.Unmarshal(b, &res)
+	err := sonic.Unmarshal(b, &res)
 	if err != nil {
 		return err
 	}
@@ -44,5 +45,5 @@ func (e *Error) UnmarshalJSON(b []byte) error {
 }
 func (e *Error) MarshalJSON() ([]byte, error) {
 	res := [2]string{strconv.Itoa(int(e.Code)), e.Message}
-	return json.Marshal(res)
+	return sonic.Marshal(res)
 }

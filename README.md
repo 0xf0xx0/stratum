@@ -19,6 +19,7 @@ go get github.com/0xf0xx0/stratum@master
 
 - Implement everything to get up to stratum 1.1 support
 - work out all the bugs
+- streaming support?
 
 # Supported BIPs
 - 310

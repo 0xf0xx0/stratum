@@ -1,8 +1,9 @@
 package stratum
 
 import (
-	"encoding/json"
 	"errors"
+
+	"github.com/bytedance/sonic"
 )
 
 // MessageID is a unique numerical identifier that is different for each notification
@@ -107,14 +108,14 @@ func (r *Request) Marshal() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
-	marshalled, err := json.Marshal(r)
+	marshalled, err := sonic.Marshal(r)
 	if err != nil {
 		return []byte{}, err
 	}
 	return append(marshalled, '\n'), nil
 }
 func (r *Request) Unmarshal(j []byte) error {
-	err := json.Unmarshal(j, r)
+	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
@@ -127,14 +128,14 @@ func (r *Request) Unmarshal(j []byte) error {
 }
 
 func (r *Response) Marshal() ([]byte, error) {
-	marshalled, err := json.Marshal(r)
+	marshalled, err := sonic.Marshal(r)
 	if err != nil {
 		return []byte{}, err
 	}
 	return append(marshalled, '\n'), nil
 }
 func (r *Response) Unmarshal(j []byte) error {
-	err := json.Unmarshal(j, r)
+	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
@@ -147,14 +148,14 @@ func (r *Notification) Marshal() ([]byte, error) {
 		return []byte{}, errors.New("invalid method")
 	}
 
-	marshalled, err := json.Marshal(r)
+	marshalled, err := sonic.Marshal(r)
 	if err != nil {
 		return nil, err
 	}
 	return append(marshalled, '\n'), nil
 }
 func (r *Notification) Unmarshal(j []byte) error {
-	err := json.Unmarshal(j, r)
+	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
 	}
