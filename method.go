@@ -19,6 +19,7 @@ const (
 	MiningSetExtraNonce
 	MiningSuggestDifficulty
 	MiningSuggestTarget // discard?
+	MiningPing
 	ClientGetVersion
 	ClientReconnect
 	ClientGetTransactions // discard?
@@ -58,6 +59,8 @@ func EncodeMethod(m Method) (string, error) {
 		return "mining.get_version", nil
 	case ClientReconnect:
 		return "mining.reconnect", nil
+	case MiningPing:
+		return "mining.ping", nil
 	case ClientGetTransactions:
 		return "mining.transactions", nil
 	case ClientShowMessage:
@@ -95,6 +98,8 @@ func DecodeMethod(m string) (Method, error) {
 		return ClientGetVersion, nil
 	case "mining.reconnect":
 		return ClientReconnect, nil
+	case "mining.ping":
+		return MiningPing, nil
 	case "mining.transactions":
 		return ClientGetTransactions, nil
 	case "mining.show_message":

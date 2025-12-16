@@ -19,7 +19,7 @@ type MessageID uint64
 // Notification is for methods that do not require a response.
 // Automatically includes a newline when marshalling.
 type Notification struct {
-	MessageID MessageID     `json:"id"`
+	MessageID MessageID     `json:"id,omitempty"`
 	Method    string        `json:"method"`
 	Params    []interface{} `json:"params"`
 }
@@ -72,7 +72,6 @@ func NewResponse(id MessageID, r interface{}) Response {
 	return Response{
 		MessageID: id,
 		Result:    r,
-		Error:     nil,
 	}
 }
 
@@ -96,7 +95,6 @@ func NewBooleanResponse(id MessageID, x bool) Response {
 func NewErrorResponse(id MessageID, e Error) Response {
 	return Response{
 		MessageID: id,
-		Result:    nil,
 		Error:     &e,
 	}
 }

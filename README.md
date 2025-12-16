@@ -34,6 +34,7 @@ go get github.com/0xf0xx0/stratum@master
 - mining.set_version_mask
 - mining.notify
 - mining.submit
+- mining.ping
 
 ## Unsupported methods
 
@@ -47,10 +48,6 @@ go get github.com/0xf0xx0/stratum@master
 
 ## Method types
 
-```
-TODO: replace all this with a link to bip-41
-```
-
 Some methods are client-to-server, others are server-to-client. Some methods
 require a response, others do not.
 
@@ -63,6 +60,7 @@ require a response, others do not.
 | mining.subscribe            | request / response |
 | mining.extranonce.subscribe | request / response |
 | mining.submit               | request / response |
+| mining.ping                 | request / response |
 | mining.suggest_difficulty   | notification       |
 | mining.suggest_target       | notification       |
 | mining.get_transactions     | request / response |
@@ -75,9 +73,15 @@ require a response, others do not.
 | mining.set_version_mask | notification       |
 | mining.notify           | notification       |
 | mining.set_extranonce   | notification       |
+| mining.ping             | request / response |
 | client.get_version      | request / response |
 | client.reconnect        | notification       |
 | client.show_message     | notification       |
+
+
+```
+TODO: replace all this with a link to bip-41
+```
 
 ## Message Formats
 
@@ -155,3 +159,7 @@ Sent by the server to notify of a change in version mask. Requires the
 ### mining.submit
 
 Sent by the client when a new share is mined. Modified by `version-rolling`.
+
+### mining.ping
+
+Sent by either the server or client at any time. Expects a boolean response.

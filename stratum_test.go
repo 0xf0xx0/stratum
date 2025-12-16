@@ -23,16 +23,6 @@ func TestMiningSubscribe(t *testing.T) {
 	}
 }
 
-func BenchmarkRequest(b *testing.B) {
-	for b.Loop() {
-		r := makeRequest(`{"id": 1, "method": "mining.subscribe", "params": ["cpuminer-opt-24.5-x64L"]}`)
-		s := stratum.SubscribeParams{}
-		s.Read(r)
-		r.Respond(true)
-		_,_=r.Marshal()
-	}
-}
-
 func makeRequest(msg string) *stratum.Request {
 	r := &stratum.Request{}
 	r.Unmarshal([]byte(msg))
