@@ -403,13 +403,13 @@ func (p *ConfigureResult) Add(z interface{}) error {
 	}
 }
 
-func ConfigureRequest(id MessageID, p ConfigureParams) Request {
+func ConfigureRequest(id MessageID, p ConfigureParams) *Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters
 	return NewRequest(id, MiningConfigure, params)
 }
 
-func ConfigureResponse(id MessageID, r ConfigureResult) Response {
+func ConfigureResponse(id MessageID, r ConfigureResult) *Response {
 	return NewResponse(id, r)
 }

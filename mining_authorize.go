@@ -44,7 +44,7 @@ func (p *AuthorizeParams) Read(r *Request) error {
 	return nil
 }
 
-func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
+func AuthorizeRequest(id MessageID, r AuthorizeParams) *Request {
 	username := r.Username
 	if r.Worker != "" {
 		username += "." + r.Worker
@@ -58,6 +58,6 @@ func AuthorizeRequest(id MessageID, r AuthorizeParams) Request {
 
 type AuthorizeResult BooleanResult
 
-func AuthorizeResponse(id MessageID, b bool) Response {
+func AuthorizeResponse(id MessageID, b bool) *Response {
 	return NewBooleanResponse(id, b)
 }

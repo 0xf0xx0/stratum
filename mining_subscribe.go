@@ -41,7 +41,7 @@ func (p *SubscribeParams) Read(r *Request) error {
 	return nil
 }
 
-func SubscribeRequest(id MessageID, r SubscribeParams) Request {
+func SubscribeRequest(id MessageID, r SubscribeParams) *Request {
 	if r.ExtraNonce1 == nil {
 		return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent})
 	}
@@ -114,7 +114,7 @@ func (p *SubscribeResult) Read(r *Response) error {
 	return nil
 }
 
-func SubscribeResponse(m MessageID, r SubscribeResult) Response {
+func SubscribeResponse(m MessageID, r SubscribeResult) *Response {
 	subscriptions := make([][]string, len(r.Subscriptions))
 	for i := 0; i < len(r.Subscriptions); i++ {
 		subscriptions[i] = make([]string, 2)

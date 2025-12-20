@@ -2,7 +2,7 @@ package stratum
 
 import "encoding/hex"
 
-func Submit(id MessageID, share Share) Request {
+func Submit(id MessageID, share Share) *Request {
 	var sx []interface{}
 	if share.VersionMask != 0 {
 		sx = make([]interface{}, 6)
@@ -20,6 +20,6 @@ func Submit(id MessageID, share Share) Request {
 	return NewRequest(id, MiningSubmit, sx)
 }
 
-func SubmitResponse(id MessageID, b bool) Response {
+func SubmitResponse(id MessageID, b bool) *Response {
 	return NewBooleanResponse(id, b)
 }

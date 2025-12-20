@@ -123,7 +123,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 	return nil
 }
 
-func Notify(n NotifyParams) Notification {
+func Notify(n NotifyParams) *Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = n.JobID

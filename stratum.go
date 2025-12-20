@@ -11,12 +11,19 @@ import (
 // TODO: do we even need this as a "type"?
 type MessageID uint64
 
+type Message interface {
+	GetMethod() Method
+	/// TODO: json marshal interfaces?
+	Marshal() ([]byte, error)
+	Unmarshal(j []byte) error
+}
+
 // Stratum has three types of messages: notification, request, and response.
 // notification: unprompted, server to client
 // request: client to server
 // response: server to client
 
-// Notification is for methods that do not require a response.
+// Notification is for methods that do not require a [Response].
 // Automatically includes a newline when marshalling.
 type Notification struct {
 	MessageID MessageID     `json:"id,omitzero"` // TODO: remove?
@@ -24,9 +31,9 @@ type Notification struct {
 	Params    []interface{} `json:"params"`
 }
 
-func NewNotification(m Method, params []interface{}) Notification {
+func NewNotification(m Method, params []interface{}) *Notification {
 	n, _ := EncodeMethod(m)
-	return Notification{
+	return &Notification{
 		Method: n,
 		Params: params,
 	}
@@ -45,9 +52,9 @@ type Request struct {
 	Params    []interface{} `json:"params"`
 }
 
-func NewRequest(id MessageID, method Method, params []interface{}) Request {
+func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 	n, _ := EncodeMethod(method)
-	return Request{
+	return &Request{
 		/// FIXME/MAYBE: cast to uint64?
 		MessageID: id,
 		Method:    n,
@@ -60,7 +67,7 @@ func (req *Request) GetMethod() Method {
 	return m
 }
 
-// Response is what is sent back in response to [Request]s.
+// Response is what is sent back in response to a [Request].
 // Automatically includes a newline when marshalling.
 type Response struct {
 	MessageID MessageID   `json:"id"`
@@ -68,8 +75,8 @@ type Response struct {
 	Error     *Error      `json:"error,omitempty"`
 }
 
-func NewResponse(id MessageID, r interface{}) Response {
-	return Response{
+func NewResponse(id MessageID, r interface{}) *Response {
+	return &Response{
 		MessageID: id,
 		Result:    r,
 	}
@@ -79,18 +86,18 @@ type BooleanResult struct {
 	Result bool
 }
 
-func NewBooleanResponse(id MessageID, x bool) Response {
+func NewBooleanResponse(id MessageID, x bool) *Response {
 	return NewResponse(id, x)
 }
-func NewErrorResponse(id MessageID, e Error) Response {
-	return Response{
+func NewErrorResponse(id MessageID, e Error) *Response {
+	return &Response{
 		MessageID: id,
 		Error:     &e,
 	}
 }
 
 // Helper that wraps around [NewResponse] and sets the correct message id
-func (r *Request) Respond(d interface{}) Response {
+func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
 }
 func (r *Request) Marshal() ([]byte, error) {
