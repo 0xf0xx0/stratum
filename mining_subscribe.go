@@ -53,7 +53,7 @@ func SubscribeRequest(id MessageID, r SubscribeParams) Request {
 // and a session id.
 type Subscription struct {
 	Method    Method
-	SessionID ID // TODO: hex string?
+	SessionID ID
 }
 
 type SubscribeResult struct {
@@ -68,8 +68,7 @@ func (p *SubscribeResult) Read(r *Response) error {
 		return errors.New("invalid result type; should be array")
 	}
 
-	l := len(result)
-	if l != 3 {
+	if len(result) != 3 {
 		return errors.New("invalid parameter length; must be 3")
 	}
 
@@ -113,7 +112,6 @@ func (p *SubscribeResult) Read(r *Response) error {
 	}
 
 	return nil
-
 }
 
 func SubscribeResponse(m MessageID, r SubscribeResult) Response {
@@ -123,6 +121,7 @@ func SubscribeResponse(m MessageID, r SubscribeResult) Response {
 
 		method, err := EncodeMethod(r.Subscriptions[i].Method)
 		if err != nil {
+			/// TODO: return error? i dont wanna change just this function sig
 			return NewResponse(0, nil)
 		}
 

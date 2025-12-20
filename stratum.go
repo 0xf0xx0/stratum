@@ -19,7 +19,7 @@ type MessageID uint64
 // Notification is for methods that do not require a response.
 // Automatically includes a newline when marshalling.
 type Notification struct {
-	MessageID MessageID     `json:"id,omitempty"`
+	MessageID MessageID     `json:"id,omitzero"` // TODO: remove?
 	Method    string        `json:"method"`
 	Params    []interface{} `json:"params"`
 }
@@ -79,16 +79,6 @@ type BooleanResult struct {
 	Result bool
 }
 
-func (b *BooleanResult) Read(r *Response) error {
-	var ok bool
-	b.Result, ok = r.Result.(bool)
-	if !ok {
-		return errors.New("invalid value")
-	}
-
-	return nil
-}
-
 func NewBooleanResponse(id MessageID, x bool) Response {
 	return NewResponse(id, x)
 }
@@ -99,6 +89,7 @@ func NewErrorResponse(id MessageID, e Error) Response {
 	}
 }
 
+// Helper that wraps around [NewResponse] and sets the correct message id
 func (r *Request) Respond(d interface{}) Response {
 	return NewResponse(r.MessageID, d)
 }
@@ -160,6 +151,16 @@ func (r *Notification) Unmarshal(j []byte) error {
 
 	if r.GetMethod() == Unset {
 		return errors.New("invalid method")
+	}
+
+	return nil
+}
+
+func (b *BooleanResult) Read(r *Response) error {
+	var ok bool
+	b.Result, ok = r.Result.(bool)
+	if !ok {
+		return errors.New("invalid value")
 	}
 
 	return nil
