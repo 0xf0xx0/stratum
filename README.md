@@ -9,10 +9,10 @@ Extensions are necessary to support ASIC Boost.
 
 forked from https://github.com/kbnchk/go-Stratum
 
-## Using
+## Importing
 use master for now, eventually ill do a 1.0.0 release
 ```
-go get github.com/0xf0xx0/stratum@master
+go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 ```
 
 ## TODO
