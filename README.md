@@ -29,6 +29,7 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 
 ## Supported Methods
 
+- client.reconnect
 - client.show_message
 - mining.authorize
 - mining.configure
@@ -43,7 +44,6 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 ## Unsupported methods
 
 - client.get_version
-- client.reconnect
 - mining.extranonce.subscribe
 - mining.get_transactions
 - mining.set_extranonce
