@@ -55,9 +55,9 @@ func EncodeMethod(m Method) (string, error) {
 	case MiningSuggestTarget:
 		return "mining.suggest_target", nil
 	case ClientGetVersion:
-		return "mining.get_version", nil
+		return "client.get_version", nil
 	case ClientReconnect:
-		return "mining.reconnect", nil
+		return "client.reconnect", nil
 	case MiningPing:
 		return "mining.ping", nil
 	case ClientShowMessage:
@@ -91,9 +91,9 @@ func DecodeMethod(m string) (Method, error) {
 		return MiningSuggestDifficulty, nil
 	case "mining.suggest_target":
 		return MiningSuggestTarget, nil
-	case "mining.get_version":
+	case "client.get_version":
 		return ClientGetVersion, nil
-	case "mining.reconnect":
+	case "client.reconnect":
 		return ClientReconnect, nil
 	case "mining.ping":
 		return MiningPing, nil

@@ -32,8 +32,15 @@ func TestClientShowMessage(t *testing.T) {
 	s := stratum.ShowMessageParams{}
 	s.Read(n)
 
-	if s.Message != "Pool restarting; please reconnect" {
+	if s.Message != "Pool restarting; please reconnect." {
+		t.Fatalf("message mismatch: %s", s.Message)
+	}
+}
 
+func TestClientReconnect(t *testing.T) {
+	n := makeNotification(`{"id": 0, "method": "client.reconnect", "params":["stratum-lb-usa48.btcguild.com",3333,0]}`)
+	if n.GetMethod() != stratum.ClientReconnect {
+		t.Errorf("method mismatch: %s", n.Method)
 	}
 }
 
