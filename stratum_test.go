@@ -42,6 +42,22 @@ func TestClientReconnect(t *testing.T) {
 	if n.GetMethod() != stratum.ClientReconnect {
 		t.Errorf("method mismatch: %s", n.Method)
 	}
+	s := stratum.ReconnectParams{}
+	if err := s.Read(n); err != nil {
+		t.Fatalf("read error: %s", err)
+	}
+
+
+	if s.Hostname != "stratum-lb-usa48.btcguild.com" {
+		t.Fatal("invalid hostname")
+	}
+	if s.Port != 3333 {
+		t.Log(s.Port)
+		t.Fatal("invalid port")
+	}
+	if s.Waittime != 0 {
+		t.Fatal("invalid waittime")
+	}
 }
 
 func makeRequest(msg string) *stratum.Request {
