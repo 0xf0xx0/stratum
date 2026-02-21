@@ -22,6 +22,7 @@ const (
 	MiningPing
 	ClientGetVersion
 	ClientReconnect
+	ClientShowMessage
 )
 
 func (m Method) String() string {
@@ -59,6 +60,8 @@ func EncodeMethod(m Method) (string, error) {
 		return "mining.reconnect", nil
 	case MiningPing:
 		return "mining.ping", nil
+	case ClientShowMessage:
+		return "client.show_message", nil
 	default:
 		return "", errors.New("unknown stratum method")
 	}
@@ -94,6 +97,8 @@ func DecodeMethod(m string) (Method, error) {
 		return ClientReconnect, nil
 	case "mining.ping":
 		return MiningPing, nil
+	case "client.show_message":
+		return ClientShowMessage, nil
 	default:
 		return Unset, errors.New("unknown stratum method")
 	}

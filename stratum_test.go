@@ -23,8 +23,27 @@ func TestMiningSubscribe(t *testing.T) {
 	}
 }
 
+func TestClientShowMessage(t *testing.T) {
+	n := makeNotification(`{"id":null,"method":"client.show_message","params":["Pool restarting; please reconnect."]}`)
+
+	if n.GetMethod() != stratum.ClientShowMessage {
+		t.Errorf("method mismatch: %s", n.Method)
+	}
+	s := stratum.ShowMessageParams{}
+	s.Read(n)
+
+	if s.Message != "Pool restarting; please reconnect" {
+
+	}
+}
+
 func makeRequest(msg string) *stratum.Request {
 	r := &stratum.Request{}
 	r.Unmarshal([]byte(msg))
 	return r
+}
+func makeNotification(msg string) *stratum.Notification {
+	n := &stratum.Notification{}
+	n.Unmarshal([]byte(msg))
+	return n
 }

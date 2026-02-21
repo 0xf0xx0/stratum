@@ -35,6 +35,7 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - mining.notify
 - mining.submit
 - mining.ping
+- client.show_message
 
 ## Unsupported methods
 
@@ -44,7 +45,6 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - mining.get_transactions
 - client.get_version
 - client.reconnect
-- client.show_message
 
 ## Method types
 
