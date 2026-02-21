@@ -62,11 +62,11 @@ func TestClientReconnect(t *testing.T) {
 
 func makeRequest(msg string) *stratum.Request {
 	r := &stratum.Request{}
-	r.Unmarshal([]byte(msg))
+	r.UnmarshalJSON([]byte(msg))
 	return r
 }
 func makeNotification(msg string) *stratum.Notification {
 	n := &stratum.Notification{}
-	n.Unmarshal([]byte(msg))
+	n.UnmarshalJSON([]byte(msg))
 	return n
 }
