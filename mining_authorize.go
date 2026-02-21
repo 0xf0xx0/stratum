@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type AuthorizeParams struct {
+type MiningAuthorizeParams struct {
 	Username string
 	// optional, typically appened to the username with `.`
 	Worker string
@@ -13,7 +13,7 @@ type AuthorizeParams struct {
 	Password string
 }
 
-func (p *AuthorizeParams) Read(r *Request) error {
+func (p *MiningAuthorizeParams) Read(r *Request) error {
 	l := len(r.Params)
 	if l == 0 || l > 2 {
 		return errors.New("invalid parameter length; must be 1 or 2")
@@ -44,7 +44,7 @@ func (p *AuthorizeParams) Read(r *Request) error {
 	return nil
 }
 
-func AuthorizeRequest(id MessageID, r AuthorizeParams) *Request {
+func AuthorizeRequest(id MessageID, r MiningAuthorizeParams) *Request {
 	username := r.Username
 	if r.Worker != "" {
 		username += "." + r.Worker
