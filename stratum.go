@@ -42,11 +42,6 @@ func NewNotification(m Method, params []interface{}) *Notification {
 	}
 }
 
-func (n *Notification) GetMethod() Method {
-	m, _ := DecodeMethod(n.Method)
-	return m
-}
-
 // Request is for methods that require a [Response].
 // Automatically includes a newline when marshalling.
 // Implements [Message].
@@ -64,11 +59,6 @@ func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 		Method:    n,
 		Params:    params,
 	}
-}
-
-func (req *Request) GetMethod() Method {
-	m, _ := DecodeMethod(req.Method)
-	return m
 }
 
 // Response is what is sent back in response to a [Request].
@@ -105,6 +95,10 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
 }
+func (req *Request) GetMethod() Method {
+	m, _ := DecodeMethod(req.Method)
+	return m
+}
 func (r *Request) MarshalJSON() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
@@ -121,13 +115,17 @@ func (r *Request) UnmarshalJSON(j []byte) error {
 		return err
 	}
 
-	if r.GetMethod() == Unset {
+	if r.GetMethod() == Unknown {
 		return errors.New("invalid method")
 	}
 
 	return nil
 }
 
+// returns [Unknown] as responses have no method
+func (res *Response) GetMethod() Method {
+	return Unknown
+}
 func (r *Response) MarshalJSON() ([]byte, error) {
 	marshalled, err := sonic.Marshal(r)
 	if err != nil {
@@ -144,6 +142,11 @@ func (r *Response) UnmarshalJSON(j []byte) error {
 	return nil
 }
 
+
+func (n *Notification) GetMethod() Method {
+	m, _ := DecodeMethod(n.Method)
+	return m
+}
 func (r *Notification) MarshalJSON() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
@@ -161,7 +164,7 @@ func (r *Notification) UnmarshalJSON(j []byte) error {
 		return err
 	}
 
-	if r.GetMethod() == Unset {
+	if r.GetMethod() == Unknown {
 		return errors.New("invalid method")
 	}
 

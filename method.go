@@ -7,7 +7,7 @@ import (
 type Method uint8
 
 const (
-	Unset Method = iota
+	Unknown Method = iota
 	MiningAuthorize
 	MiningConfigure
 	MiningSubscribe
@@ -100,6 +100,6 @@ func DecodeMethod(m string) (Method, error) {
 	case "client.show_message":
 		return ClientShowMessage, nil
 	default:
-		return Unset, errors.New("unknown stratum method")
+		return Unknown, errors.New("unknown stratum method")
 	}
 }
