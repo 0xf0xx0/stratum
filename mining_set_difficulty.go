@@ -4,11 +4,11 @@ import (
 	"errors"
 )
 
-type SetDifficultyParams struct {
+type MiningSetDifficultyParams struct {
 	Difficulty float64
 }
 
-func (p *SetDifficultyParams) Read(n *Notification) error {
+func (p *MiningSetDifficultyParams) Read(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("incorrect parameter length")
 	}

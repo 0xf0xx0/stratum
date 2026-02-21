@@ -2,11 +2,11 @@ package stratum
 
 import "errors"
 
-type ShowMessageParams struct {
+type ClientShowMessageParams struct {
 	Message string
 }
 
-func (p *ShowMessageParams) Read(n *Notification) error {
+func (p *ClientShowMessageParams) Read(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("invalid param len (not 1)")
 	}
@@ -19,6 +19,6 @@ func (p *ShowMessageParams) Read(n *Notification) error {
 	return nil
 }
 
-func ShowMessage(n ShowMessageParams) *Notification {
+func ShowMessage(n ClientShowMessageParams) *Notification {
 	return NewNotification(ClientShowMessage, []interface{}{n.Message})
 }

@@ -9,22 +9,22 @@ import (
 type Extension uint8
 
 const (
-	Unknown = iota
-	VersionRolling
-	MinimumDifficulty
-	SubscribeExtranonce
-	Info
+	UnknownExtension Extension = iota
+	VersionRollingExtension
+	MinimumDifficultyExtension
+	SubscribeExtranonceExtension
+	InfoExtension
 )
 
 func EncodeExtension(m Extension) (string, error) {
 	switch m {
-	case VersionRolling:
+	case VersionRollingExtension:
 		return "version-rolling", nil
-	case MinimumDifficulty:
+	case MinimumDifficultyExtension:
 		return "minimum-difficulty", nil
-	case SubscribeExtranonce:
+	case SubscribeExtranonceExtension:
 		return "subscribe-extranonce", nil
-	case Info:
+	case InfoExtension:
 		return "info", nil
 	default:
 		return "", errors.New("unknown stratum extension")
@@ -34,14 +34,14 @@ func EncodeExtension(m Extension) (string, error) {
 func DecodeExtension(m string) Extension {
 	switch m {
 	case "version-rolling":
-		return VersionRolling
+		return VersionRollingExtension
 	case "minimum-difficulty":
-		return MinimumDifficulty
+		return MinimumDifficultyExtension
 	case "subscribe-extranonce":
-		return SubscribeExtranonce
+		return SubscribeExtranonceExtension
 	case "info":
-		return Info
+		return InfoExtension
 	default:
-		return Unknown
+		return UnknownExtension
 	}
 }

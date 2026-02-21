@@ -4,12 +4,12 @@ import "errors"
 
 // https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki
 
-type ConfigureParams struct {
+type MiningConfigureParams struct {
 	Supported  []string
 	Parameters map[string]interface{}
 }
 
-func (p *ConfigureParams) Read(r *Request) error {
+func (p *MiningConfigureParams) Read(r *Request) error {
 	l := len(r.Params)
 	if l != 2 {
 		return errors.New("invalid parameter length; must be 2")
@@ -27,7 +27,7 @@ func (p *ConfigureParams) Read(r *Request) error {
 	return nil
 }
 
-func (p *ConfigureParams) Supports(extension string) bool {
+func (p *MiningConfigureParams) Supports(extension string) bool {
 	for _, supported := range p.Supported {
 		if supported == extension {
 			return true
@@ -49,7 +49,7 @@ type VersionRollingConfigurationRequest struct {
 	MinBitCount uint8
 }
 
-func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
+func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
 	if !p.Supports("version-rolling") {
 		return nil
 	}
@@ -91,7 +91,7 @@ func (p *ConfigureParams) ReadVersionRolling() *VersionRollingConfigurationReque
 	}
 }
 
-func (p *ConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
+func (p *MiningConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
 	if p.Supports("version-rolling") {
 		return errors.New("request already contains version-rolling")
 	}
@@ -165,7 +165,7 @@ type MinimumDifficultyConfigurationRequest struct {
 	Difficulty float64
 }
 
-func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
+func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
 	if !p.Supports("minimum_difficulty") {
 		return nil
 	}
@@ -180,7 +180,7 @@ func (p *ConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	}
 }
 
-func (p *ConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
+func (p *MiningConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
 	if p.Supports("minimum_difficulty") {
 		return errors.New("request already contains minimum_difficulty")
 	}
@@ -224,7 +224,7 @@ func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationR
 
 type SubscribeExtranonceConfigurationRequest struct{}
 
-func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
+func (p *MiningConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
 	if !p.Supports("subscribe_extranonce") {
 		return nil
 	}
@@ -232,7 +232,7 @@ func (p *ConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	return &SubscribeExtranonceConfigurationRequest{}
 }
 
-func (p *ConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
+func (p *MiningConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
 	if p.Supports("subscribe_extranonce") {
 		return errors.New("request already contains subscribe_extranonce")
 	}
@@ -278,7 +278,7 @@ type InfoConfigurationRequest struct {
 	HWID          *string
 }
 
-func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
+func (p *MiningConfigureParams) ReadInfo() *InfoConfigurationRequest {
 	if !p.Supports("info") {
 		return nil
 	}
@@ -328,7 +328,7 @@ func (p *ConfigureParams) ReadInfo() *InfoConfigurationRequest {
 	return &info
 }
 
-func (p *ConfigureParams) addInfo(x InfoConfigurationRequest) error {
+func (p *MiningConfigureParams) addInfo(x InfoConfigurationRequest) error {
 	if p.Supports("info") {
 		return errors.New("request already contains info")
 	}
@@ -373,7 +373,7 @@ func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
 	return nil
 }
 
-func (p *ConfigureParams) Add(z interface{}) error {
+func (p *MiningConfigureParams) Add(z interface{}) error {
 	switch x := z.(type) {
 	case VersionRollingConfigurationRequest:
 		return p.addVersionRolling(x)
@@ -403,7 +403,7 @@ func (p *ConfigureResult) Add(z interface{}) error {
 	}
 }
 
-func ConfigureRequest(id MessageID, p ConfigureParams) *Request {
+func ConfigureRequest(id MessageID, p MiningConfigureParams) *Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters

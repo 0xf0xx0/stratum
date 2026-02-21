@@ -2,11 +2,11 @@ package stratum
 
 import "errors"
 
-type SetVersionMaskParams struct {
+type MiningSetVersionMaskParams struct {
 	Mask uint32
 }
 
-func (p *SetVersionMaskParams) Read(n *Notification) error {
+func (p *MiningSetVersionMaskParams) Read(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("invalid format")
 	}

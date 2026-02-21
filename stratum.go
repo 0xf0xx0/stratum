@@ -1,6 +1,7 @@
 package stratum
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/bytedance/sonic"
@@ -11,11 +12,12 @@ import (
 // TODO: do we even need this as a "type"?
 type MessageID uint64
 
+// Base interface behind [Request], [Response], and [Notification].
 type Message interface {
 	GetMethod() Method
 	/// TODO: json marshal interfaces?
-	Marshal() ([]byte, error)
-	Unmarshal(j []byte) error
+	json.Marshaler
+	json.Unmarshaler
 }
 
 // Stratum has three types of messages: notification, request, and response.
@@ -25,6 +27,7 @@ type Message interface {
 
 // Notification is for methods that do not require a [Response].
 // Automatically includes a newline when marshalling.
+// Implements [Message].
 type Notification struct {
 	MessageID MessageID     `json:"id,omitzero"` // TODO: remove?
 	Method    string        `json:"method"`
@@ -46,6 +49,7 @@ func (n *Notification) GetMethod() Method {
 
 // Request is for methods that require a [Response].
 // Automatically includes a newline when marshalling.
+// Implements [Message].
 type Request struct {
 	MessageID MessageID     `json:"id"`
 	Method    string        `json:"method"`
@@ -69,6 +73,7 @@ func (req *Request) GetMethod() Method {
 
 // Response is what is sent back in response to a [Request].
 // Automatically includes a newline when marshalling.
+// Implements [Message].
 type Response struct {
 	MessageID MessageID   `json:"id"`
 	Result    interface{} `json:"result,omitempty"`
@@ -100,7 +105,7 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
 }
-func (r *Request) Marshal() ([]byte, error) {
+func (r *Request) MarshalJSON() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
@@ -110,7 +115,7 @@ func (r *Request) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
-func (r *Request) Unmarshal(j []byte) error {
+func (r *Request) UnmarshalJSON(j []byte) error {
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
@@ -123,14 +128,14 @@ func (r *Request) Unmarshal(j []byte) error {
 	return nil
 }
 
-func (r *Response) Marshal() ([]byte, error) {
+func (r *Response) MarshalJSON() ([]byte, error) {
 	marshalled, err := sonic.Marshal(r)
 	if err != nil {
 		return []byte{}, err
 	}
 	return append(marshalled, '\n'), nil
 }
-func (r *Response) Unmarshal(j []byte) error {
+func (r *Response) UnmarshalJSON(j []byte) error {
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
@@ -139,7 +144,7 @@ func (r *Response) Unmarshal(j []byte) error {
 	return nil
 }
 
-func (r *Notification) Marshal() ([]byte, error) {
+func (r *Notification) MarshalJSON() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
 	}
@@ -150,7 +155,7 @@ func (r *Notification) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
-func (r *Notification) Unmarshal(j []byte) error {
+func (r *Notification) UnmarshalJSON(j []byte) error {
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err

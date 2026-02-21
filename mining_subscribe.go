@@ -5,12 +5,12 @@ import (
 	"math"
 )
 
-type SubscribeParams struct {
+type MiningSubscribeParams struct {
 	UserAgent   string // required
 	ExtraNonce1 *ID // optional extranonce subscription
 }
 
-func (p *SubscribeParams) Read(r *Request) error {
+func (p *MiningSubscribeParams) Read(r *Request) error {
 	l := len(r.Params)
 	if l == 0 || l > 2 {
 		return errors.New("invalid parameter length; must be 1 or 2")
@@ -41,7 +41,7 @@ func (p *SubscribeParams) Read(r *Request) error {
 	return nil
 }
 
-func SubscribeRequest(id MessageID, r SubscribeParams) *Request {
+func SubscribeRequest(id MessageID, r MiningSubscribeParams) *Request {
 	if r.ExtraNonce1 == nil {
 		return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent})
 	}

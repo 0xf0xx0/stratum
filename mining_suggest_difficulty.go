@@ -4,11 +4,11 @@ import (
 	"errors"
 )
 
-type SuggestDifficultyParams struct {
+type MiningSuggestDifficultyParams struct {
 	Difficulty float64
 }
 
-func (p *SuggestDifficultyParams) Read(n *Request) error {
+func (p *MiningSuggestDifficultyParams) Read(n *Request) error {
 	if len(n.Params) != 1 {
 		return errors.New("incorrect parameter length")
 	}
@@ -22,6 +22,6 @@ func (p *SuggestDifficultyParams) Read(n *Request) error {
 	return nil
 }
 
-func SuggestDifficultyRequest(id MessageID, r SuggestDifficultyParams) *Request {
+func SuggestDifficultyRequest(id MessageID, r MiningSuggestDifficultyParams) *Request {
 	return NewRequest(id, MiningSuggestDifficulty, []interface{}{r.Difficulty})
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 )
 
-type NotifyParams struct {
+type MiningNotifyParams struct {
 	JobID          string
 	PrevBlockHash  *chainhash.Hash
 	CoinbasePart1  []byte
@@ -20,7 +20,7 @@ type NotifyParams struct {
 	Clean          bool
 }
 
-func (p *NotifyParams) Read(n *Notification) error {
+func (p *MiningNotifyParams) Read(n *Notification) error {
 	if len(n.Params) != 9 {
 		return errors.New("invalid param len (not 9)")
 	}
@@ -123,7 +123,7 @@ func (p *NotifyParams) Read(n *Notification) error {
 	return nil
 }
 
-func Notify(n NotifyParams) *Notification {
+func Notify(n MiningNotifyParams) *Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = n.JobID

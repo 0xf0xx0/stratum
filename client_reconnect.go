@@ -2,13 +2,13 @@ package stratum
 
 import "errors"
 
-type ReconnectParams struct {
+type ClientReconnectParams struct {
 	Hostname       string
 	Port, Waittime uint16
 }
 
 // this assumes hostname and port are required, and waittime is optional
-func (p *ReconnectParams) Read(n *Notification) error {
+func (p *ClientReconnectParams) Read(n *Notification) error {
 	/// "If client.reconnect is sent without parameters, the miner is to assume it's to reconnect to the same port and URL."
 	/// - ck, https://bitcointalk.org/index.php?topic=557866.msg6989610#msg6989610
 	if len(n.Params) == 0 {
@@ -40,7 +40,7 @@ func (p *ReconnectParams) Read(n *Notification) error {
 	return nil
 }
 
-func Reconnect(n ReconnectParams) *Notification {
+func Reconnect(n ClientReconnectParams) *Notification {
 	params := make([]interface{}, 3)
 	params[0] = n.Hostname
 	params[1] = n.Port
