@@ -10,7 +10,9 @@ Extensions are necessary to support ASIC Boost.
 forked from https://github.com/kbnchk/go-Stratum
 
 ## Importing
+
 use master for now, eventually ill do a 1.0.0 release
+
 ```
 go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 ```
@@ -22,29 +24,30 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - streaming support?
 
 # Supported BIPs
+
 - 310
 
 ## Supported Methods
 
-- mining.configure
-- mining.authorize
-- mining.subscribe
-- mining.set_difficulty
-- mining.suggest_difficulty
-- mining.set_version_mask
-- mining.notify
-- mining.submit
-- mining.ping
 - client.show_message
+- mining.authorize
+- mining.configure
+- mining.notify
+- mining.ping
+- mining.set_difficulty
+- mining.set_version_mask
+- mining.submit
+- mining.subscribe
+- mining.suggest_difficulty
 
 ## Unsupported methods
 
-- mining.set_extranonce
-- mining.extranonce.subscribe
-- mining.suggest_target
-- mining.get_transactions
 - client.get_version
 - client.reconnect
+- mining.extranonce.subscribe
+- mining.get_transactions
+- mining.set_extranonce
+- mining.suggest_target
 
 ## Method types
 
@@ -55,32 +58,31 @@ require a response, others do not.
 
 | method                      | type               |
 | --------------------------- | ------------------ |
-| mining.configure            | request / response |
 | mining.authorize            | request / response |
-| mining.subscribe            | request / response |
+| mining.configure            | request / response |
 | mining.extranonce.subscribe | request / response |
-| mining.submit               | request / response |
+| mining.get_transactions     | request / response |
 | mining.ping                 | request / response |
+| mining.submit               | request / response |
+| mining.subscribe            | request / response |
 | mining.suggest_difficulty   | notification       |
 | mining.suggest_target       | notification       |
-| mining.get_transactions     | request / response |
 
 ### Server-to-client
 
 | method                  | type               |
 | ----------------------- | ------------------ |
-| mining.set_difficulty   | notification       |
-| mining.set_version_mask | notification       |
-| mining.notify           | notification       |
-| mining.set_extranonce   | notification       |
-| mining.ping             | request / response |
 | client.get_version      | request / response |
 | client.reconnect        | notification       |
 | client.show_message     | notification       |
-
+| mining.notify           | notification       |
+| mining.ping             | request / response |
+| mining.set_difficulty   | notification       |
+| mining.set_extranonce   | notification       |
+| mining.set_version_mask | notification       |
 
 ```
-TODO: replace all this with a link to bip-41
+TODO: replace all this with a link to bip-41, mayb
 ```
 
 ## Message Formats
@@ -104,7 +106,7 @@ Request is for methods that require a response.
 
 ```
 {
-  "id": integer or string, // a unique id
+  "id": uint or string, // a unique id, typically a hex-encoded number
   "method": string,        // one of the methods above
   "params": [json...]      // array of json values
 }
@@ -117,9 +119,9 @@ Response is the response to requests.
 ```
 {
   "id": integer or string,   // a unique id, must be the same as on the request
-  "result": json,            // could be anything
+  "result": json,            // typically a boolean response
   "error": null or [
-    unsigned int,            // error code
+    uint,                    // error code
     string                   // error message
   ]
 }
