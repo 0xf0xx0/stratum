@@ -6,7 +6,7 @@ type ClientShowMessageParams struct {
 	Message string
 }
 
-func (p *ClientShowMessageParams) Read(n *Notification) error {
+func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("invalid param len (not 1)")
 	}
@@ -19,6 +19,6 @@ func (p *ClientShowMessageParams) Read(n *Notification) error {
 	return nil
 }
 
-func ShowMessage(n ClientShowMessageParams) *Notification {
-	return NewNotification(MethodClientShowMessage, []interface{}{n.Message})
+func (p *ClientShowMessageParams) ToNotification() *Notification {
+	return NewNotification(MethodClientShowMessage, []interface{}{p.Message})
 }

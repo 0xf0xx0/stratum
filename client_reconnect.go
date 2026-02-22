@@ -8,7 +8,7 @@ type ClientReconnectParams struct {
 }
 
 // this assumes hostname and port are required, and waittime is optional
-func (p *ClientReconnectParams) Read(n *Notification) error {
+func (p *ClientReconnectParams) FromNotification(n *Notification) error {
 	/// "If client.reconnect is sent without parameters, the miner is to assume it's to reconnect to the same port and URL."
 	/// - ck, https://bitcointalk.org/index.php?topic=557866.msg6989610#msg6989610
 	if len(n.Params) == 0 {
@@ -40,13 +40,14 @@ func (p *ClientReconnectParams) Read(n *Notification) error {
 	return nil
 }
 
-func Reconnect(n ClientReconnectParams) *Notification {
+// this assumes hostname and port are required, and waittime is optional
+func (p *ClientReconnectParams) ToNotification() *Notification {
 	params := make([]interface{}, 3)
-	params[0] = n.Hostname
-	params[1] = n.Port
+	params[0] = p.Hostname
+	params[1] = p.Port
 
-	if n.Waittime > 0 {
-		params[2] = n.Waittime
+	if p.Waittime > 0 {
+		params[2] = p.Waittime
 	}
 	return NewNotification(MethodClientReconnect, params)
 }

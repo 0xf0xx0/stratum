@@ -7,6 +7,7 @@ import (
 
 // Alias for [MiningSubmitParams].
 type Share = MiningSubmitParams
+type SubmitResult BooleanResult
 
 // A MiningSubmitParams is the data returned by the worker in a mining.submit. Job + MiningSubmitParams = Proof
 type MiningSubmitParams struct {
@@ -18,8 +19,8 @@ type MiningSubmitParams struct {
 	VersionMask uint32 // block version + VersionMask = proof version
 }
 
-// Read a MiningSubmitParams from a Request.
-func (p *MiningSubmitParams) Read(r *Request) error {
+// FromRequest creates a MiningSubmitParams from a Request.
+func (p *MiningSubmitParams) FromRequest(r *Request) error {
 	if len(r.Params) < 5 || len(r.Params) > 6 {
 		return errors.New("invalid format param len")
 	}
@@ -89,25 +90,20 @@ func (p *MiningSubmitParams) Read(r *Request) error {
 	}
 	return nil
 }
-
-func Submit(id MessageID, share MiningSubmitParams) *Request {
+func (p *MiningSubmitParams) ToRequest(id MessageID) *Request {
 	var sx []interface{}
-	if share.VersionMask != 0 {
+	if p.VersionMask != 0 {
 		sx = make([]interface{}, 6)
-		sx[5] = encodeLittleEndian(share.VersionMask)
+		sx[5] = encodeLittleEndian(p.VersionMask)
 	} else {
 		sx = make([]interface{}, 5)
 	}
 
-	sx[0] = string(share.Name)
-	sx[1] = share.JobID
-	sx[2] = hex.EncodeToString(share.ExtraNonce2)
-	sx[3] = encodeBigEndian(share.Time)
-	sx[4] = encodeBigEndian(share.Nonce)
+	sx[0] = string(p.Name)
+	sx[1] = p.JobID
+	sx[2] = hex.EncodeToString(p.ExtraNonce2)
+	sx[3] = encodeBigEndian(p.Time)
+	sx[4] = encodeBigEndian(p.Nonce)
 
 	return NewRequest(id, MethodMiningSubmit, sx)
-}
-
-func SubmitResponse(id MessageID, b bool) *Response {
-	return NewBooleanResponse(id, b)
 }

@@ -13,7 +13,7 @@ type MiningAuthorizeParams struct {
 	Password string
 }
 
-func (p *MiningAuthorizeParams) Read(r *Request) error {
+func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 	l := len(r.Params)
 	if l == 0 || l > 2 {
 		return errors.New("invalid parameter length; must be 1 or 2")
@@ -44,20 +44,16 @@ func (p *MiningAuthorizeParams) Read(r *Request) error {
 	return nil
 }
 
-func AuthorizeRequest(id MessageID, r MiningAuthorizeParams) *Request {
-	username := r.Username
-	if r.Worker != "" {
-		username += "." + r.Worker
+func (p *MiningAuthorizeParams) ToRequest(id MessageID) *Request {
+	username := p.Username
+	if p.Worker != "" {
+		username += "." + p.Worker
 	}
-	if r.Password == "" {
+	if p.Password == "" {
 		return NewRequest(id, MethodMiningAuthorize, []interface{}{username})
 	}
 
-	return NewRequest(id, MethodMiningAuthorize, []interface{}{username, r.Password})
+	return NewRequest(id, MethodMiningAuthorize, []interface{}{username, p.Password})
 }
 
 type AuthorizeResult BooleanResult
-
-func AuthorizeResponse(id MessageID, b bool) *Response {
-	return NewBooleanResponse(id, b)
-}

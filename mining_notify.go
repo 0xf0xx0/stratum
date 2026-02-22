@@ -20,7 +20,7 @@ type MiningNotifyParams struct {
 	Clean          bool
 }
 
-func (p *MiningNotifyParams) Read(n *Notification) error {
+func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 	if len(n.Params) != 9 {
 		return errors.New("invalid param len (not 9)")
 	}
@@ -123,7 +123,7 @@ func (p *MiningNotifyParams) Read(n *Notification) error {
 	return nil
 }
 
-func Notify(n MiningNotifyParams) *Notification {
+func (n *MiningNotifyParams) ToNotification() *Notification {
 	params := make([]interface{}, 9)
 
 	params[0] = n.JobID

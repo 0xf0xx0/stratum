@@ -16,6 +16,7 @@ const (
 )
 
 // Error is a 2(G: or more??? see public-pool)-element json array.
+// It doesn't get a FromResponse/ToResponse cause its already contained in a Response
 type Error struct {
 	Code    ErrorCode
 	Message string

@@ -20,6 +20,7 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 ## TODO
 
 - Implement everything to get up to stratum 1.1 support
+- make it more intuitive to handle messages, try to avoid intermediate Messages
 - work out all the bugs
 - streaming support?
 
@@ -48,6 +49,29 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - mining.get_transactions
 - mining.set_extranonce
 - mining.suggest_target
+
+## Usage
+### Decoding a stratum request
+```go
+msg := []byte(`{"id": 1, "method": "mining.subscribe", "params": ["cpuminer-opt-24.5-x64L"]}`)
+request := &stratum.Request{}
+request.Unmarshal(msg)
+if request.GetMethod() == stratum.MethodMiningSubscribe {
+	params := &stratum.MiningSubscribeParams{}
+	params.Read(request)
+	fmt.Printf("%+v\n", params) // &{UserAgent:cpuminer-opt-24.5-x64L ExtraNonce1:<nil>}
+}
+```
+
+### Encoding a stratum request
+```go
+id := stratum.ID(420)
+params := stratum.MiningSubscribeParams{
+	UserAgent:   "bitaxe/FTXGOXX",
+	ExtraNonce1: &id,
+}
+fmt.Printf("%+v", stratum.SubscribeRequest(1, params)) /// &{MessageID:1 Method:mining.subscribe Params:[bitaxe/FTXGOXX 000001a4]}
+```
 
 ## Method types
 

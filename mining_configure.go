@@ -9,7 +9,7 @@ type MiningConfigureParams struct {
 	Parameters map[string]interface{}
 }
 
-func (p *MiningConfigureParams) Read(r *Request) error {
+func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	l := len(r.Params)
 	if l != 2 {
 		return errors.New("invalid parameter length; must be 2")
@@ -403,7 +403,7 @@ func (p *ConfigureResult) Add(z interface{}) error {
 	}
 }
 
-func ConfigureRequest(id MessageID, p MiningConfigureParams) *Request {
+func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters

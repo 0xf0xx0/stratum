@@ -10,7 +10,7 @@ type MiningSubscribeParams struct {
 	ExtraNonce1 *ID // optional extranonce subscription
 }
 
-func (p *MiningSubscribeParams) Read(r *Request) error {
+func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 	l := len(r.Params)
 	if l == 0 || l > 2 {
 		return errors.New("invalid parameter length; must be 1 or 2")
@@ -41,16 +41,14 @@ func (p *MiningSubscribeParams) Read(r *Request) error {
 	return nil
 }
 
-func SubscribeRequest(id MessageID, r MiningSubscribeParams) *Request {
-	if r.ExtraNonce1 == nil {
-		return NewRequest(id, MethodMiningSubscribe, []interface{}{r.UserAgent})
+func (p *MiningSubscribeParams) ToRequest(id MessageID) *Request {
+	if p.ExtraNonce1 == nil {
+		return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent})
 	}
-
-	return NewRequest(id, MethodMiningSubscribe, []interface{}{r.UserAgent, r.ExtraNonce1.String()})
+	return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent, p.ExtraNonce1.String()})
 }
 
-// A Subscription is a 2-element json array containing a method
-// and a session id.
+// A Subscription is a 2-element json array containing a method and a session id.
 type Subscription struct {
 	Method    Method
 	SessionID ID
@@ -62,7 +60,7 @@ type SubscribeResult struct {
 	ExtraNonce2Size uint32
 }
 
-func (p *SubscribeResult) Read(r *Response) error {
+func (p *SubscribeResult) FromResponse(r *Response) error {
 	result, ok := r.Result.([]interface{})
 	if !ok {
 		return errors.New("invalid result type; should be array")
@@ -114,25 +112,25 @@ func (p *SubscribeResult) Read(r *Response) error {
 	return nil
 }
 
-func SubscribeResponse(m MessageID, r SubscribeResult) *Response {
-	subscriptions := make([][]string, len(r.Subscriptions))
-	for i := 0; i < len(r.Subscriptions); i++ {
+func (p *SubscribeResult) ToResponse(m MessageID) *Response {
+	subscriptions := make([][]string, len(p.Subscriptions))
+	for i := 0; i < len(p.Subscriptions); i++ {
 		subscriptions[i] = make([]string, 2)
 
-		method, err := EncodeMethod(r.Subscriptions[i].Method)
+		method, err := EncodeMethod(p.Subscriptions[i].Method)
 		if err != nil {
 			/// TODO: return error? i dont wanna change just this function sig
 			return NewResponse(0, nil)
 		}
 
 		subscriptions[i][0] = method
-		subscriptions[i][1] = r.Subscriptions[i].SessionID.String()
+		subscriptions[i][1] = p.Subscriptions[i].SessionID.String()
 	}
 
 	result := make([]interface{}, 3)
 	result[0] = subscriptions
-	result[1] = r.ExtraNonce1.String()
-	result[2] = r.ExtraNonce2Size
+	result[1] = p.ExtraNonce1.String()
+	result[2] = p.ExtraNonce2Size
 
 	return NewResponse(m, result)
 }

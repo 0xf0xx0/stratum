@@ -14,7 +14,7 @@ func TestMiningSubscribe(t *testing.T) {
 		t.Errorf("method mismatch: %s", r.Method)
 	}
 	s := stratum.MiningSubscribeParams{}
-	s.Read(r)
+	s.FromRequest(r)
 	if s.UserAgent != "cpuminer-opt-24.5-x64L" {
 		t.Errorf("useragent mismatch: %s", s.UserAgent)
 	}
@@ -30,7 +30,7 @@ func TestClientShowMessage(t *testing.T) {
 		t.Errorf("method mismatch: %s", n.Method)
 	}
 	s := stratum.ClientShowMessageParams{}
-	s.Read(n)
+	s.FromNotification(n)
 
 	if s.Message != "Pool restarting; please reconnect." {
 		t.Fatalf("message mismatch: %s", s.Message)
@@ -43,10 +43,9 @@ func TestClientReconnect(t *testing.T) {
 		t.Errorf("method mismatch: %s", n.Method)
 	}
 	s := stratum.ClientReconnectParams{}
-	if err := s.Read(n); err != nil {
+	if err := s.FromNotification(n); err != nil {
 		t.Fatalf("read error: %s", err)
 	}
-
 
 	if s.Hostname != "stratum-lb-usa48.btcguild.com" {
 		t.Fatal("invalid hostname")
@@ -62,11 +61,11 @@ func TestClientReconnect(t *testing.T) {
 
 func makeRequest(msg string) *stratum.Request {
 	r := &stratum.Request{}
-	r.UnmarshalJSON([]byte(msg))
+	r.Unmarshal([]byte(msg))
 	return r
 }
 func makeNotification(msg string) *stratum.Notification {
 	n := &stratum.Notification{}
-	n.UnmarshalJSON([]byte(msg))
+	n.Unmarshal([]byte(msg))
 	return n
 }

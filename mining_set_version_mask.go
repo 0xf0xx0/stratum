@@ -6,7 +6,7 @@ type MiningSetVersionMaskParams struct {
 	Mask uint32
 }
 
-func (p *MiningSetVersionMaskParams) Read(n *Notification) error {
+func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
 	if len(n.Params) != 1 {
 		return errors.New("invalid format")
 	}
