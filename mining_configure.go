@@ -407,7 +407,7 @@ func ConfigureRequest(id MessageID, p MiningConfigureParams) *Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters
-	return NewRequest(id, MiningConfigure, params)
+	return NewRequest(id, MethodMiningConfigure, params)
 }
 
 func ConfigureResponse(id MessageID, r ConfigureResult) *Response {

@@ -43,10 +43,10 @@ func (p *MiningSubscribeParams) Read(r *Request) error {
 
 func SubscribeRequest(id MessageID, r MiningSubscribeParams) *Request {
 	if r.ExtraNonce1 == nil {
-		return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent})
+		return NewRequest(id, MethodMiningSubscribe, []interface{}{r.UserAgent})
 	}
 
-	return NewRequest(id, MiningSubscribe, []interface{}{r.UserAgent, r.ExtraNonce1.String()})
+	return NewRequest(id, MethodMiningSubscribe, []interface{}{r.UserAgent, r.ExtraNonce1.String()})
 }
 
 // A Subscription is a 2-element json array containing a method

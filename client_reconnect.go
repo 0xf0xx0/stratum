@@ -48,5 +48,5 @@ func Reconnect(n ClientReconnectParams) *Notification {
 	if n.Waittime > 0 {
 		params[2] = n.Waittime
 	}
-	return NewNotification(ClientReconnect, params)
+	return NewNotification(MethodClientReconnect, params)
 }

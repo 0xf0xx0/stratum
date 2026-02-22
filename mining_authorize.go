@@ -50,10 +50,10 @@ func AuthorizeRequest(id MessageID, r MiningAuthorizeParams) *Request {
 		username += "." + r.Worker
 	}
 	if r.Password == "" {
-		return NewRequest(id, MiningAuthorize, []interface{}{username})
+		return NewRequest(id, MethodMiningAuthorize, []interface{}{username})
 	}
 
-	return NewRequest(id, MiningAuthorize, []interface{}{username, r.Password})
+	return NewRequest(id, MethodMiningAuthorize, []interface{}{username, r.Password})
 }
 
 type AuthorizeResult BooleanResult

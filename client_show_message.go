@@ -20,5 +20,5 @@ func (p *ClientShowMessageParams) Read(n *Notification) error {
 }
 
 func ShowMessage(n ClientShowMessageParams) *Notification {
-	return NewNotification(ClientShowMessage, []interface{}{n.Message})
+	return NewNotification(MethodClientShowMessage, []interface{}{n.Message})
 }

@@ -5,20 +5,20 @@ import (
 	"errors"
 )
 
-/// Alias for [MiningSubmitParams].
+// Alias for [MiningSubmitParams].
 type Share = MiningSubmitParams
 
 // A MiningSubmitParams is the data returned by the worker in a mining.submit. Job + MiningSubmitParams = Proof
 type MiningSubmitParams struct {
 	Name        string // worker name, like `bc1qfakeaddr.bitaxe`
-	JobID       string // Stratum Job ID, should match a mining.notify
+	JobID       string // Stratum Job ID, must match a mining.notify
 	Time        uint32 // proof timestamp
 	Nonce       uint32 // gets put into the block header
 	ExtraNonce2 []byte // gets put into the coinbase
 	VersionMask uint32 // block version + VersionMask = proof version
 }
 
-// Read a Share from a Request.
+// Read a MiningSubmitParams from a Request.
 func (p *MiningSubmitParams) Read(r *Request) error {
 	if len(r.Params) < 5 || len(r.Params) > 6 {
 		return errors.New("invalid format param len")
@@ -105,7 +105,7 @@ func Submit(id MessageID, share MiningSubmitParams) *Request {
 	sx[3] = encodeBigEndian(share.Time)
 	sx[4] = encodeBigEndian(share.Nonce)
 
-	return NewRequest(id, MiningSubmit, sx)
+	return NewRequest(id, MethodMiningSubmit, sx)
 }
 
 func SubmitResponse(id MessageID, b bool) *Response {

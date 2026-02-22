@@ -26,5 +26,5 @@ func (p *MiningSetVersionMaskParams) Read(n *Notification) error {
 }
 
 func SetVersionMask(u uint32) *Notification {
-	return NewNotification(MiningSetVersionMask, []interface{}{encodeLittleEndian(u)})
+	return NewNotification(MethodMiningSetVersionMask, []interface{}{encodeLittleEndian(u)})
 }

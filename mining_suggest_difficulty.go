@@ -23,5 +23,5 @@ func (p *MiningSuggestDifficultyParams) Read(n *Request) error {
 }
 
 func SuggestDifficultyRequest(id MessageID, r MiningSuggestDifficultyParams) *Request {
-	return NewRequest(id, MiningSuggestDifficulty, []interface{}{r.Difficulty})
+	return NewRequest(id, MethodMiningSuggestDifficulty, []interface{}{r.Difficulty})
 }

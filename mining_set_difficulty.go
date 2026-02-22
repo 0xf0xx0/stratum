@@ -23,5 +23,5 @@ func (p *MiningSetDifficultyParams) Read(n *Notification) error {
 }
 
 func SetDifficulty(d float64) *Notification {
-	return NewNotification(MiningSetDifficulty, []interface{}{d})
+	return NewNotification(MethodMiningSetDifficulty, []interface{}{d})
 }

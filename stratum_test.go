@@ -10,7 +10,7 @@ import (
 
 func TestMiningSubscribe(t *testing.T) {
 	r := makeRequest(`{"id": 1, "method": "mining.subscribe", "params": ["cpuminer-opt-24.5-x64L"]}`)
-	if r.GetMethod() != stratum.MiningSubscribe {
+	if r.GetMethod() != stratum.MethodMiningSubscribe {
 		t.Errorf("method mismatch: %s", r.Method)
 	}
 	s := stratum.MiningSubscribeParams{}
@@ -26,7 +26,7 @@ func TestMiningSubscribe(t *testing.T) {
 func TestClientShowMessage(t *testing.T) {
 	n := makeNotification(`{"id":null,"method":"client.show_message","params":["Pool restarting; please reconnect."]}`)
 
-	if n.GetMethod() != stratum.ClientShowMessage {
+	if n.GetMethod() != stratum.MethodClientShowMessage {
 		t.Errorf("method mismatch: %s", n.Method)
 	}
 	s := stratum.ClientShowMessageParams{}
@@ -39,7 +39,7 @@ func TestClientShowMessage(t *testing.T) {
 
 func TestClientReconnect(t *testing.T) {
 	n := makeNotification(`{"id": 0, "method": "client.reconnect", "params":["stratum-lb-usa48.btcguild.com",3333,0]}`)
-	if n.GetMethod() != stratum.ClientReconnect {
+	if n.GetMethod() != stratum.MethodClientReconnect {
 		t.Errorf("method mismatch: %s", n.Method)
 	}
 	s := stratum.ClientReconnectParams{}

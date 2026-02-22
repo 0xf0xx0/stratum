@@ -142,7 +142,7 @@ func Notify(n MiningNotifyParams) *Notification {
 	params[7] = encodeBigEndian(uint32(n.Timestamp.Unix()))
 	params[8] = n.Clean
 
-	return NewNotification(MiningNotify, params)
+	return NewNotification(MethodMiningNotify, params)
 }
 
 // ported from public-pool

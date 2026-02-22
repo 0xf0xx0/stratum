@@ -7,22 +7,21 @@ import (
 type Method uint8
 
 const (
-	Unknown Method = iota
-	MiningAuthorize
-	MiningConfigure
-	MiningSubscribe
-	MiningExtranonceSubscribe
-	MiningNotify
-	MiningSubmit
-	MiningSetDifficulty
-	MiningSetVersionMask
-	MiningSetExtraNonce
-	MiningSuggestDifficulty
-	MiningSuggestTarget // discard?
-	MiningPing
-	ClientGetVersion
-	ClientReconnect
-	ClientShowMessage
+	MethodUnknown Method = iota
+	MethodClientGetVersion
+	MethodClientReconnect
+	MethodClientShowMessage
+	MethodMiningAuthorize
+	MethodMiningConfigure
+	MethodMiningExtranonceSubscribe
+	MethodMiningNotify
+	MethodMiningPing
+	MethodMiningSetDifficulty
+	MethodMiningSetExtraNonce
+	MethodMiningSetVersionMask
+	MethodMiningSubmit
+	MethodMiningSubscribe
+	MethodMiningSuggestDifficulty
 )
 
 func (m Method) String() string {
@@ -32,35 +31,33 @@ func (m Method) String() string {
 
 func EncodeMethod(m Method) (string, error) {
 	switch m {
-	case MiningAuthorize:
+	case MethodMiningAuthorize:
 		return "mining.authorize", nil
-	case MiningConfigure:
+	case MethodMiningConfigure:
 		return "mining.configure", nil
-	case MiningSubscribe:
+	case MethodMiningSubscribe:
 		return "mining.subscribe", nil
-	case MiningExtranonceSubscribe:
+	case MethodMiningExtranonceSubscribe:
 		return "mining.extranonce.subscribe", nil
-	case MiningNotify:
+	case MethodMiningNotify:
 		return "mining.notify", nil
-	case MiningSubmit:
+	case MethodMiningSubmit:
 		return "mining.submit", nil
-	case MiningSetDifficulty:
+	case MethodMiningSetDifficulty:
 		return "mining.set_difficulty", nil
-	case MiningSetVersionMask:
+	case MethodMiningSetVersionMask:
 		return "mining.set_version_mask", nil
-	case MiningSetExtraNonce:
+	case MethodMiningSetExtraNonce:
 		return "mining.set_extra_nonce", nil
-	case MiningSuggestDifficulty:
+	case MethodMiningSuggestDifficulty:
 		return "mining.suggest_difficulty", nil
-	case MiningSuggestTarget:
-		return "mining.suggest_target", nil
-	case ClientGetVersion:
+	case MethodClientGetVersion:
 		return "client.get_version", nil
-	case ClientReconnect:
+	case MethodClientReconnect:
 		return "client.reconnect", nil
-	case MiningPing:
+	case MethodMiningPing:
 		return "mining.ping", nil
-	case ClientShowMessage:
+	case MethodClientShowMessage:
 		return "client.show_message", nil
 	default:
 		return "", errors.New("unknown stratum method")
@@ -70,36 +67,34 @@ func EncodeMethod(m Method) (string, error) {
 func DecodeMethod(m string) (Method, error) {
 	switch m {
 	case "mining.authorize":
-		return MiningAuthorize, nil
+		return MethodMiningAuthorize, nil
 	case "mining.configure":
-		return MiningConfigure, nil
+		return MethodMiningConfigure, nil
 	case "mining.subscribe":
-		return MiningSubscribe, nil
+		return MethodMiningSubscribe, nil
 	case "mining.extranonce.subscribe":
-		return MiningExtranonceSubscribe, nil
+		return MethodMiningExtranonceSubscribe, nil
 	case "mining.notify":
-		return MiningNotify, nil
+		return MethodMiningNotify, nil
 	case "mining.submit":
-		return MiningSubmit, nil
+		return MethodMiningSubmit, nil
 	case "mining.set_difficulty":
-		return MiningSetDifficulty, nil
+		return MethodMiningSetDifficulty, nil
 	case "mining.set_version_mask":
-		return MiningSetVersionMask, nil
+		return MethodMiningSetVersionMask, nil
 	case "mining.set_extra_nonce":
-		return MiningSetExtraNonce, nil
+		return MethodMiningSetExtraNonce, nil
 	case "mining.suggest_difficulty":
-		return MiningSuggestDifficulty, nil
-	case "mining.suggest_target":
-		return MiningSuggestTarget, nil
+		return MethodMiningSuggestDifficulty, nil
 	case "client.get_version":
-		return ClientGetVersion, nil
+		return MethodClientGetVersion, nil
 	case "client.reconnect":
-		return ClientReconnect, nil
+		return MethodClientReconnect, nil
 	case "mining.ping":
-		return MiningPing, nil
+		return MethodMiningPing, nil
 	case "client.show_message":
-		return ClientShowMessage, nil
+		return MethodClientShowMessage, nil
 	default:
-		return Unknown, errors.New("unknown stratum method")
+		return MethodUnknown, errors.New("unknown stratum method")
 	}
 }

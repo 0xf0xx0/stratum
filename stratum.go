@@ -22,14 +22,13 @@ type Message interface {
 
 // Stratum has three types of messages: notification, request, and response.
 // notification: unprompted, server to client
-// request: client to server
+// request: client to server OR server to client
 // response: server to client
 
 // Notification is for methods that do not require a [Response].
 // Automatically includes a newline when marshalling.
 // Implements [Message].
 type Notification struct {
-	MessageID MessageID     `json:"id,omitzero"` // TODO: remove?
 	Method    string        `json:"method"`
 	Params    []interface{} `json:"params"`
 }
@@ -115,16 +114,16 @@ func (r *Request) UnmarshalJSON(j []byte) error {
 		return err
 	}
 
-	if r.GetMethod() == Unknown {
+	if r.GetMethod() == MethodUnknown {
 		return errors.New("invalid method")
 	}
 
 	return nil
 }
 
-// returns [Unknown] as responses have no method
+// returns [MethodUnknown] as responses have no method
 func (res *Response) GetMethod() Method {
-	return Unknown
+	return MethodUnknown
 }
 func (r *Response) MarshalJSON() ([]byte, error) {
 	marshalled, err := sonic.Marshal(r)
@@ -164,7 +163,7 @@ func (r *Notification) UnmarshalJSON(j []byte) error {
 		return err
 	}
 
-	if r.GetMethod() == Unknown {
+	if r.GetMethod() == MethodUnknown {
 		return errors.New("invalid method")
 	}
 
