@@ -7,6 +7,9 @@ type ClientShowMessageParams struct {
 }
 
 func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
+	if n.Method != MethodClientShowMessage.String() {
+		return errors.New("incorrect method")
+	}
 	if len(n.Params) != 1 {
 		return errors.New("invalid param len (not 1)")
 	}

@@ -14,6 +14,9 @@ type MiningAuthorizeParams struct {
 }
 
 func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
+	if r.Method != MethodMiningAuthorize.String() {
+		return errors.New("incorrect method")
+	}
 	l := len(r.Params)
 	if l == 0 || l > 2 {
 		return errors.New("invalid parameter length; must be 1 or 2")

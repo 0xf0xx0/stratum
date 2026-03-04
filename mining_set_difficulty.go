@@ -9,6 +9,9 @@ type MiningSetDifficultyParams struct {
 }
 
 func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
+	if n.Method != MethodMiningSetDifficulty.String() {
+		return errors.New("incorrect method")
+	}
 	if len(n.Params) != 1 {
 		return errors.New("incorrect parameter length")
 	}

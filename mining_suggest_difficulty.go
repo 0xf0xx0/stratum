@@ -8,16 +8,19 @@ type MiningSuggestDifficultyParams struct {
 	Difficulty float64
 }
 
-func (p *MiningSuggestDifficultyParams) FromRequest(n *Request) error {
-	if len(n.Params) != 1 {
+func (p *MiningSuggestDifficultyParams) FromRequest(r *Request) error {
+	if r.Method != MethodMiningSuggestDifficulty.String() {
+		return errors.New("incorrect method")
+	}
+	if len(r.Params) != 1 {
 		return errors.New("incorrect parameter length")
 	}
 
-	if !validDifficulty(n.Params[0]) {
+	if !validDifficulty(r.Params[0]) {
 		return errors.New("invalid difficulty")
 	}
 
-	p.Difficulty = n.Params[0].(float64)
+	p.Difficulty = r.Params[0].(float64)
 
 	return nil
 }

@@ -10,6 +10,9 @@ type MiningConfigureParams struct {
 }
 
 func (p *MiningConfigureParams) FromRequest(r *Request) error {
+	if r.Method != MethodMiningConfigure.String() {
+		return errors.New("incorrect method")
+	}
 	l := len(r.Params)
 	if l != 2 {
 		return errors.New("invalid parameter length; must be 2")
@@ -36,6 +39,7 @@ func (p *MiningConfigureParams) Supports(extension string) bool {
 	return false
 }
 
+// TODO: how to do To/FromRequest?
 type ConfigureResult map[string]interface{}
 
 // exported for your convience

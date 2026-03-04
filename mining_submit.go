@@ -21,6 +21,9 @@ type MiningSubmitParams struct {
 
 // FromRequest creates a MiningSubmitParams from a Request.
 func (p *MiningSubmitParams) FromRequest(r *Request) error {
+	if r.Method != MethodMiningSubmit.String() {
+		return errors.New("incorrect method")
+	}
 	if len(r.Params) < 5 || len(r.Params) > 6 {
 		return errors.New("invalid format param len")
 	}

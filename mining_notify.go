@@ -21,6 +21,9 @@ type MiningNotifyParams struct {
 }
 
 func (p *MiningNotifyParams) FromNotification(n *Notification) error {
+	if n.Method != MethodMiningNotify.String() {
+		return errors.New("incorrect method")
+	}
 	if len(n.Params) != 9 {
 		return errors.New("invalid param len (not 9)")
 	}

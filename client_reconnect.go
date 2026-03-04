@@ -9,6 +9,9 @@ type ClientReconnectParams struct {
 
 // this assumes hostname and port are required, and waittime is optional
 func (p *ClientReconnectParams) FromNotification(n *Notification) error {
+	if n.Method != MethodClientReconnect.String() {
+		return errors.New("incorrect method")
+	}
 	/// "If client.reconnect is sent without parameters, the miner is to assume it's to reconnect to the same port and URL."
 	/// - ck, https://bitcointalk.org/index.php?topic=557866.msg6989610#msg6989610
 	if len(n.Params) == 0 {

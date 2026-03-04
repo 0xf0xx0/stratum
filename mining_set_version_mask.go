@@ -7,6 +7,9 @@ type MiningSetVersionMaskParams struct {
 }
 
 func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
+	if n.Method != MethodMiningSetVersionMask.String() {
+		return errors.New("incorrect method")
+	}
 	if len(n.Params) != 1 {
 		return errors.New("invalid format")
 	}
