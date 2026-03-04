@@ -34,6 +34,7 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - client.show_message
 - mining.authorize
 - mining.configure
+- mining.extranonce.subscribe
 - mining.notify
 - mining.ping
 - mining.set_difficulty
@@ -45,13 +46,14 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 ## Unsupported methods
 
 - client.get_version
-- mining.extranonce.subscribe
 - mining.get_transactions
 - mining.set_extranonce
 - mining.suggest_target
 
 ## Usage
+
 ### Decoding a stratum request
+
 ```go
 msg := []byte(`{"id": 1, "method": "mining.subscribe", "params": ["cpuminer-opt-24.5-x64L"]}`)
 request := &stratum.Request{}
@@ -64,6 +66,7 @@ if request.GetMethod() == stratum.MethodMiningSubscribe {
 ```
 
 ### Encoding a stratum request
+
 ```go
 extranonce1 := stratum.ID(420)
 params := stratum.MiningSubscribeParams{
