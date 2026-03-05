@@ -4,7 +4,8 @@ Stratum is how Bitcoin miners connect with mining pools.
 
 See [here for a description of Stratum](https://web.archive.org/web/20210224235216/https://braiins.com/stratum-v1/docs)
 and
-[here for Stratum extensions](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki).
+[here for Stratum extensions](https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki).  
+Also see [this BitcoinTalk thread](https://bitcointalk.org/index.php?topic=557866.0) by CK.
 Extensions are necessary to support ASIC Boost.
 
 forked from https://github.com/kbnchk/go-Stratum
