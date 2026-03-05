@@ -28,6 +28,6 @@ func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
 	return nil
 }
 
-func SetVersionMask(u uint32) *Notification {
-	return NewNotification(MethodMiningSetVersionMask, []interface{}{encodeLittleEndian(u)})
+func (p *MiningSetVersionMaskParams) ToNotification() *Notification {
+	return NewNotification(MethodMiningSetVersionMask, []interface{}{encodeLittleEndian(p.Mask)})
 }

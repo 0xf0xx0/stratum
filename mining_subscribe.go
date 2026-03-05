@@ -51,19 +51,19 @@ func (p *MiningSubscribeParams) ToRequest(id MessageID) *Request {
 	return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent, p.ExtraNonce1.String()})
 }
 
-// A Subscription is a 2-element json array containing a method and a session id.
-type Subscription struct {
+// A MiningSubscription is a 2-element json array containing a method and a session id.
+type MiningSubscription struct {
 	Method    Method
 	SessionID ID
 }
 
-type SubscribeResult struct {
-	Subscriptions   []Subscription
+type MiningSubscribeResult struct {
+	Subscriptions   []MiningSubscription
 	ExtraNonce1     ID
 	ExtraNonce2Size uint32
 }
 
-func (p *SubscribeResult) FromResponse(r *Response) error {
+func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 	result, ok := r.Result.([]interface{})
 	if !ok {
 		return errors.New("invalid result type; should be array")
@@ -89,7 +89,7 @@ func (p *SubscribeResult) FromResponse(r *Response) error {
 	p.ExtraNonce2Size = uint32(extraNonce2Size)
 
 	var err error
-	p.Subscriptions = make([]Subscription, len(subscriptions))
+	p.Subscriptions = make([]MiningSubscription, len(subscriptions))
 	for i, s := range subscriptions {
 		sub := s.([]interface{})
 		if len(sub) != 2 {
@@ -115,7 +115,7 @@ func (p *SubscribeResult) FromResponse(r *Response) error {
 	return nil
 }
 
-func (p *SubscribeResult) ToResponse(m MessageID) *Response {
+func (p *MiningSubscribeResult) ToResponse(m MessageID) *Response {
 	subscriptions := make([][]string, len(p.Subscriptions))
 	for i := 0; i < len(p.Subscriptions); i++ {
 		subscriptions[i] = make([]string, 2)

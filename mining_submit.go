@@ -7,6 +7,7 @@ import (
 
 // Alias for [MiningSubmitParams].
 type Share = MiningSubmitParams
+// Alias for [BooleanResult].
 type SubmitResult BooleanResult
 
 // A MiningSubmitParams is the data returned by the worker in a mining.submit. Job + MiningSubmitParams = Proof

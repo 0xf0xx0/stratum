@@ -59,4 +59,5 @@ func (p *MiningAuthorizeParams) ToRequest(id MessageID) *Request {
 	return NewRequest(id, MethodMiningAuthorize, []interface{}{username, p.Password})
 }
 
+// alias for [BooleanResult].
 type AuthorizeResult BooleanResult

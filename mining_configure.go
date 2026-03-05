@@ -39,7 +39,7 @@ func (p *MiningConfigureParams) Supports(extension string) bool {
 	return false
 }
 
-// TODO: how to do To/FromRequest?
+// TODO: how to do To/FromResponse?
 type ConfigureResult map[string]interface{}
 
 // exported for your convience
