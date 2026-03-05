@@ -13,7 +13,7 @@ func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 1 {
-		return errors.New("incorrect parameter length")
+		return errors.New("incorrect parameter length; must be 2")
 	}
 
 	if !validDifficulty(n.Params[0]) {

@@ -48,7 +48,7 @@ func EncodeMethod(m Method) (string, error) {
 	case MethodMiningSetVersionMask:
 		return "mining.set_version_mask", nil
 	case MethodMiningSetExtraNonce:
-		return "mining.set_extra_nonce", nil
+		return "mining.set_extranonce", nil
 	case MethodMiningSuggestDifficulty:
 		return "mining.suggest_difficulty", nil
 	case MethodClientGetVersion:
@@ -82,7 +82,7 @@ func DecodeMethod(m string) (Method, error) {
 		return MethodMiningSetDifficulty, nil
 	case "mining.set_version_mask":
 		return MethodMiningSetVersionMask, nil
-	case "mining.set_extra_nonce":
+	case "mining.set_extranonce":
 		return MethodMiningSetExtraNonce, nil
 	case "mining.suggest_difficulty":
 		return MethodMiningSuggestDifficulty, nil

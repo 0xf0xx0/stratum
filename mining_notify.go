@@ -25,7 +25,7 @@ func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 9 {
-		return errors.New("invalid param len (not 9)")
+		return errors.New("invalid parameter length; must be 9")
 	}
 
 	var ok bool
