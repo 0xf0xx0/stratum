@@ -29,6 +29,12 @@ func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	p.Parameters = r.Params[1].(map[string]interface{})
 	return nil
 }
+func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
+	params := make([]interface{}, 2)
+	params[0] = p.Supported
+	params[1] = p.Parameters
+	return NewRequest(id, MethodMiningConfigure, params)
+}
 
 func (p *MiningConfigureParams) Supports(extension string) bool {
 	for _, supported := range p.Supported {
@@ -42,7 +48,19 @@ func (p *MiningConfigureParams) Supports(extension string) bool {
 // TODO: how to do To/FromResponse?
 type ConfigureResult map[string]interface{}
 
-// exported for your convience
+func (p *ConfigureResult) FromResponse(r *Response) error {
+	result, ok := r.Result.(ConfigureResult)
+	if !ok {
+		return errors.New("invalid result type; should be map[string]interface{}")
+	}
+	p = &result
+
+	return nil
+}
+func (p *ConfigureResult) ToResponse(id MessageID) *Response {
+	return NewResponse(id, p)
+}
+
 func (p *ConfigureResult) Supports(extension string) bool {
 	_, ok := (*p)[extension]
 	return ok
@@ -405,15 +423,4 @@ func (p *ConfigureResult) Add(z interface{}) error {
 	default:
 		return errors.New("unrecognized extension request")
 	}
-}
-
-func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
-	params := make([]interface{}, 2)
-	params[0] = p.Supported
-	params[1] = p.Parameters
-	return NewRequest(id, MethodMiningConfigure, params)
-}
-
-func ConfigureResponse(id MessageID, r ConfigureResult) *Response {
-	return NewResponse(id, r)
 }
