@@ -27,8 +27,3 @@ func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
 func (p *MiningSetDifficultyParams) ToNotification() *Notification {
 	return NewNotification(MethodMiningSetDifficulty, []interface{}{p.Difficulty})
 }
-
-/// TODO: figure out how to remove this
-func SetDifficulty(d float64) *Notification {
-	return NewNotification(MethodMiningSetDifficulty, []interface{}{d})
-}

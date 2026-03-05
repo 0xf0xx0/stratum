@@ -18,7 +18,7 @@ func (p *ClientReconnectParams) FromNotification(n *Notification) error {
 		return nil
 	}
 	if len(n.Params) < 2 || len(n.Params) > 3 {
-		return errors.New("invalid param len (not 2 or 3)")
+		return errors.New("incorrect parameter len; not 2 or 3")
 	}
 
 	hostname, ok := n.Params[0].(string)

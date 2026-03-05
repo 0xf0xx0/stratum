@@ -11,12 +11,12 @@ func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 1 {
-		return errors.New("invalid format")
+		return errors.New("incorrect parameter length; must be 1")
 	}
 
 	mask, ok := n.Params[0].(string)
 	if !ok {
-		return errors.New("invalid format")
+		return errors.New("invalid mask (not string)")
 	}
 
 	var err error

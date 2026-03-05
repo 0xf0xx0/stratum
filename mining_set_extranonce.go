@@ -12,11 +12,11 @@ func (p *MiningSetExtraNonceParams) FromNotification(n *Notification) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 2 {
-		return errors.New("incorrect parameter length")
+		return errors.New("incorrect parameter length; must be 2")
 	}
 	rawExtranonce1, ok := n.Params[0].(string)
 	if !ok {
-		return errors.New("couldnt cast extranonce1 to string")
+		return errors.New("invalid extranonce1 (not string)")
 	}
 	decodedExtranonce1, err := DecodeID(rawExtranonce1)
 	if err != nil {

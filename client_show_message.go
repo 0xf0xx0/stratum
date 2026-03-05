@@ -11,7 +11,7 @@ func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 1 {
-		return errors.New("invalid param len (not 1)")
+		return errors.New("incorrect parameter len; not 1")
 	}
 
 	msg, ok := n.Params[0].(string)

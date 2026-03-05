@@ -13,7 +13,7 @@ func (p *MiningSuggestDifficultyParams) FromRequest(r *Request) error {
 		return errors.New("incorrect method")
 	}
 	if len(r.Params) != 1 {
-		return errors.New("incorrect parameter length")
+		return errors.New("incorrect parameter length; must be 1")
 	}
 
 	if !validDifficulty(r.Params[0]) {

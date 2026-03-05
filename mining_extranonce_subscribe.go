@@ -9,7 +9,7 @@ func (p *MiningExtranonceSubscribeParams) FromRequest(n *Request) error {
 		return errors.New("incorrect method")
 	}
 	if len(n.Params) != 0 {
-		return errors.New("incorrect parameter length, XNSUB has 0 params")
+		return errors.New("incorrect parameter length; must be 0")
 	}
 	return nil
 }

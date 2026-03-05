@@ -15,7 +15,7 @@ func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	}
 	l := len(r.Params)
 	if l != 2 {
-		return errors.New("invalid parameter length; must be 2")
+		return errors.New("incorrect parameter length; must be 2")
 	}
 
 	supported, ok := r.Params[0].([]interface{})

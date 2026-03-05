@@ -25,40 +25,40 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 		return errors.New("incorrect method")
 	}
 	if len(r.Params) < 5 || len(r.Params) > 6 {
-		return errors.New("invalid format param len")
+		return errors.New("incorrect parameter length; must be 5 or 6")
 	}
 
 	ok := false
 
 	p.Name, ok = r.Params[0].(string)
 	if !ok {
-		return errors.New("invalid format param[0]")
+		return errors.New("invalid name (not string)")
 	}
 
 	p.JobID, ok = r.Params[1].(string)
 	if !ok {
-		return errors.New("invalid format param[1]")
+		return errors.New("invalid jobid (not string)")
 	}
 
 	extraNonce2, ok := r.Params[2].(string)
 	if !ok {
-		return errors.New("invalid format param[2]")
+		return errors.New("invalid extranonce2 (not string)")
 	}
 
 	time, ok := r.Params[3].(string)
 	if !ok {
-		return errors.New("invalid format param[3]")
+		return errors.New("invalid time (not string)")
 	}
 
 	nonce, ok := r.Params[4].(string)
 	if !ok {
-		return errors.New("param[4]")
+		return errors.New("invalid nonce (not string)")
 	}
 
 	if len(r.Params) == 6 {
 		rawVersionMask, ok := r.Params[5].(string)
 		if !ok {
-			return errors.New("param[5] is not string")
+			return errors.New("invalid version_mask (not string)")
 		}
 
 		y, err := hex.DecodeString(rawVersionMask)

@@ -19,7 +19,7 @@ func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 	}
 	l := len(r.Params)
 	if l == 0 || l > 2 {
-		return errors.New("invalid parameter length; must be 1 or 2")
+		return errors.New("incorrect parameter length; must be 1 or 2")
 	}
 
 	username, ok := r.Params[0].(string)

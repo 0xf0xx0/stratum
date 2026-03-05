@@ -22,7 +22,7 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 	var ok bool
 	p.UserAgent, ok = r.Params[0].(string)
 	if !ok {
-		return errors.New("invalid user agent format")
+		return errors.New("invalid user agent (not string)")
 	}
 
 	if l == 1 {
@@ -32,7 +32,7 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 
 	idstr, ok := r.Params[1].(string)
 	if !ok {
-		return errors.New("invalid session id format")
+		return errors.New("invalid session id (string)")
 	}
 
 	id, err := DecodeID(idstr)
@@ -90,10 +90,10 @@ func (p *SubscribeResult) FromResponse(r *Response) error {
 
 	var err error
 	p.Subscriptions = make([]Subscription, len(subscriptions))
-	for i := 0; i < len(subscriptions); i++ {
-		sub := subscriptions[i].([]interface{})
+	for i, s := range subscriptions {
+		sub := s.([]interface{})
 		if len(sub) != 2 {
-			return errors.New("invalid subscriptions format")
+			return errors.New("incorrect subscription length; must be 2")
 		}
 
 		p.Subscriptions[i].Method, err = DecodeMethod(sub[0].(string))
@@ -109,7 +109,7 @@ func (p *SubscribeResult) FromResponse(r *Response) error {
 
 	p.ExtraNonce1, err = DecodeID(idstr)
 	if err != nil {
-		return errors.New("invalid session id")
+		return err
 	}
 
 	return nil
