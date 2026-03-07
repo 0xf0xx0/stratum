@@ -66,7 +66,7 @@ func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 // Implements [Message].
 type Response struct {
 	MessageID MessageID   `json:"id"`
-	Result    interface{} `json:"result,omitempty"`
+	Result    interface{} `json:"result"`
 	Error     *Error      `json:"error,omitempty"`
 }
 
