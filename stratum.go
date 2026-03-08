@@ -87,6 +87,7 @@ func NewBooleanResponse(id MessageID, x bool) *Response {
 func NewErrorResponse(id MessageID, e Error) *Response {
 	return &Response{
 		MessageID: id,
+		Result:    false,
 		Error:     &e,
 	}
 }
@@ -94,6 +95,10 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 // Helper that wraps around [NewResponse] and sets the correct message id
 func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
+}
+// Helper that wraps around [NewErrorResponse] and sets the correct message id
+func (r *Request) RespondError(e Error) *Response {
+	return NewErrorResponse(r.MessageID, e)
 }
 func (req *Request) GetMethod() Method {
 	m, _ := DecodeMethod(req.Method)
