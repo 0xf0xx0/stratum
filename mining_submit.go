@@ -6,7 +6,7 @@ import (
 )
 
 // Alias for [MiningSubmitParams].
-type Share = MiningSubmitParams
+type Share MiningSubmitParams
 // Alias for [BooleanResult].
 type SubmitResult BooleanResult
 
