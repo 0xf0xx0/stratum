@@ -96,10 +96,7 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 			return errors.New("incorrect subscription length; must be 2")
 		}
 
-		p.Subscriptions[i].Method, err = DecodeMethod(sub[0].(string))
-		if err != nil {
-			return err
-		}
+		p.Subscriptions[i].Method = DecodeMethod(sub[0].(string))
 
 		p.Subscriptions[i].SessionID, err = DecodeID(sub[1].(string))
 		if err != nil {

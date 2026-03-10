@@ -64,37 +64,37 @@ func EncodeMethod(m Method) (string, error) {
 	}
 }
 
-func DecodeMethod(m string) (Method, error) {
+func DecodeMethod(m string) Method {
 	switch m {
 	case "mining.authorize":
-		return MethodMiningAuthorize, nil
+		return MethodMiningAuthorize
 	case "mining.configure":
-		return MethodMiningConfigure, nil
+		return MethodMiningConfigure
 	case "mining.subscribe":
-		return MethodMiningSubscribe, nil
+		return MethodMiningSubscribe
 	case "mining.extranonce.subscribe":
-		return MethodMiningExtranonceSubscribe, nil
+		return MethodMiningExtranonceSubscribe
 	case "mining.notify":
-		return MethodMiningNotify, nil
+		return MethodMiningNotify
 	case "mining.submit":
-		return MethodMiningSubmit, nil
+		return MethodMiningSubmit
 	case "mining.set_difficulty":
-		return MethodMiningSetDifficulty, nil
+		return MethodMiningSetDifficulty
 	case "mining.set_version_mask":
-		return MethodMiningSetVersionMask, nil
+		return MethodMiningSetVersionMask
 	case "mining.set_extranonce":
-		return MethodMiningSetExtraNonce, nil
+		return MethodMiningSetExtraNonce
 	case "mining.suggest_difficulty":
-		return MethodMiningSuggestDifficulty, nil
+		return MethodMiningSuggestDifficulty
 	case "client.get_version":
-		return MethodClientGetVersion, nil
+		return MethodClientGetVersion
 	case "client.reconnect":
-		return MethodClientReconnect, nil
+		return MethodClientReconnect
 	case "mining.ping":
-		return MethodMiningPing, nil
+		return MethodMiningPing
 	case "client.show_message":
-		return MethodClientShowMessage, nil
+		return MethodClientShowMessage
 	default:
-		return MethodUnknown, errors.New("unknown stratum method")
+		return MethodUnknown
 	}
 }

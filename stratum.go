@@ -24,7 +24,7 @@ type Message interface {
 // response: server to client
 
 // Notification is for methods that do not require a [Response].
-// Automatically includes a newline when marshalling.
+// Automatically appends a newline when marshalling.
 // Implements [Message].
 type Notification struct {
 	Method string        `json:"method"`
@@ -40,7 +40,7 @@ func NewNotification(m Method, params []interface{}) *Notification {
 }
 
 // Request is for methods that require a [Response].
-// Automatically includes a newline when marshalling.
+// Automatically appends a newline when marshalling.
 // Implements [Message].
 type Request struct {
 	MessageID MessageID     `json:"id"`
@@ -62,7 +62,7 @@ func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 }
 
 // Response is what is sent back in response to a [Request].
-// Automatically includes a newline when marshalling.
+// Automatically appends a newline when marshalling.
 // Implements [Message].
 type Response struct {
 	MessageID MessageID   `json:"id"`
@@ -96,13 +96,13 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
 }
+
 // Helper that wraps around [NewErrorResponse] and sets the correct message id
 func (r *Request) RespondError(e Error) *Response {
 	return NewErrorResponse(r.MessageID, e)
 }
 func (req *Request) GetMethod() Method {
-	m, _ := DecodeMethod(req.Method)
-	return m
+	return DecodeMethod(req.Method)
 }
 func (r *Request) Marshal() ([]byte, error) {
 	if r.Method == "" {
@@ -149,8 +149,7 @@ func (r *Response) Unmarshal(j []byte) error {
 }
 
 func (n *Notification) GetMethod() Method {
-	m, _ := DecodeMethod(n.Method)
-	return m
+	return DecodeMethod(n.Method)
 }
 func (r *Notification) Marshal() ([]byte, error) {
 	if r.Method == "" {
