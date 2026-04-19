@@ -7,7 +7,7 @@ type ClientReconnectParams struct {
 	Port, Waittime uint16
 }
 
-// this assumes hostname and port are required, and waittime is optional
+// FromNotification parses the [ClientReconnectParams] from a [Notification].
 func (p *ClientReconnectParams) FromNotification(n *Notification) error {
 	if n.Method != MethodClientReconnect.String() {
 		return errors.New("incorrect method")
@@ -43,7 +43,7 @@ func (p *ClientReconnectParams) FromNotification(n *Notification) error {
 	return nil
 }
 
-// this assumes hostname and port are required, and waittime is optional
+// ToNotification creates a [Notification] from the [ClientReconnectParams].
 func (p *ClientReconnectParams) ToNotification() *Notification {
 	params := make([]interface{}, 3)
 	params[0] = p.Hostname

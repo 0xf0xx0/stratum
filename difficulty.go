@@ -1,6 +1,7 @@
 package stratum
 
-// Difficulty can be given as a uint or a float.
+// Difficulty must be given as a float64.
+// TODO: fix params
 func validDifficulty(u interface{}) bool {
 	switch d := u.(type) {
 	case float64:

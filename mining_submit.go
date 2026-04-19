@@ -7,10 +7,12 @@ import (
 
 // Alias for [MiningSubmitParams].
 type Share MiningSubmitParams
+
 // Alias for [BooleanResult].
 type SubmitResult BooleanResult
 
-// A MiningSubmitParams is the data returned by the worker in a mining.submit. Job + MiningSubmitParams = Proof
+// A MiningSubmitParams is the data returned by the worker in a mining.submit.
+// Job + MiningSubmitParams = Proof
 type MiningSubmitParams struct {
 	Name        string // worker name, like `bc1qfakeaddr.bitaxe`
 	JobID       string // Stratum Job ID, must match a mining.notify
@@ -20,7 +22,7 @@ type MiningSubmitParams struct {
 	VersionMask uint32 // block version + VersionMask = proof version
 }
 
-// FromRequest creates a MiningSubmitParams from a Request.
+// FromRequest parses the [MiningSubmitParams] from a [Request].
 func (p *MiningSubmitParams) FromRequest(r *Request) error {
 	if r.Method != MethodMiningSubmit.String() {
 		return errors.New("incorrect method")
@@ -94,6 +96,8 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 	}
 	return nil
 }
+
+// ToRequest creates a [Request] from the [MiningSubmitParams].
 func (p *MiningSubmitParams) ToRequest(id MessageID) *Request {
 	var sx []interface{}
 	if p.VersionMask != 0 {

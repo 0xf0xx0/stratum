@@ -9,6 +9,7 @@ type MiningConfigureParams struct {
 	Parameters map[string]interface{}
 }
 
+// FromRequest parses the [MiningConfigureParams] from a [Request].
 func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	if r.Method != MethodMiningConfigure.String() {
 		return errors.New("incorrect method")
@@ -29,6 +30,8 @@ func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	p.Parameters = r.Params[1].(map[string]interface{})
 	return nil
 }
+
+// ToRequest creates a [Request] from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
 	params := make([]interface{}, 2)
 	params[0] = p.Supported
@@ -36,6 +39,7 @@ func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
 	return NewRequest(id, MethodMiningConfigure, params)
 }
 
+// Supports checks if the [MiningConfigureParams] contains the given extension.
 func (p *MiningConfigureParams) Supports(extension string) bool {
 	for _, supported := range p.Supported {
 		if supported == extension {
@@ -45,9 +49,9 @@ func (p *MiningConfigureParams) Supports(extension string) bool {
 	return false
 }
 
-// TODO: how to do To/FromResponse?
 type ConfigureResult map[string]interface{}
 
+// FromResponse parses the [ConfigureResult] from a [Response].
 func (p *ConfigureResult) FromResponse(r *Response) error {
 	result, ok := r.Result.(ConfigureResult)
 	if !ok {
@@ -57,10 +61,13 @@ func (p *ConfigureResult) FromResponse(r *Response) error {
 
 	return nil
 }
+
+// ToResponse creates a [Response] from the [ConfigureResult].
 func (p *ConfigureResult) ToResponse(id MessageID) *Response {
 	return NewResponse(id, p)
 }
 
+// Supports checks if the [ConfigureResult] contains the given extension.
 func (p *ConfigureResult) Supports(extension string) bool {
 	_, ok := (*p)[extension]
 	return ok
@@ -71,6 +78,7 @@ type VersionRollingConfigurationRequest struct {
 	MinBitCount uint8
 }
 
+// ReadVersionRolling reads the version-rolling config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
 	if !p.Supports("version-rolling") {
 		return nil
@@ -113,6 +121,7 @@ func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfiguratio
 	}
 }
 
+// addVersionRolling adds version-rolling to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
 	if p.Supports("version-rolling") {
 		return errors.New("request already contains version-rolling")
@@ -131,6 +140,7 @@ type VersionRollingConfigurationResult struct {
 	Mask     uint32
 }
 
+// ReadVersionRolling reads the version-rolling result from the [ConfigureResult].
 func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResult {
 	v, ok := (*p)["version-rolling"]
 	if !ok {
@@ -170,6 +180,7 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 	}
 }
 
+// addVersionRolling adds version-rolling to the [ConfigureResult].
 func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
 	if p.Supports("version-rolling") {
 		return errors.New("result already contains version-rolling")
@@ -187,6 +198,7 @@ type MinimumDifficultyConfigurationRequest struct {
 	Difficulty float64
 }
 
+// ReadMinimumDifficulty reads the minimum-difficulty config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
 	if !p.Supports("minimum_difficulty") {
 		return nil
@@ -202,6 +214,7 @@ func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfig
 	}
 }
 
+// addMinimumDifficulty adds minimum-difficulty to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
 	if p.Supports("minimum_difficulty") {
 		return errors.New("request already contains minimum_difficulty")
@@ -218,6 +231,7 @@ type MinimumDifficultyConfigurationResult struct {
 	Accepted bool
 }
 
+// ReadMinimumDifficulty reads the minimum-difficulty result from the [ConfigureResult].
 func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfigurationResult {
 	v, ok := (*p)["minimum_difficulty"]
 	if !ok {
@@ -234,6 +248,7 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	}
 }
 
+// addMinimumDifficulty adds minimum-difficulty to the [ConfigureResult].
 func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
 	if p.Supports("minimum_difficulty") {
 		return errors.New("result already contains minimum_difficulty")
@@ -246,6 +261,7 @@ func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationR
 
 type SubscribeExtranonceConfigurationRequest struct{}
 
+// ReadSubscribeExtranonce reads the subscribe_extranonce config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
 	if !p.Supports("subscribe_extranonce") {
 		return nil
@@ -254,6 +270,7 @@ func (p *MiningConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceCo
 	return &SubscribeExtranonceConfigurationRequest{}
 }
 
+// addSubscribeExtranonce adds subscribe_extranonce to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
 	if p.Supports("subscribe_extranonce") {
 		return errors.New("request already contains subscribe_extranonce")
@@ -267,6 +284,7 @@ type SubscribeExtranonceConfigurationResult struct {
 	Accepted bool
 }
 
+// ReadSubscribeExtranonce reads the subscribe_extranonce result from the [ConfigureResult].
 func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationResult {
 	v, ok := (*p)["subscribe_extranonce"]
 	if !ok {
@@ -283,6 +301,7 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	}
 }
 
+// addSubscribeExtranonce adds subscribe_extranonce to the [ConfigureResult].
 func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
 	if p.Supports("subscribe_extranonce") {
 		return errors.New("result already contains subscribe_extranonce")
@@ -300,6 +319,7 @@ type InfoConfigurationRequest struct {
 	HWID          *string
 }
 
+// ReadInfo reads the info config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadInfo() *InfoConfigurationRequest {
 	if !p.Supports("info") {
 		return nil
@@ -350,6 +370,7 @@ func (p *MiningConfigureParams) ReadInfo() *InfoConfigurationRequest {
 	return &info
 }
 
+// addInfo adds info to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addInfo(x InfoConfigurationRequest) error {
 	if p.Supports("info") {
 		return errors.New("request already contains info")
@@ -369,6 +390,7 @@ type InfoConfigurationResult struct {
 	Accepted bool
 }
 
+// ReadInfo reads the info result from the [ConfigureResult].
 func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 	v, ok := (*p)["info"]
 	if !ok {
@@ -385,6 +407,7 @@ func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
 	}
 }
 
+// addInfo adds info to the [ConfigureResult].
 func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
 	if p.Supports("info") {
 		return errors.New("result already contains info")
@@ -395,6 +418,7 @@ func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
 	return nil
 }
 
+// Add adds an extension configuration to the [MiningConfigureParams].
 func (p *MiningConfigureParams) Add(z interface{}) error {
 	switch x := z.(type) {
 	case VersionRollingConfigurationRequest:
@@ -410,6 +434,7 @@ func (p *MiningConfigureParams) Add(z interface{}) error {
 	}
 }
 
+// Add adds an extension result to the [ConfigureResult].
 func (p *ConfigureResult) Add(z interface{}) error {
 	switch x := z.(type) {
 	case VersionRollingConfigurationResult:

@@ -6,13 +6,15 @@ import (
 )
 
 type MiningAuthorizeParams struct {
+	// Username is required, and is typically the on-chain address to mine to.
 	Username string
-	// optional, typically appened to the username with `.`
+	// Worker is optional, and typically appened to the username with `.`
 	Worker string
-	// Password is optional. Pools don't necessarily require a miner to log in to mine.
+	// Password is optional. Pools don't necessarily require this.
 	Password string
 }
 
+// FromRequest parses the [MiningAuthorizeParams] from a [Request].
 func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 	if r.Method != MethodMiningAuthorize.String() {
 		return errors.New("incorrect method")
@@ -47,6 +49,7 @@ func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 	return nil
 }
 
+// ToRequest creates a [Request] from the [MiningAuthorizeParams].
 func (p *MiningAuthorizeParams) ToRequest(id MessageID) *Request {
 	username := p.Username
 	if p.Worker != "" {

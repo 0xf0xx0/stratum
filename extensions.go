@@ -16,6 +16,7 @@ const (
 	InfoExtension
 )
 
+// EncodeExtension converts an [Extension] to its string name.
 func EncodeExtension(m Extension) (string, error) {
 	switch m {
 	case VersionRollingExtension:
@@ -31,6 +32,7 @@ func EncodeExtension(m Extension) (string, error) {
 	}
 }
 
+// DecodeExtension converts a string name to an [Extension].
 func DecodeExtension(m string) Extension {
 	switch m {
 	case "version-rolling":

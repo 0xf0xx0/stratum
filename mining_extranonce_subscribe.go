@@ -4,6 +4,7 @@ import "errors"
 
 type MiningExtranonceSubscribeParams struct{}
 
+// FromRequest parses the [MiningExtranonceSubscribeParams] from a [Request].
 func (p *MiningExtranonceSubscribeParams) FromRequest(n *Request) error {
 	if n.Method != MethodMiningExtranonceSubscribe.String() {
 		return errors.New("incorrect method")
@@ -14,6 +15,7 @@ func (p *MiningExtranonceSubscribeParams) FromRequest(n *Request) error {
 	return nil
 }
 
+// ToRequest creates a [Request] from the [MiningExtranonceSubscribeParams].
 func (p *MiningExtranonceSubscribeParams) ToRequest(id MessageID) *Request {
 	return NewRequest(id, MethodMiningExtranonceSubscribe, []interface{}{})
 }

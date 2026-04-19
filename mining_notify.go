@@ -20,6 +20,7 @@ type MiningNotifyParams struct {
 	Clean          bool
 }
 
+// FromNotification parses the [MiningNotifyParams] from a [Notification].
 func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 	if n.Method != MethodMiningNotify.String() {
 		return errors.New("incorrect method")
@@ -126,6 +127,7 @@ func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 	return nil
 }
 
+// ToNotification creates a [Notification] from the [MiningNotifyParams].
 func (n *MiningNotifyParams) ToNotification() *Notification {
 	params := make([]interface{}, 9)
 
@@ -146,17 +148,4 @@ func (n *MiningNotifyParams) ToNotification() *Notification {
 	params[8] = n.Clean
 
 	return NewNotification(MethodMiningNotify, params)
-}
-
-// ported from public-pool
-func SwapWordEndianness(buf []byte) []byte {
-	swapped := make([]byte, len(buf))
-
-	for i := 0; i < len(buf); i += 4 {
-		swapped[i] = buf[i+3]
-		swapped[i+1] = buf[i+2]
-		swapped[i+2] = buf[i+1]
-		swapped[i+3] = buf[i]
-	}
-	return swapped
 }

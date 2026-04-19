@@ -8,6 +8,7 @@ type MiningSuggestDifficultyParams struct {
 	Difficulty float64
 }
 
+// FromRequest parses the [MiningSuggestDifficultyParams] from a [Request].
 func (p *MiningSuggestDifficultyParams) FromRequest(r *Request) error {
 	if r.Method != MethodMiningSuggestDifficulty.String() {
 		return errors.New("incorrect method")
@@ -25,6 +26,7 @@ func (p *MiningSuggestDifficultyParams) FromRequest(r *Request) error {
 	return nil
 }
 
+// ToRequest creates a [Request] from the [MiningSuggestDifficultyParams].
 func (p *MiningSuggestDifficultyParams) ToRequest(id MessageID) *Request {
 	return NewRequest(id, MethodMiningSuggestDifficulty, []interface{}{p.Difficulty})
 }

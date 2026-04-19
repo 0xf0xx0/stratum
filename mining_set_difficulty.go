@@ -8,6 +8,7 @@ type MiningSetDifficultyParams struct {
 	Difficulty float64
 }
 
+// FromNotification parses the [MiningSetDifficultyParams] from a [Notification].
 func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
 	if n.Method != MethodMiningSetDifficulty.String() {
 		return errors.New("incorrect method")
@@ -24,6 +25,8 @@ func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
 
 	return nil
 }
+
+// ToNotification creates a [Notification] from the [MiningSetDifficultyParams].
 func (p *MiningSetDifficultyParams) ToNotification() *Notification {
 	return NewNotification(MethodMiningSetDifficulty, []interface{}{p.Difficulty})
 }

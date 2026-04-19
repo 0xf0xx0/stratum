@@ -24,11 +24,13 @@ const (
 	MethodMiningSuggestDifficulty
 )
 
+// String returns the string representation of the [Method].
 func (m Method) String() string {
 	str, _ := EncodeMethod(m)
 	return str
 }
 
+// EncodeMethod converts a [Method] to its string name.
 func EncodeMethod(m Method) (string, error) {
 	switch m {
 	case MethodMiningAuthorize:
@@ -64,6 +66,7 @@ func EncodeMethod(m Method) (string, error) {
 	}
 }
 
+// DecodeMethod converts a string name to a [Method].
 func DecodeMethod(m string) Method {
 	switch m {
 	case "mining.authorize":

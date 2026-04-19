@@ -7,9 +7,10 @@ import (
 
 type MiningSubscribeParams struct {
 	UserAgent   string // required
-	ExtraNonce1 *ID // optional extranonce subscription
+	ExtraNonce1 *ID    // optional extranonce subscription
 }
 
+// FromRequest parses the [MiningSubscribeParams] from a [Request].
 func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 	if r.Method != MethodMiningSubscribe.String() {
 		return errors.New("incorrect method")
@@ -44,6 +45,7 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 	return nil
 }
 
+// ToRequest creates a [Request] from the [MiningSubscribeParams].
 func (p *MiningSubscribeParams) ToRequest(id MessageID) *Request {
 	if p.ExtraNonce1 == nil {
 		return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent})
@@ -63,6 +65,7 @@ type MiningSubscribeResult struct {
 	ExtraNonce2Size uint32
 }
 
+// FromResponse parses the [MiningSubscribeResult] from a [Response].
 func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 	result, ok := r.Result.([]interface{})
 	if !ok {
@@ -112,6 +115,7 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 	return nil
 }
 
+// ToResponse creates a [Response] from the [MiningSubscribeResult].
 func (p *MiningSubscribeResult) ToResponse(m MessageID) *Response {
 	subscriptions := make([][]string, len(p.Subscriptions))
 	for i := 0; i < len(p.Subscriptions); i++ {

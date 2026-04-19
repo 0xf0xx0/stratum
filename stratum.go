@@ -31,6 +31,7 @@ type Notification struct {
 	Params []interface{} `json:"params"`
 }
 
+// NewNotification creates a new [Notification] with the given method and params.
 func NewNotification(m Method, params []interface{}) *Notification {
 	n, _ := EncodeMethod(m)
 	return &Notification{
@@ -51,6 +52,7 @@ type Request struct {
 // internal helper, exposed for advanced use
 //
 // you probably want the methods ToRequest/ToNotification/ToResponse functions
+// NewRequest creates a new [Request] with the given id, method, and params.
 func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 	n, _ := EncodeMethod(method)
 	return &Request{
@@ -70,6 +72,7 @@ type Response struct {
 	Error     *Error      `json:"error,omitempty"`
 }
 
+// NewResponse creates a new [Response] with the given id and result.
 func NewResponse(id MessageID, r interface{}) *Response {
 	return &Response{
 		MessageID: id,
@@ -81,9 +84,12 @@ type BooleanResult struct {
 	Result bool
 }
 
+// NewBooleanResponse creates a new [Response] with a boolean result.
 func NewBooleanResponse(id MessageID, x bool) *Response {
 	return NewResponse(id, x)
 }
+
+// NewErrorResponse creates a new [Response] with an error.
 func NewErrorResponse(id MessageID, e Error) *Response {
 	return &Response{
 		MessageID: id,
@@ -92,18 +98,22 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 	}
 }
 
-// Helper that wraps around [NewResponse] and sets the correct message id
+// Respond creates a [Response] to the [Request] with the given result.
 func (r *Request) Respond(d interface{}) *Response {
 	return NewResponse(r.MessageID, d)
 }
 
-// Helper that wraps around [NewErrorResponse] and sets the correct message id
+// RespondError creates an error [Response] to the [Request].
 func (r *Request) RespondError(e Error) *Response {
 	return NewErrorResponse(r.MessageID, e)
 }
+
+// GetMethod returns the [Method] of the [Request].
 func (req *Request) GetMethod() Method {
 	return DecodeMethod(req.Method)
 }
+
+// Marshal returns a JSON-encoded [Request] with a trailing newline.
 func (r *Request) Marshal() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
@@ -114,8 +124,9 @@ func (r *Request) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
+
+// Unmarshal parses JSON into a [Request].
 func (r *Request) Unmarshal(j []byte) error {
-	/// TODO: .UnmarshalString
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
 		return err
@@ -128,10 +139,12 @@ func (r *Request) Unmarshal(j []byte) error {
 	return nil
 }
 
-// returns [MethodUnknown] as responses have no method
+// GetMethod returns the [Method] of the [Response].
 func (res *Response) GetMethod() Method {
 	return MethodUnknown
 }
+
+// Marshal returns the JSON-encoded [Response] with a trailing newline.
 func (r *Response) Marshal() ([]byte, error) {
 	marshalled, err := sonic.Marshal(r)
 	if err != nil {
@@ -139,6 +152,8 @@ func (r *Response) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
+
+// Unmarshal parses JSON into the [Response].
 func (r *Response) Unmarshal(j []byte) error {
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
@@ -148,9 +163,12 @@ func (r *Response) Unmarshal(j []byte) error {
 	return nil
 }
 
+// GetMethod returns the [Method] of the [Notification].
 func (n *Notification) GetMethod() Method {
 	return DecodeMethod(n.Method)
 }
+
+// Marshal returns the JSON-encoded [Notification] with a trailing newline.
 func (r *Notification) Marshal() ([]byte, error) {
 	if r.Method == "" {
 		return []byte{}, errors.New("invalid method")
@@ -162,6 +180,8 @@ func (r *Notification) Marshal() ([]byte, error) {
 	}
 	return append(marshalled, '\n'), nil
 }
+
+// Unmarshal parses JSON into the [Notification].
 func (r *Notification) Unmarshal(j []byte) error {
 	err := sonic.Unmarshal(j, r)
 	if err != nil {
@@ -175,6 +195,7 @@ func (r *Notification) Unmarshal(j []byte) error {
 	return nil
 }
 
+// FromResponse parses the [BooleanResult] from a [Response].
 func (b *BooleanResult) FromResponse(r *Response) error {
 	var ok bool
 	b.Result, ok = r.Result.(bool)
@@ -185,6 +206,7 @@ func (b *BooleanResult) FromResponse(r *Response) error {
 	return nil
 }
 
+// ToResponse creates a [Response] from the [BooleanResult].
 func (b *BooleanResult) ToResponse(id MessageID) *Response {
 	return NewResponse(id, b.Result)
 }

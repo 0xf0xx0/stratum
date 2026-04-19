@@ -6,6 +6,7 @@ type MiningSetVersionMaskParams struct {
 	Mask uint32
 }
 
+// FromNotification parses the [MiningSetVersionMaskParams] from a [Notification].
 func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
 	if n.Method != MethodMiningSetVersionMask.String() {
 		return errors.New("incorrect method")
@@ -28,6 +29,7 @@ func (p *MiningSetVersionMaskParams) FromNotification(n *Notification) error {
 	return nil
 }
 
+// ToNotification creates a [Notification] from the [MiningSetVersionMaskParams].
 func (p *MiningSetVersionMaskParams) ToNotification() *Notification {
 	return NewNotification(MethodMiningSetVersionMask, []interface{}{encodeLittleEndian(p.Mask)})
 }

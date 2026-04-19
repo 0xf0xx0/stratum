@@ -16,17 +16,18 @@ const (
 )
 
 // Error is a 2(G: or more??? see public-pool)-element json array.
-// It doesn't get a FromResponse/ToResponse cause its already contained in a [Response]
+// It doesn't get a FromResponse/ToResponse cause it's already contained in a [Response]
 type Error struct {
 	Code    ErrorCode
 	Message string
 }
 
-// error interface
+// Error returns the string representation of the [Error].
 func (e *Error) Error() string {
 	return strconv.Itoa(int(e.Code)) + ": " + e.Message
 }
 
+// UnmarshalJSON parses JSON into the [Error].
 func (e *Error) UnmarshalJSON(b []byte) error {
 	res := [2]string{}
 	err := sonic.Unmarshal(b, &res)
@@ -44,6 +45,8 @@ func (e *Error) UnmarshalJSON(b []byte) error {
 	e.Message = res[1]
 	return nil
 }
+
+// MarshalJSON returns the [Error] as JSON.
 func (e *Error) MarshalJSON() ([]byte, error) {
 	res := [2]string{strconv.Itoa(int(e.Code)), e.Message}
 	return sonic.Marshal(res)

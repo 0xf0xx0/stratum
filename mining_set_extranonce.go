@@ -2,11 +2,12 @@ package stratum
 
 import "errors"
 
-type MiningSetExtraNonceParams struct{
-	ExtraNonce1 ID
+type MiningSetExtraNonceParams struct {
+	ExtraNonce1     ID
 	ExtraNonce2Size int
 }
 
+// FromNotification parses the [MiningSetExtraNonceParams] from a [Notification].
 func (p *MiningSetExtraNonceParams) FromNotification(n *Notification) error {
 	if n.Method != MethodMiningSetExtraNonce.String() {
 		return errors.New("incorrect method")
@@ -33,6 +34,7 @@ func (p *MiningSetExtraNonceParams) FromNotification(n *Notification) error {
 	return nil
 }
 
+// ToNotification creates a [Notification] from the [MiningSetExtraNonceParams].
 func (p *MiningSetExtraNonceParams) ToNotification(id MessageID) *Notification {
 	return NewNotification(MethodMiningSetExtraNonce, []interface{}{p.ExtraNonce1.String(), p.ExtraNonce2Size})
 }

@@ -6,6 +6,7 @@ type ClientShowMessageParams struct {
 	Message string
 }
 
+// FromNotification parses the [ClientShowMessageParams] from a [Notification].
 func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
 	if n.Method != MethodClientShowMessage.String() {
 		return errors.New("incorrect method")
@@ -22,6 +23,7 @@ func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
 	return nil
 }
 
+// ToNotification creates a [Notification] from the [ClientShowMessageParams].
 func (p *ClientShowMessageParams) ToNotification() *Notification {
 	return NewNotification(MethodClientShowMessage, []interface{}{p.Message})
 }
