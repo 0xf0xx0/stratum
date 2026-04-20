@@ -1,7 +1,6 @@
 package stratum
 
-// Difficulty must be given as a float64.
-// TODO: fix params
+// Internal helper to assert difficulty as a positive, non-zero float64
 func validDifficulty(u interface{}) bool {
 	switch d := u.(type) {
 	case float64:
