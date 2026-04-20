@@ -4,7 +4,8 @@ import (
 	"errors"
 	"strings"
 )
-
+// MiningAuthorizeParams is sent from the miner to the pool.
+// It is used to authorize a miner, required before any shares can be submitted.
 type MiningAuthorizeParams struct {
 	// Username is required, and is typically the on-chain address to mine to.
 	Username string

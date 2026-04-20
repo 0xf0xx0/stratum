@@ -1,7 +1,9 @@
 package stratum
 
 import "errors"
-
+// MiningSetVersionMaskParams is sent from the client to the pool.
+// It is used to set the clients version rolling mask, if it supports [VersionRollingExtension].
+// This message can be sent any time after successful setup of the version rolling by [MethodMiningConfigure] message.
 type MiningSetVersionMaskParams struct {
 	Mask uint32
 }

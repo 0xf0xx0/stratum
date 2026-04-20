@@ -2,8 +2,9 @@ package stratum
 
 import "errors"
 
-// https://github.com/slushpool/stratumprotocol/blob/master/stratum-extensions.mediawiki
-
+// MiningConfigureParams is sent from the miner to the pool.
+// The client uses the message to advertise its features and to request/allow some protocol extensions.
+// This should be the first message sent.
 type MiningConfigureParams struct {
 	Supported  []string
 	Parameters map[string]interface{}

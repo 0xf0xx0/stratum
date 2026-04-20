@@ -7,6 +7,7 @@ import (
 type Method uint8
 
 const (
+	// MethodUnknown is unknown.
 	MethodUnknown Method = iota
 	MethodClientGetVersion
 	MethodClientReconnect

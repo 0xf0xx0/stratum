@@ -4,6 +4,9 @@ import (
 	"errors"
 )
 
+// MiningSuggestDifficultyParams is sent from the client to the pool.
+// It is used once to suggest a starting difficulty, and may be ignored by the pool.
+// If accepted, the pool will echo the suggested difficulty in a [MethodMiningSetDifficulty].
 type MiningSuggestDifficultyParams struct {
 	Difficulty float64
 }

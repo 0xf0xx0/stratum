@@ -9,14 +9,15 @@ import (
 
 type ErrorCode uint32
 
-// the Stratum protocol does not define any error codes. Each pool
-// has its own set of errors, apparently. You can define your own.
+// the Stratum protocol does not define any error codes.
+// Each pool has its own set of errors, apparently.
+// You can define your own.
 const (
 	None ErrorCode = iota
 )
 
 // Error is a 2(G: or more??? see public-pool)-element json array.
-// It doesn't get a FromResponse/ToResponse cause it's already contained in a [Response]
+// It's contained within an error [Response].
 type Error struct {
 	Code    ErrorCode
 	Message string

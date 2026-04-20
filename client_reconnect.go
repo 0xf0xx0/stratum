@@ -1,7 +1,9 @@
 package stratum
 
 import "errors"
-
+// ClientReconnectParams is sent from the pool to the client, and tells the client when and where to reconnect.
+//
+// If client.reconnect is sent without parameters, the miner is to assume it's to reconnect to the same port and URL.
 type ClientReconnectParams struct {
 	Hostname       string
 	Port, Waittime uint16

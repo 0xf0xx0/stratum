@@ -1,7 +1,8 @@
 package stratum
 
 import "errors"
-
+// MiningSetExtraNonceParams is sent from the pool to the client.
+// It is used to change the clients extranonce1 on the fly.
 type MiningSetExtraNonceParams struct {
 	ExtraNonce1     ID
 	ExtraNonce2Size int

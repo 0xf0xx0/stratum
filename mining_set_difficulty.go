@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+// MiningSetDifficultyParams is sent from the pool to the client.
+// It is used to signal the miner to start submitting shares under the new difficulty.
 type MiningSetDifficultyParams struct {
 	Difficulty float64
 }

@@ -55,8 +55,18 @@ func decodeLittleEndian(s string) (uint32, error) {
 	return x, nil
 }
 
+// Internal helper to assert difficulty as a positive, non-zero float64
+func validDifficulty(u interface{}) bool {
+	switch d := u.(type) {
+	case float64:
+		return d > 0
+	default:
+		return false
+	}
+}
+
 // SwapWordEndianness swaps the endianness of each 4-byte word in the buffer.
-// Ported from public-pool.
+// Ported from public-pool, and exposed for conveince.
 func SwapWordEndianness(buf []byte) []byte {
 	swapped := make([]byte, len(buf))
 

@@ -1,3 +1,4 @@
+// Package stratum provides methods to assist with implementing the Stratum v1 protocol.
 package stratum
 
 import (

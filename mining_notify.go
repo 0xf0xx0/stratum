@@ -7,7 +7,9 @@ import (
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 )
-
+// MiningNotifyParams is sent from the pool to the client.
+// It is used to push new work to the miner.
+// Previous work should be aborted if Clean Jobs = true!
 type MiningNotifyParams struct {
 	JobID          string
 	PrevBlockHash  *chainhash.Hash

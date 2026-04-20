@@ -2,6 +2,10 @@ package stratum
 
 import "errors"
 
+// MiningExtranonceSubscribeParams is a parameter-less message sent from the client to the pool.
+// The client should tell the pool it supports [SubscribeExtranonceExtension], then upon successful subscription to the pool send this method.
+//
+// See: https://github.com/nicehash/Specifications/blob/master/NiceHash_extranonce_subscribe_extension.txt
 type MiningExtranonceSubscribeParams struct{}
 
 // FromRequest parses the [MiningExtranonceSubscribeParams] from a [Request].

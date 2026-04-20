@@ -5,6 +5,8 @@ import (
 	"math"
 )
 
+// MiningSubscribeParams is sent from the client to the pool.
+// It is used to subscribe to work from a pool, and is required before submitting shares.
 type MiningSubscribeParams struct {
 	UserAgent   string // required
 	ExtraNonce1 *ID    // optional extranonce subscription

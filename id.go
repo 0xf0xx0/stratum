@@ -2,7 +2,7 @@ package stratum
 
 import "encoding/binary"
 
-// A stratum session id is a uint32 used for the client id, and typically the extranonce1 as well.
+// A stratum session ID is a uint32 used for the client id, and typically the extranonce1 as well.
 type ID uint32
 
 // String returns the [ID] as a big-endian hex string.
