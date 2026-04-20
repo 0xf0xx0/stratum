@@ -4,8 +4,9 @@ import (
 	"errors"
 	"strings"
 )
-// MiningAuthorizeParams is sent from the miner to the pool.
-// It is used to authorize a miner, required before any shares can be submitted.
+
+// MiningAuthorizeParams is sent from the client to the pool.
+// It is used to authorize a client, and is required before any shares can be submitted.
 type MiningAuthorizeParams struct {
 	// Username is required, and is typically the on-chain address to mine to.
 	Username string
@@ -57,11 +58,11 @@ func (p *MiningAuthorizeParams) ToRequest(id MessageID) *Request {
 		username += "." + p.Worker
 	}
 	if p.Password == "" {
-		return NewRequest(id, MethodMiningAuthorize, []interface{}{username})
+		return NewRequest(id, MethodMiningAuthorize, []any{username})
 	}
 
-	return NewRequest(id, MethodMiningAuthorize, []interface{}{username, p.Password})
+	return NewRequest(id, MethodMiningAuthorize, []any{username, p.Password})
 }
 
-// alias for [BooleanResult].
-type AuthorizeResult BooleanResult
+// Alias for [BooleanResult].
+type AuthorizeResult = BooleanResult

@@ -1,6 +1,7 @@
 package stratum
 
 import "errors"
+
 // ClientReconnectParams is sent from the pool to the client, and tells the client when and where to reconnect.
 //
 // If client.reconnect is sent without parameters, the miner is to assume it's to reconnect to the same port and URL.
@@ -47,7 +48,7 @@ func (p *ClientReconnectParams) FromNotification(n *Notification) error {
 
 // ToNotification creates a [Notification] from the [ClientReconnectParams].
 func (p *ClientReconnectParams) ToNotification() *Notification {
-	params := make([]interface{}, 3)
+	params := make([]any, 3)
 	params[0] = p.Hostname
 	params[1] = p.Port
 

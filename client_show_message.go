@@ -26,5 +26,5 @@ func (p *ClientShowMessageParams) FromNotification(n *Notification) error {
 
 // ToNotification creates a [Notification] from the [ClientShowMessageParams].
 func (p *ClientShowMessageParams) ToNotification() *Notification {
-	return NewNotification(MethodClientShowMessage, []interface{}{p.Message})
+	return NewNotification(MethodClientShowMessage, []any{p.Message})
 }

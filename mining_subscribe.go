@@ -50,9 +50,9 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 // ToRequest creates a [Request] from the [MiningSubscribeParams].
 func (p *MiningSubscribeParams) ToRequest(id MessageID) *Request {
 	if p.ExtraNonce1 == nil {
-		return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent})
+		return NewRequest(id, MethodMiningSubscribe, []any{p.UserAgent})
 	}
-	return NewRequest(id, MethodMiningSubscribe, []interface{}{p.UserAgent, p.ExtraNonce1.String()})
+	return NewRequest(id, MethodMiningSubscribe, []any{p.UserAgent, p.ExtraNonce1.String()})
 }
 
 // A MiningSubscription is a 2-element json array containing a method and a session id.
@@ -69,7 +69,7 @@ type MiningSubscribeResult struct {
 
 // FromResponse parses the [MiningSubscribeResult] from a [Response].
 func (p *MiningSubscribeResult) FromResponse(r *Response) error {
-	result, ok := r.Result.([]interface{})
+	result, ok := r.Result.([]any)
 	if !ok {
 		return errors.New("invalid result type; should be array")
 	}
@@ -78,7 +78,7 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 		return errors.New("invalid parameter length; must be 3")
 	}
 
-	subscriptions := result[0].([]interface{})
+	subscriptions := result[0].([]any)
 
 	idstr, ok := result[1].(string)
 	if !ok {
@@ -96,7 +96,7 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 	var err error
 	p.Subscriptions = make([]MiningSubscription, len(subscriptions))
 	for i, s := range subscriptions {
-		sub := s.([]interface{})
+		sub := s.([]any)
 		if len(sub) != 2 {
 			return errors.New("incorrect subscription length; must be 2")
 		}
@@ -133,7 +133,7 @@ func (p *MiningSubscribeResult) ToResponse(m MessageID) *Response {
 		subscriptions[i][1] = p.Subscriptions[i].SessionID.String()
 	}
 
-	result := make([]interface{}, 3)
+	result := make([]any, 3)
 	result[0] = subscriptions
 	result[1] = p.ExtraNonce1.String()
 	result[2] = p.ExtraNonce2Size

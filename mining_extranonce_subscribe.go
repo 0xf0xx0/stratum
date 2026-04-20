@@ -21,5 +21,5 @@ func (p *MiningExtranonceSubscribeParams) FromRequest(n *Request) error {
 
 // ToRequest creates a [Request] from the [MiningExtranonceSubscribeParams].
 func (p *MiningExtranonceSubscribeParams) ToRequest(id MessageID) *Request {
-	return NewRequest(id, MethodMiningExtranonceSubscribe, []interface{}{})
+	return NewRequest(id, MethodMiningExtranonceSubscribe, []any{})
 }

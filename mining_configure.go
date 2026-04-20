@@ -1,13 +1,15 @@
 package stratum
 
+import "slices"
+
 import "errors"
 
-// MiningConfigureParams is sent from the miner to the pool.
+// MiningConfigureParams is sent from the client to the pool.
 // The client uses the message to advertise its features and to request/allow some protocol extensions.
 // This should be the first message sent.
 type MiningConfigureParams struct {
 	Supported  []string
-	Parameters map[string]interface{}
+	Parameters map[string]any
 }
 
 // FromRequest parses the [MiningConfigureParams] from a [Request].
@@ -20,7 +22,7 @@ func (p *MiningConfigureParams) FromRequest(r *Request) error {
 		return errors.New("incorrect parameter length; must be 2")
 	}
 
-	supported, ok := r.Params[0].([]interface{})
+	supported, ok := r.Params[0].([]any)
 	if !ok {
 		return errors.New("invalid supported format")
 	}
@@ -28,13 +30,13 @@ func (p *MiningConfigureParams) FromRequest(r *Request) error {
 	for idx, s := range supported {
 		p.Supported[idx] = s.(string)
 	}
-	p.Parameters = r.Params[1].(map[string]interface{})
+	p.Parameters = r.Params[1].(map[string]any)
 	return nil
 }
 
 // ToRequest creates a [Request] from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
-	params := make([]interface{}, 2)
+	params := make([]any, 2)
 	params[0] = p.Supported
 	params[1] = p.Parameters
 	return NewRequest(id, MethodMiningConfigure, params)
@@ -42,15 +44,10 @@ func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
 
 // Supports checks if the [MiningConfigureParams] contains the given extension.
 func (p *MiningConfigureParams) Supports(extension string) bool {
-	for _, supported := range p.Supported {
-		if supported == extension {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(p.Supported, extension)
 }
 
-type ConfigureResult map[string]interface{}
+type ConfigureResult map[string]any
 
 // FromResponse parses the [ConfigureResult] from a [Response].
 func (p *ConfigureResult) FromResponse(r *Response) error {
@@ -187,9 +184,9 @@ func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult)
 		return errors.New("result already contains version-rolling")
 	}
 
-	map[string]interface{}(*p)["version-rolling"] = x.Accepted
+	map[string]any(*p)["version-rolling"] = x.Accepted
 	if x.Accepted {
-		map[string]interface{}(*p)["version-rolling.mask"] = encodeBigEndian(x.Mask)
+		map[string]any(*p)["version-rolling.mask"] = encodeBigEndian(x.Mask)
 	}
 
 	return nil
@@ -255,7 +252,7 @@ func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationR
 		return errors.New("result already contains minimum_difficulty")
 	}
 
-	map[string]interface{}(*p)["minimum_difficulty"] = x.Accepted
+	map[string]any(*p)["minimum_difficulty"] = x.Accepted
 
 	return nil
 }
@@ -308,7 +305,7 @@ func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurat
 		return errors.New("result already contains subscribe_extranonce")
 	}
 
-	map[string]interface{}(*p)["subscribe_extranonce"] = x.Accepted
+	map[string]any(*p)["subscribe_extranonce"] = x.Accepted
 
 	return nil
 }
@@ -414,13 +411,13 @@ func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
 		return errors.New("result already contains info")
 	}
 
-	map[string]interface{}(*p)["info"] = x.Accepted
+	map[string]any(*p)["info"] = x.Accepted
 
 	return nil
 }
 
 // Add adds an extension configuration to the [MiningConfigureParams].
-func (p *MiningConfigureParams) Add(z interface{}) error {
+func (p *MiningConfigureParams) Add(z any) error {
 	switch x := z.(type) {
 	case VersionRollingConfigurationRequest:
 		return p.addVersionRolling(x)
@@ -436,7 +433,7 @@ func (p *MiningConfigureParams) Add(z interface{}) error {
 }
 
 // Add adds an extension result to the [ConfigureResult].
-func (p *ConfigureResult) Add(z interface{}) error {
+func (p *ConfigureResult) Add(z any) error {
 	switch x := z.(type) {
 	case VersionRollingConfigurationResult:
 		return p.addVersionRolling(x)

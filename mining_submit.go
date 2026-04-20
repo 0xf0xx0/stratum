@@ -6,10 +6,10 @@ import (
 )
 
 // Alias for [MiningSubmitParams].
-type Share MiningSubmitParams
+type Share = MiningSubmitParams
 
 // Alias for [BooleanResult].
-type SubmitResult BooleanResult
+type SubmitResult = BooleanResult
 
 // A MiningSubmitParams is the data returned by the worker in a mining.submit.
 // Job + MiningSubmitParams = Proof
@@ -99,12 +99,12 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 
 // ToRequest creates a [Request] from the [MiningSubmitParams].
 func (p *MiningSubmitParams) ToRequest(id MessageID) *Request {
-	var sx []interface{}
+	var sx []any
 	if p.VersionMask != 0 {
-		sx = make([]interface{}, 6)
+		sx = make([]any, 6)
 		sx[5] = encodeLittleEndian(p.VersionMask)
 	} else {
-		sx = make([]interface{}, 5)
+		sx = make([]any, 5)
 	}
 
 	sx[0] = string(p.Name)

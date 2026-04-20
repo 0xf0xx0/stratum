@@ -7,9 +7,9 @@ import (
 	"github.com/bytedance/sonic"
 )
 
-type ErrorCode uint32
+type ErrorCode = uint32
 
-// the Stratum protocol does not define any error codes.
+// The Stratum protocol does not define any error codes.
 // Each pool has its own set of errors, apparently.
 // You can define your own.
 const (

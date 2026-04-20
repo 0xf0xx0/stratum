@@ -1,6 +1,7 @@
 package stratum
 
 import "errors"
+
 // MiningSetExtraNonceParams is sent from the pool to the client.
 // It is used to change the clients extranonce1 on the fly.
 type MiningSetExtraNonceParams struct {
@@ -37,5 +38,5 @@ func (p *MiningSetExtraNonceParams) FromNotification(n *Notification) error {
 
 // ToNotification creates a [Notification] from the [MiningSetExtraNonceParams].
 func (p *MiningSetExtraNonceParams) ToNotification(id MessageID) *Notification {
-	return NewNotification(MethodMiningSetExtraNonce, []interface{}{p.ExtraNonce1.String(), p.ExtraNonce2Size})
+	return NewNotification(MethodMiningSetExtraNonce, []any{p.ExtraNonce1.String(), p.ExtraNonce2Size})
 }

@@ -7,8 +7,9 @@ import (
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 )
+
 // MiningNotifyParams is sent from the pool to the client.
-// It is used to push new work to the miner.
+// It is used to push new work to the client.
 // Previous work should be aborted if Clean Jobs = true!
 type MiningNotifyParams struct {
 	JobID          string
@@ -52,7 +53,7 @@ func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 		return errors.New("invalid coinbasept2 (not string)")
 	}
 
-	mb, ok := n.Params[4].([]interface{})
+	mb, ok := n.Params[4].([]any)
 	if !ok {
 		return errors.New("invalid merkle branches type (not []string)")
 	}
@@ -119,7 +120,7 @@ func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 	}
 
 	p.MerkleBranches = make([][]byte, len(branches))
-	for i := 0; i < len(branches); i++ {
+	for i := range branches {
 		p.MerkleBranches[i], err = hex.DecodeString(branches[i])
 		if err != nil || len(p.MerkleBranches[i]) != 32 {
 			return errors.New("invalid merkle branch length (not 32)")
@@ -131,7 +132,7 @@ func (p *MiningNotifyParams) FromNotification(n *Notification) error {
 
 // ToNotification creates a [Notification] from the [MiningNotifyParams].
 func (n *MiningNotifyParams) ToNotification() *Notification {
-	params := make([]interface{}, 9)
+	params := make([]any, 9)
 
 	params[0] = n.JobID
 	params[1] = hex.EncodeToString(SwapWordEndianness(n.PrevBlockHash[:]))

@@ -9,7 +9,7 @@ import (
 
 // MessageID is a unique numerical identifier that is different for each notification and request / response.
 // TODO: do we even need this as a "type"?
-type MessageID uint64
+type MessageID = uint64
 
 // Base interface behind [Request], [Response], and [Notification].
 type Message interface {
@@ -27,12 +27,12 @@ type Message interface {
 // Automatically appends a newline when marshalling.
 // Implements [Message].
 type Notification struct {
-	Method string        `json:"method"`
-	Params []interface{} `json:"params"`
+	Method string `json:"method"`
+	Params []any  `json:"params"`
 }
 
 // NewNotification creates a new [Notification] with the given method and params.
-func NewNotification(m Method, params []interface{}) *Notification {
+func NewNotification(m Method, params []any) *Notification {
 	n, _ := EncodeMethod(m)
 	return &Notification{
 		Method: n,
@@ -44,16 +44,16 @@ func NewNotification(m Method, params []interface{}) *Notification {
 // Automatically appends a newline when marshalling.
 // Implements [Message].
 type Request struct {
-	MessageID MessageID     `json:"id"`
-	Method    string        `json:"method"`
-	Params    []interface{} `json:"params"`
+	MessageID MessageID `json:"id"`
+	Method    string    `json:"method"`
+	Params    []any     `json:"params"`
 }
 
 // internal helper, exposed for advanced use
 //
 // you probably want the methods ToRequest/ToNotification/ToResponse functions
 // NewRequest creates a new [Request] with the given id, method, and params.
-func NewRequest(id MessageID, method Method, params []interface{}) *Request {
+func NewRequest(id MessageID, method Method, params []any) *Request {
 	n, _ := EncodeMethod(method)
 	return &Request{
 		/// FIXME/MAYBE: cast to uint64?
@@ -67,13 +67,13 @@ func NewRequest(id MessageID, method Method, params []interface{}) *Request {
 // Automatically appends a newline when marshalling.
 // Implements [Message].
 type Response struct {
-	MessageID MessageID   `json:"id"`
-	Result    interface{} `json:"result"`
-	Error     *Error      `json:"error,omitempty"`
+	MessageID MessageID `json:"id"`
+	Result    any       `json:"result"`
+	Error     *Error    `json:"error,omitempty"`
 }
 
 // NewResponse creates a new [Response] with the given id and result.
-func NewResponse(id MessageID, r interface{}) *Response {
+func NewResponse(id MessageID, r any) *Response {
 	return &Response{
 		MessageID: id,
 		Result:    r,
@@ -99,7 +99,7 @@ func NewErrorResponse(id MessageID, e Error) *Response {
 }
 
 // Respond creates a [Response] to the [Request] with the given result.
-func (r *Request) Respond(d interface{}) *Response {
+func (r *Request) Respond(d any) *Response {
 	return NewResponse(r.MessageID, d)
 }
 

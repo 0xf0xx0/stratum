@@ -5,7 +5,7 @@ import (
 )
 
 // MiningSetDifficultyParams is sent from the pool to the client.
-// It is used to signal the miner to start submitting shares under the new difficulty.
+// It is used to signal the client to start submitting shares under the new difficulty.
 type MiningSetDifficultyParams struct {
 	Difficulty float64
 }
@@ -30,5 +30,5 @@ func (p *MiningSetDifficultyParams) FromNotification(n *Notification) error {
 
 // ToNotification creates a [Notification] from the [MiningSetDifficultyParams].
 func (p *MiningSetDifficultyParams) ToNotification() *Notification {
-	return NewNotification(MethodMiningSetDifficulty, []interface{}{p.Difficulty})
+	return NewNotification(MethodMiningSetDifficulty, []any{p.Difficulty})
 }

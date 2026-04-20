@@ -31,5 +31,5 @@ func (p *MiningSuggestDifficultyParams) FromRequest(r *Request) error {
 
 // ToRequest creates a [Request] from the [MiningSuggestDifficultyParams].
 func (p *MiningSuggestDifficultyParams) ToRequest(id MessageID) *Request {
-	return NewRequest(id, MethodMiningSuggestDifficulty, []interface{}{p.Difficulty})
+	return NewRequest(id, MethodMiningSuggestDifficulty, []any{p.Difficulty})
 }
