@@ -1,5 +1,7 @@
 # A Golang library for the Bitcoin Stratum Protocol
 
+[![Go Reference](https://pkg.go.dev/badge/git.0xf0xx0.eth.limo/0xf0xx0/stratum.svg)](https://pkg.go.dev/git.0xf0xx0.eth.limo/0xf0xx0/stratum@master)
+
 Stratum is how Bitcoin miners connect with mining pools.
 
 See [here for a description of Stratum](https://web.archive.org/web/20120921014023/http://mining.bitcoin.cz/stratum-mining),

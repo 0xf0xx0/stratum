@@ -1,8 +1,9 @@
 package stratum
 
-import "slices"
-
-import "errors"
+import (
+	"errors"
+	"slices"
+)
 
 // MiningConfigureParams is sent from the client to the pool.
 // The client uses the message to advertise its features and to request/allow some protocol extensions.
@@ -76,7 +77,7 @@ type VersionRollingConfigurationRequest struct {
 	MinBitCount uint8
 }
 
-// ReadVersionRolling reads the version-rolling config from the [MiningConfigureParams].
+// ReadVersionRolling reads the [ExtensionVersionRolling] config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
 	if !p.Supports("version-rolling") {
 		return nil
@@ -119,7 +120,7 @@ func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfiguratio
 	}
 }
 
-// addVersionRolling adds version-rolling to the [MiningConfigureParams].
+// addVersionRolling adds [ExtensionVersionRolling] to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
 	if p.Supports("version-rolling") {
 		return errors.New("request already contains version-rolling")
@@ -138,7 +139,7 @@ type VersionRollingConfigurationResult struct {
 	Mask     uint32
 }
 
-// ReadVersionRolling reads the version-rolling result from the [ConfigureResult].
+// ReadVersionRolling reads the [ExtensionVersionRolling] result from the [ConfigureResult].
 func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResult {
 	v, ok := (*p)["version-rolling"]
 	if !ok {
@@ -178,7 +179,7 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 	}
 }
 
-// addVersionRolling adds version-rolling to the [ConfigureResult].
+// addVersionRolling adds [ExtensionVersionRolling] to the [ConfigureResult].
 func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
 	if p.Supports("version-rolling") {
 		return errors.New("result already contains version-rolling")
@@ -196,7 +197,7 @@ type MinimumDifficultyConfigurationRequest struct {
 	Difficulty float64
 }
 
-// ReadMinimumDifficulty reads the minimum-difficulty config from the [MiningConfigureParams].
+// ReadMinimumDifficulty reads the [ExtensionMinimumDifficulty] config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
 	if !p.Supports("minimum_difficulty") {
 		return nil
@@ -212,7 +213,7 @@ func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfig
 	}
 }
 
-// addMinimumDifficulty adds minimum-difficulty to the [MiningConfigureParams].
+// addMinimumDifficulty adds [ExtensionMinimumDifficulty] to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
 	if p.Supports("minimum_difficulty") {
 		return errors.New("request already contains minimum_difficulty")
@@ -229,7 +230,7 @@ type MinimumDifficultyConfigurationResult struct {
 	Accepted bool
 }
 
-// ReadMinimumDifficulty reads the minimum-difficulty result from the [ConfigureResult].
+// ReadMinimumDifficulty reads the [ExtensionMinimumDifficulty] result from the [ConfigureResult].
 func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfigurationResult {
 	v, ok := (*p)["minimum_difficulty"]
 	if !ok {
@@ -246,7 +247,7 @@ func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfiguratio
 	}
 }
 
-// addMinimumDifficulty adds minimum-difficulty to the [ConfigureResult].
+// addMinimumDifficulty adds [ExtensionMinimumDifficulty] to the [ConfigureResult].
 func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
 	if p.Supports("minimum_difficulty") {
 		return errors.New("result already contains minimum_difficulty")
@@ -259,21 +260,21 @@ func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationR
 
 type SubscribeExtranonceConfigurationRequest struct{}
 
-// ReadSubscribeExtranonce reads the subscribe_extranonce config from the [MiningConfigureParams].
+// ReadSubscribeExtranonce reads the [ExtensionSubscribeExtranonce] config from the [MiningConfigureParams].
 func (p *MiningConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
-	if !p.Supports("subscribe_extranonce") {
+	if !p.Supports("subscribe-extranonce") {
 		return nil
 	}
 
 	return &SubscribeExtranonceConfigurationRequest{}
 }
 
-// addSubscribeExtranonce adds subscribe_extranonce to the [MiningConfigureParams].
+// addSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [MiningConfigureParams].
 func (p *MiningConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
-	if p.Supports("subscribe_extranonce") {
-		return errors.New("request already contains subscribe_extranonce")
+	if p.Supports("subscribe-extranonce") {
+		return errors.New("request already contains subscribe-extranonce")
 	}
-	p.Supported = append(p.Supported, "subscribe_extranonce")
+	p.Supported = append(p.Supported, "subscribe-extranonce")
 
 	return nil
 }
@@ -282,9 +283,9 @@ type SubscribeExtranonceConfigurationResult struct {
 	Accepted bool
 }
 
-// ReadSubscribeExtranonce reads the subscribe_extranonce result from the [ConfigureResult].
+// ReadSubscribeExtranonce reads the [ExtensionSubscribeExtranonce] result from the [ConfigureResult].
 func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationResult {
-	v, ok := (*p)["subscribe_extranonce"]
+	v, ok := (*p)["subscribe-extranonce"]
 	if !ok {
 		return nil
 	}
@@ -299,13 +300,13 @@ func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigur
 	}
 }
 
-// addSubscribeExtranonce adds subscribe_extranonce to the [ConfigureResult].
+// addSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [ConfigureResult].
 func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
-	if p.Supports("subscribe_extranonce") {
+	if p.Supports("subscribe-extranonce") {
 		return errors.New("result already contains subscribe_extranonce")
 	}
 
-	map[string]any(*p)["subscribe_extranonce"] = x.Accepted
+	map[string]any(*p)["subscribe-extranonce"] = x.Accepted
 
 	return nil
 }

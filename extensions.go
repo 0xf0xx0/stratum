@@ -18,11 +18,17 @@ const (
 	// It solves a problem in the original stratum protocol where there is no way how to communicate hard limit of the connected device.
 	ExtensionMinimumDifficulty
 	// ExtensionSubscribeExtranonce is a parameter-less extension.
-	// Miner advertises its capability of receiving message "mining.set_extranonce" message (useful for hash rate routing scenarios).
+	// Miner advertises its capability of receiving message "mining.set_extranonce" message (useful for hash routing scenarios).
 	ExtensionSubscribeExtranonce
 	// ExtensionInfo allows the miner to provide additional text-based information about itself.
 	ExtensionInfo
 )
+
+// String returns the string representation of the [Extension].
+func (e Extension) String() string {
+	str, _ := EncodeExtension(e)
+	return str
+}
 
 // EncodeExtension converts an [Extension] to its string name.
 func EncodeExtension(m Extension) (string, error) {

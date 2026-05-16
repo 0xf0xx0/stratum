@@ -10,7 +10,7 @@ import (
 
 // MiningNotifyParams is sent from the pool to the client.
 // It is used to push new work to the client.
-// Previous work should be aborted if Clean Jobs = true!
+// Previous work should be aborted if Clean = true!
 type MiningNotifyParams struct {
 	JobID          string
 	PrevBlockHash  *chainhash.Hash

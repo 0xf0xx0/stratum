@@ -2,7 +2,7 @@ package stratum
 
 import "errors"
 
-// ClientShowMessageParams is sent from the pool to the client, with a message for the client to display to the user.
+// ClientShowMessageParams is sent from the pool to the client, with a message for the client to display to the operator.
 type ClientShowMessageParams struct {
 	Message string
 }
