@@ -263,9 +263,9 @@ func (p *ConfigureResult) SetVersionRolling(x VersionRollingConfigurationResult)
 		return errors.New("result already contains version-rolling")
 	}
 
-	map[string]any(*p)["version-rolling"] = x.Accepted
+	(*p)["version-rolling"] = x.Accepted
 	if x.Accepted {
-		map[string]any(*p)["version-rolling.mask"] = encodeBigEndian(x.Mask)
+		(*p)["version-rolling.mask"] = encodeBigEndian(x.Mask)
 	}
 
 	return nil
@@ -344,7 +344,7 @@ func (p *ConfigureResult) SetInfo(accepted bool) error {
 		return errors.New("result already contains info")
 	}
 
-	map[string]any(*p)["info"] = accepted
+	(*p)["info"] = accepted
 
 	return nil
 }
