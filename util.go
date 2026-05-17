@@ -65,9 +65,9 @@ func validDifficulty(u any) bool {
 	}
 }
 
-// SwapWordEndianness swaps the endianness of each 4-byte word in the buffer.
-// Ported from public-pool, and exposed for conveince.
-func SwapWordEndianness(buf []byte) []byte {
+// swapWordEndianness swaps the endianness of each 4-byte word in the buffer.
+// Ported from public-pool.
+func swapWordEndianness(buf []byte) []byte {
 	swapped := make([]byte, len(buf))
 
 	for i := 0; i < len(buf); i += 4 {

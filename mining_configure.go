@@ -189,15 +189,15 @@ func (p *MiningConfigureParams) SetInfo(params InfoConfigurationRequest) error {
 	return nil
 }
 
-type ConfigureResult map[string]any
+type MiningConfigureResult map[string]any
 type VersionRollingConfigurationResult struct {
 	Accepted bool
 	Mask     uint32
 }
 
-// FromResponse parses the [ConfigureResult] from a [Response].
-func (p *ConfigureResult) FromResponse(r *Response) error {
-	result, ok := r.Result.(ConfigureResult)
+// FromResponse parses the [MiningConfigureResult] from a [Response].
+func (p *MiningConfigureResult) FromResponse(r *Response) error {
+	result, ok := r.Result.(MiningConfigureResult)
 	if !ok {
 		return errors.New("invalid result type; should be map[string]interface{}")
 	}
@@ -206,19 +206,19 @@ func (p *ConfigureResult) FromResponse(r *Response) error {
 	return nil
 }
 
-// ToResponse creates a [Response] from the [ConfigureResult].
-func (p *ConfigureResult) ToResponse(id MessageID) *Response {
+// ToResponse creates a [Response] from the [MiningConfigureResult].
+func (p *MiningConfigureResult) ToResponse(id MessageID) *Response {
 	return NewResponse(id, p)
 }
 
-// Supports checks if the [ConfigureResult] contains the given extension.
-func (p *ConfigureResult) Supports(extension Extension) bool {
+// Supports checks if the [MiningConfigureResult] contains the given extension.
+func (p *MiningConfigureResult) Supports(extension Extension) bool {
 	_, ok := (*p)[extension.String()]
 	return ok
 }
 
-// GetVersionRolling returns the [ExtensionVersionRolling] result from the [ConfigureResult].
-func (p *ConfigureResult) GetVersionRolling() *VersionRollingConfigurationResult {
+// GetVersionRolling returns the [ExtensionVersionRolling] response from the [MiningConfigureResult].
+func (p *MiningConfigureResult) GetVersionRolling() *VersionRollingConfigurationResult {
 	v, ok := (*p)["version-rolling"]
 	if !ok {
 		return nil
@@ -257,8 +257,8 @@ func (p *ConfigureResult) GetVersionRolling() *VersionRollingConfigurationResult
 	}
 }
 
-// SetVersionRolling adds [ExtensionVersionRolling] to the [ConfigureResult].
-func (p *ConfigureResult) SetVersionRolling(x VersionRollingConfigurationResult) error {
+// SetVersionRolling adds the [ExtensionVersionRolling] response to the [MiningConfigureResult].
+func (p *MiningConfigureResult) SetVersionRolling(x VersionRollingConfigurationResult) error {
 	if _, ok := (*p)["version-rolling"]; ok {
 		return errors.New("result already contains version-rolling")
 	}
@@ -271,8 +271,8 @@ func (p *ConfigureResult) SetVersionRolling(x VersionRollingConfigurationResult)
 	return nil
 }
 
-// GetMinimumDifficulty returns the [ExtensionMinimumDifficulty] result from the [ConfigureResult].
-func (p *ConfigureResult) GetMinimumDifficulty() bool {
+// GetMinimumDifficulty returns the [ExtensionMinimumDifficulty] response from the [MiningConfigureResult].
+func (p *MiningConfigureResult) GetMinimumDifficulty() bool {
 	v, ok := (*p)["minimum-difficulty"]
 	if !ok {
 		return false
@@ -286,8 +286,8 @@ func (p *ConfigureResult) GetMinimumDifficulty() bool {
 	return accepted
 }
 
-// SetMinimumDifficulty adds the [ExtensionMinimumDifficulty] result to the [ConfigureResult].
-func (p *ConfigureResult) SetMinimumDifficulty(accepted bool) error {
+// SetMinimumDifficulty adds the [ExtensionMinimumDifficulty] response to the [MiningConfigureResult].
+func (p *MiningConfigureResult) SetMinimumDifficulty(accepted bool) error {
 	if _, ok := (*p)["minimum-difficulty"]; ok {
 		return errors.New("result already contains minimum-difficulty")
 	}
@@ -297,8 +297,8 @@ func (p *ConfigureResult) SetMinimumDifficulty(accepted bool) error {
 	return nil
 }
 
-// GetSubscribeExtranonce returns the [ExtensionSubscribeExtranonce] result from the [ConfigureResult].
-func (p *ConfigureResult) GetSubscribeExtranonce() bool {
+// GetSubscribeExtranonce returns the [ExtensionSubscribeExtranonce] response from the [MiningConfigureResult].
+func (p *MiningConfigureResult) GetSubscribeExtranonce() bool {
 	v, ok := (*p)["subscribe-extranonce"]
 	if !ok {
 		return false
@@ -312,8 +312,8 @@ func (p *ConfigureResult) GetSubscribeExtranonce() bool {
 	return accepted
 }
 
-// SetSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [ConfigureResult].
-func (p *ConfigureResult) SetSubscribeExtranonce(accepted bool) error {
+// SetSubscribeExtranonce adds the [ExtensionSubscribeExtranonce] response to the [MiningConfigureResult].
+func (p *MiningConfigureResult) SetSubscribeExtranonce(accepted bool) error {
 	if _, ok := (*p)["subscribe-extranonce"]; ok {
 		return errors.New("result already contains subscribe-extranonce")
 	}
@@ -323,8 +323,8 @@ func (p *ConfigureResult) SetSubscribeExtranonce(accepted bool) error {
 	return nil
 }
 
-// GetInfo gets the info result from the [ConfigureResult].
-func (p *ConfigureResult) GetInfo() bool {
+// GetInfo gets the [ExtensionInfo] response from the [MiningConfigureResult].
+func (p *MiningConfigureResult) GetInfo() bool {
 	v, ok := (*p)["info"]
 	if !ok {
 		return false
@@ -338,8 +338,8 @@ func (p *ConfigureResult) GetInfo() bool {
 	return accepted
 }
 
-// SetInfo adds the [ExtensionInfo] response to the [ConfigureResult].
-func (p *ConfigureResult) SetInfo(accepted bool) error {
+// SetInfo adds the [ExtensionInfo] response to the [MiningConfigureResult].
+func (p *MiningConfigureResult) SetInfo(accepted bool) error {
 	if _, ok := (*p)["info"]; ok {
 		return errors.New("result already contains info")
 	}

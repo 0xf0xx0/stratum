@@ -135,7 +135,7 @@ func (n *MiningNotifyParams) ToNotification() *Notification {
 	params := make([]any, 9)
 
 	params[0] = n.JobID
-	params[1] = hex.EncodeToString(SwapWordEndianness(n.PrevBlockHash[:]))
+	params[1] = hex.EncodeToString(swapWordEndianness(n.PrevBlockHash[:]))
 	params[2] = hex.EncodeToString(n.CoinbasePart1)
 	params[3] = hex.EncodeToString(n.CoinbasePart2)
 

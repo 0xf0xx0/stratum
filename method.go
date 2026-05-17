@@ -31,7 +31,7 @@ func (m Method) String() string {
 	return str
 }
 
-// EncodeMethod converts a [Method] to its string name.
+// EncodeMethod converts a [Method] to its string representation.
 func EncodeMethod(m Method) (string, error) {
 	switch m {
 	case MethodMiningAuthorize:

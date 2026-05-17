@@ -30,7 +30,7 @@ func (e Extension) String() string {
 	return str
 }
 
-// EncodeExtension converts an [Extension] to its string name.
+// EncodeExtension converts an [Extension] to its string representation.
 func EncodeExtension(m Extension) (string, error) {
 	switch m {
 	case ExtensionVersionRolling:

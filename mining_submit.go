@@ -69,7 +69,7 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 			return err
 		}
 		/// this seems to be parsed the wrong way round? i dont know why
-		swappedVersionMask := hex.EncodeToString(SwapWordEndianness(y))
+		swappedVersionMask := hex.EncodeToString(swapWordEndianness(y))
 		versionMask, err := decodeLittleEndian(swappedVersionMask)
 		if err != nil {
 			return err
