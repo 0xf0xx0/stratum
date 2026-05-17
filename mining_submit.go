@@ -18,7 +18,7 @@ type MiningSubmitParams struct {
 	JobID       string // Stratum Job ID, must match a mining.notify
 	Time        uint32 // proof timestamp
 	Nonce       uint32 // gets put into the block header
-	ExtraNonce2 []byte // gets put into the coinbase
+	Extranonce2 []byte // gets put into the coinbase
 	VersionMask uint32 // block version + VersionMask = proof version
 }
 
@@ -43,7 +43,7 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 		return errors.New("invalid jobid (not string)")
 	}
 
-	extraNonce2, ok := r.Params[2].(string)
+	extranonce2, ok := r.Params[2].(string)
 	if !ok {
 		return errors.New("invalid extranonce2 (not string)")
 	}
@@ -90,7 +90,7 @@ func (p *MiningSubmitParams) FromRequest(r *Request) error {
 		return err
 	}
 
-	p.ExtraNonce2, err = hex.DecodeString(extraNonce2)
+	p.Extranonce2, err = hex.DecodeString(extranonce2)
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func (p *MiningSubmitParams) ToRequest(id MessageID) *Request {
 
 	sx[0] = string(p.Name)
 	sx[1] = p.JobID
-	sx[2] = hex.EncodeToString(p.ExtraNonce2)
+	sx[2] = hex.EncodeToString(p.Extranonce2)
 	sx[3] = encodeBigEndian(p.Time)
 	sx[4] = encodeBigEndian(p.Nonce)
 

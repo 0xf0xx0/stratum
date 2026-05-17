@@ -9,7 +9,7 @@ import (
 // It is used to subscribe to work from a pool, and is required before submitting shares.
 type MiningSubscribeParams struct {
 	UserAgent   string // required
-	ExtraNonce1 *ID    // optional extranonce subscription
+	Extranonce1 *ID    // optional extranonce subscription
 }
 
 // FromRequest parses the [MiningSubscribeParams] from a [Request].
@@ -29,7 +29,7 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 	}
 
 	if l == 1 {
-		p.ExtraNonce1 = nil
+		p.Extranonce1 = nil
 		return nil
 	}
 
@@ -43,16 +43,16 @@ func (p *MiningSubscribeParams) FromRequest(r *Request) error {
 		return err
 	}
 
-	p.ExtraNonce1 = &id
+	p.Extranonce1 = &id
 	return nil
 }
 
 // ToRequest creates a [Request] from the [MiningSubscribeParams].
 func (p *MiningSubscribeParams) ToRequest(id MessageID) *Request {
-	if p.ExtraNonce1 == nil {
+	if p.Extranonce1 == nil {
 		return NewRequest(id, MethodMiningSubscribe, []any{p.UserAgent})
 	}
-	return NewRequest(id, MethodMiningSubscribe, []any{p.UserAgent, p.ExtraNonce1.String()})
+	return NewRequest(id, MethodMiningSubscribe, []any{p.UserAgent, p.Extranonce1.String()})
 }
 
 // A MiningSubscription is a 2-element json array containing a method and a session id.
@@ -63,8 +63,8 @@ type MiningSubscription struct {
 
 type MiningSubscribeResult struct {
 	Subscriptions   []MiningSubscription
-	ExtraNonce1     ID
-	ExtraNonce2Size uint32
+	Extranonce1     ID
+	Extranonce2Size uint32
 }
 
 // FromResponse parses the [MiningSubscribeResult] from a [Response].
@@ -85,13 +85,13 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 		return errors.New("invalid session id")
 	}
 
-	extraNonce2Size := uint64(result[2].(float64))
+	extranonce2Size := uint64(result[2].(float64))
 
-	if extraNonce2Size > math.MaxUint32 {
+	if extranonce2Size > math.MaxUint32 {
 		return errors.New("extraNonce2_size too big")
 	}
 
-	p.ExtraNonce2Size = uint32(extraNonce2Size)
+	p.Extranonce2Size = uint32(extranonce2Size)
 
 	var err error
 	p.Subscriptions = make([]MiningSubscription, len(subscriptions))
@@ -109,7 +109,7 @@ func (p *MiningSubscribeResult) FromResponse(r *Response) error {
 		}
 	}
 
-	p.ExtraNonce1, err = DecodeID(idstr)
+	p.Extranonce1, err = DecodeID(idstr)
 	if err != nil {
 		return err
 	}
@@ -135,8 +135,8 @@ func (p *MiningSubscribeResult) ToResponse(m MessageID) *Response {
 
 	result := make([]any, 3)
 	result[0] = subscriptions
-	result[1] = p.ExtraNonce1.String()
-	result[2] = p.ExtraNonce2Size
+	result[1] = p.Extranonce1.String()
+	result[2] = p.Extranonce2Size
 
 	return NewResponse(m, result)
 }

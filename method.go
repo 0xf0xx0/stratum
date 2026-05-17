@@ -18,7 +18,7 @@ const (
 	MethodMiningNotify
 	MethodMiningPing
 	MethodMiningSetDifficulty
-	MethodMiningSetExtraNonce
+	MethodMiningSetExtranonce
 	MethodMiningSetVersionMask
 	MethodMiningSubmit
 	MethodMiningSubscribe
@@ -50,7 +50,7 @@ func EncodeMethod(m Method) (string, error) {
 		return "mining.set_difficulty", nil
 	case MethodMiningSetVersionMask:
 		return "mining.set_version_mask", nil
-	case MethodMiningSetExtraNonce:
+	case MethodMiningSetExtranonce:
 		return "mining.set_extranonce", nil
 	case MethodMiningSuggestDifficulty:
 		return "mining.suggest_difficulty", nil
@@ -87,7 +87,7 @@ func DecodeMethod(m string) Method {
 	case "mining.set_version_mask":
 		return MethodMiningSetVersionMask
 	case "mining.set_extranonce":
-		return MethodMiningSetExtraNonce
+		return MethodMiningSetExtranonce
 	case "mining.suggest_difficulty":
 		return MethodMiningSuggestDifficulty
 	case "client.get_version":

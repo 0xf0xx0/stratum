@@ -76,7 +76,7 @@ if request.GetMethod() == stratum.MethodMiningSubscribe {
 extranonce1 := stratum.ID(420)
 params := stratum.MiningSubscribeParams{
 	UserAgent:   "bitaxe/FTXGOXX",
-	ExtraNonce1: &extranonce1,
+	Extranonce1: &extranonce1,
 }
 fmt.Printf("%+v", stratum.SubscribeRequest(1, params)) /// &{MessageID:1 Method:mining.subscribe Params:[bitaxe/FTXGOXX 000001a4]}
 ```

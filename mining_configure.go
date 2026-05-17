@@ -122,9 +122,9 @@ func (p *MiningConfigureParams) SetMinimumDifficulty(diff float64) error {
 	return nil
 }
 
-// GetSubscribeExtraNonce returns whether the client is capable of receiving [MethodMiningSetExtraNonce] messages.
+// GetSubscribeExtranonce returns whether the client is capable of receiving [MethodMiningSetExtranonce] messages.
 // Internally it just calls [MiningConfigureParams.Supports].
-func (p *MiningConfigureParams) GetSubscribeExtraNonce() bool {
+func (p *MiningConfigureParams) GetSubscribeExtranonce() bool {
 	return p.Supports(ExtensionSubscribeExtranonce)
 }
 
