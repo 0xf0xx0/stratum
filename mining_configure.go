@@ -2,6 +2,7 @@ package stratum
 
 import (
 	"errors"
+	"fmt"
 	"slices"
 )
 
@@ -11,6 +12,16 @@ import (
 type MiningConfigureParams struct {
 	Supported  []string
 	Parameters map[string]any
+}
+type VersionRollingConfigurationRequest struct {
+	Mask        uint32
+	MinBitCount uint8
+}
+type InfoConfigurationRequest struct {
+	ConnectionURL,
+	HWVersion,
+	SWVersion,
+	HWID string
 }
 
 // FromRequest parses the [MiningConfigureParams] from a [Request].
@@ -44,11 +55,145 @@ func (p *MiningConfigureParams) ToRequest(id MessageID) *Request {
 }
 
 // Supports checks if the [MiningConfigureParams] contains the given extension.
-func (p *MiningConfigureParams) Supports(extension string) bool {
-	return slices.Contains(p.Supported, extension)
+func (p *MiningConfigureParams) Supports(extension Extension) bool {
+	return slices.Contains(p.Supported, extension.String())
+}
+
+// GetVersionRollingMask returns the [ExtensionVersionRolling] config, if provided.
+func (p *MiningConfigureParams) GetVersionRolling() (*VersionRollingConfigurationRequest, error) {
+	rawMask, ok := p.Parameters["version-rolling.mask"]
+	if !ok {
+		return nil, errors.New("version-rolling.mask is not in the parameters")
+	}
+	mask, err := decodeBigEndian(rawMask.(string))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("value: (%v) err: %s", rawMask, err))
+	}
+	b, ok := p.Parameters["version-rolling.min-bit-count"]
+	mbc := uint64(0)
+	if ok {
+		mbc = b.(uint64)
+		if mbc > 255 {
+			return nil, errors.New("min-bit-count > 255")
+		}
+	}
+
+	return &VersionRollingConfigurationRequest{
+		Mask:        mask,
+		MinBitCount: byte(mbc),
+	}, nil
+}
+
+// SetVersionRolling adds [ExtensionVersionRolling] to the [MiningConfigureParams].
+func (p *MiningConfigureParams) SetVersionRolling(x VersionRollingConfigurationRequest) error {
+	if p.Supports(ExtensionVersionRolling) {
+		return errors.New("request already contains version-rolling")
+	}
+
+	p.Supported = append(p.Supported, "version-rolling")
+
+	p.Parameters["version-rolling.mask"] = encodeBigEndian(x.Mask)
+	p.Parameters["version-rolling.min-bit-count"] = x.MinBitCount
+
+	return nil
+}
+
+// GetMinimumDifficulty returns the minimum difficulty, if provided.
+func (p *MiningConfigureParams) GetMinimumDifficulty() (float64, error) {
+	if diff, ok := p.Parameters["minimum-difficulty.value"]; ok {
+		if !validDifficulty(diff) {
+			return 0, errors.New("invalid difficulty, must be a float64 and >= 0")
+		}
+		return diff.(float64), nil
+	}
+	return 0, errors.New("minimum-difficulty.value is not in the parameters")
+}
+
+// SetMinimumDifficulty adds [ExtensionMinimumDifficulty] to the [MiningConfigureParams].
+func (p *MiningConfigureParams) SetMinimumDifficulty(diff float64) error {
+	if p.Supports(ExtensionMinimumDifficulty) {
+		return errors.New("request already contains minimum-difficulty")
+	}
+
+	p.Supported = append(p.Supported, "minimum-difficulty")
+
+	p.Parameters["minimum-difficulty.value"] = diff
+
+	return nil
+}
+
+// GetSubscribeExtraNonce returns whether the client is capable of receiving [MethodMiningSetExtraNonce] messages.
+// Internally it just calls [MiningConfigureParams.Supports].
+func (p *MiningConfigureParams) GetSubscribeExtraNonce() bool {
+	return p.Supports(ExtensionSubscribeExtranonce)
+}
+
+// SetSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [MiningConfigureParams].
+func (p *MiningConfigureParams) SetSubscribeExtranonce() error {
+	if p.Supports(ExtensionSubscribeExtranonce) {
+		return errors.New("request already contains subscribe-extranonce")
+	}
+	p.Supported = append(p.Supported, "subscribe-extranonce")
+
+	return nil
+}
+
+// GetInfo returns the [ExtensionInfo] config, if provided.
+func (p *MiningConfigureParams) GetInfo() (*InfoConfigurationRequest, error) {
+	info := InfoConfigurationRequest{}
+
+	if x, ok := p.Parameters["info.connection-url"]; ok {
+		info.ConnectionURL, ok = x.(string)
+		if !ok {
+			return nil, errors.New("info.connection-url is not a string")
+		}
+	}
+
+	if x, ok := p.Parameters["info.hw-version"]; ok {
+		info.HWVersion, ok = x.(string)
+		if !ok {
+			return nil, errors.New("info.hw-version is not a string")
+		}
+	}
+
+	if x, ok := p.Parameters["info.sw-version"]; ok {
+		info.SWVersion, ok = x.(string)
+		if !ok {
+			return nil, errors.New("info.sw-version is not a string")
+		}
+	}
+
+	if x, ok := p.Parameters["info.hw-id"]; ok {
+		info.HWID, ok = x.(string)
+		if !ok {
+			return nil, errors.New("info.hw-id is not a string")
+		}
+	}
+
+	return &info, nil
+}
+
+// SetInfo adds info to the [MiningConfigureParams].
+func (p *MiningConfigureParams) SetInfo(params InfoConfigurationRequest) error {
+	if p.Supports(ExtensionInfo) {
+		return errors.New("request already contains info")
+	}
+
+	p.Supported = append(p.Supported, "info")
+
+	p.Parameters["info.connection-url"] = params.ConnectionURL
+	p.Parameters["info.hw-version"] = params.HWVersion
+	p.Parameters["info.sw-version"] = params.SWVersion
+	p.Parameters["info.hw-id"] = params.HWID
+
+	return nil
 }
 
 type ConfigureResult map[string]any
+type VersionRollingConfigurationResult struct {
+	Accepted bool
+	Mask     uint32
+}
 
 // FromResponse parses the [ConfigureResult] from a [Response].
 func (p *ConfigureResult) FromResponse(r *Response) error {
@@ -67,80 +212,13 @@ func (p *ConfigureResult) ToResponse(id MessageID) *Response {
 }
 
 // Supports checks if the [ConfigureResult] contains the given extension.
-func (p *ConfigureResult) Supports(extension string) bool {
-	_, ok := (*p)[extension]
+func (p *ConfigureResult) Supports(extension Extension) bool {
+	_, ok := (*p)[extension.String()]
 	return ok
 }
 
-type VersionRollingConfigurationRequest struct {
-	Mask        uint32
-	MinBitCount uint8
-}
-
-// ReadVersionRolling reads the [ExtensionVersionRolling] config from the [MiningConfigureParams].
-func (p *MiningConfigureParams) ReadVersionRolling() *VersionRollingConfigurationRequest {
-	if !p.Supports("version-rolling") {
-		return nil
-	}
-
-	/// optional mask
-	m, ok := p.Parameters["version-rolling.mask"]
-	if !ok {
-		m = "ffffffff" // default value
-	}
-
-	maskstr, ok := m.(string)
-	if !ok {
-		return nil
-	}
-
-	mask, err := decodeBigEndian(maskstr)
-	if err != nil {
-		return nil
-	}
-
-	/// TODO: optional
-	b, ok := p.Parameters["version-rolling.min-bit-count"]
-	if !ok {
-		return nil
-	}
-
-	mbc, ok := b.(uint64)
-	if !ok {
-		return nil
-	}
-
-	if mbc > 255 {
-		return nil
-	}
-
-	return &VersionRollingConfigurationRequest{
-		Mask:        mask,
-		MinBitCount: byte(mbc),
-	}
-}
-
-// addVersionRolling adds [ExtensionVersionRolling] to the [MiningConfigureParams].
-func (p *MiningConfigureParams) addVersionRolling(x VersionRollingConfigurationRequest) error {
-	if p.Supports("version-rolling") {
-		return errors.New("request already contains version-rolling")
-	}
-
-	p.Supported = append(p.Supported, "version-rolling")
-
-	p.Parameters["version-rolling.mask"] = encodeBigEndian(x.Mask)
-	p.Parameters["version-rolling.min-bit-count"] = x.MinBitCount
-
-	return nil
-}
-
-type VersionRollingConfigurationResult struct {
-	Accepted bool
-	Mask     uint32
-}
-
-// ReadVersionRolling reads the [ExtensionVersionRolling] result from the [ConfigureResult].
-func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResult {
+// GetVersionRolling returns the [ExtensionVersionRolling] result from the [ConfigureResult].
+func (p *ConfigureResult) GetVersionRolling() *VersionRollingConfigurationResult {
 	v, ok := (*p)["version-rolling"]
 	if !ok {
 		return nil
@@ -179,9 +257,9 @@ func (p *ConfigureResult) ReadVersionRolling() *VersionRollingConfigurationResul
 	}
 }
 
-// addVersionRolling adds [ExtensionVersionRolling] to the [ConfigureResult].
-func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult) error {
-	if p.Supports("version-rolling") {
+// SetVersionRolling adds [ExtensionVersionRolling] to the [ConfigureResult].
+func (p *ConfigureResult) SetVersionRolling(x VersionRollingConfigurationResult) error {
+	if _, ok := (*p)["version-rolling"]; ok {
 		return errors.New("result already contains version-rolling")
 	}
 
@@ -193,258 +271,80 @@ func (p *ConfigureResult) addVersionRolling(x VersionRollingConfigurationResult)
 	return nil
 }
 
-type MinimumDifficultyConfigurationRequest struct {
-	Difficulty float64
-}
-
-// ReadMinimumDifficulty reads the [ExtensionMinimumDifficulty] config from the [MiningConfigureParams].
-func (p *MiningConfigureParams) ReadMinimumDifficulty() *MinimumDifficultyConfigurationRequest {
-	if !p.Supports("minimum_difficulty") {
-		return nil
-	}
-
-	d, ok := p.Parameters["minimum_difficulty.value"]
-	if !ok || !validDifficulty(d) {
-		return nil
-	}
-
-	return &MinimumDifficultyConfigurationRequest{
-		Difficulty: d.(float64),
-	}
-}
-
-// addMinimumDifficulty adds [ExtensionMinimumDifficulty] to the [MiningConfigureParams].
-func (p *MiningConfigureParams) addMinimumDifficulty(x MinimumDifficultyConfigurationRequest) error {
-	if p.Supports("minimum_difficulty") {
-		return errors.New("request already contains minimum_difficulty")
-	}
-
-	p.Supported = append(p.Supported, "minimum_difficulty")
-
-	p.Parameters["minimum_difficulty.value"] = x.Difficulty
-
-	return nil
-}
-
-type MinimumDifficultyConfigurationResult struct {
-	Accepted bool
-}
-
-// ReadMinimumDifficulty reads the [ExtensionMinimumDifficulty] result from the [ConfigureResult].
-func (p *ConfigureResult) ReadMinimumDifficulty() *MinimumDifficultyConfigurationResult {
-	v, ok := (*p)["minimum_difficulty"]
+// GetMinimumDifficulty returns the [ExtensionMinimumDifficulty] result from the [ConfigureResult].
+func (p *ConfigureResult) GetMinimumDifficulty() bool {
+	v, ok := (*p)["minimum-difficulty"]
 	if !ok {
-		return nil
+		return false
 	}
 
 	accepted, ok := v.(bool)
 	if !ok {
-		return nil
+		return false
 	}
 
-	return &MinimumDifficultyConfigurationResult{
-		Accepted: accepted,
-	}
+	return accepted
 }
 
-// addMinimumDifficulty adds [ExtensionMinimumDifficulty] to the [ConfigureResult].
-func (p *ConfigureResult) addMinimumDifficulty(x MinimumDifficultyConfigurationResult) error {
-	if p.Supports("minimum_difficulty") {
-		return errors.New("result already contains minimum_difficulty")
+// SetMinimumDifficulty adds the [ExtensionMinimumDifficulty] result to the [ConfigureResult].
+func (p *ConfigureResult) SetMinimumDifficulty(accepted bool) error {
+	if _, ok := (*p)["minimum-difficulty"]; ok {
+		return errors.New("result already contains minimum-difficulty")
 	}
 
-	map[string]any(*p)["minimum_difficulty"] = x.Accepted
+	(*p)["minimum-difficulty"] = accepted
 
 	return nil
 }
 
-type SubscribeExtranonceConfigurationRequest struct{}
-
-// ReadSubscribeExtranonce reads the [ExtensionSubscribeExtranonce] config from the [MiningConfigureParams].
-func (p *MiningConfigureParams) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationRequest {
-	if !p.Supports("subscribe-extranonce") {
-		return nil
-	}
-
-	return &SubscribeExtranonceConfigurationRequest{}
-}
-
-// addSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [MiningConfigureParams].
-func (p *MiningConfigureParams) addSubscribeExtranonce(_ SubscribeExtranonceConfigurationRequest) error {
-	if p.Supports("subscribe-extranonce") {
-		return errors.New("request already contains subscribe-extranonce")
-	}
-	p.Supported = append(p.Supported, "subscribe-extranonce")
-
-	return nil
-}
-
-type SubscribeExtranonceConfigurationResult struct {
-	Accepted bool
-}
-
-// ReadSubscribeExtranonce reads the [ExtensionSubscribeExtranonce] result from the [ConfigureResult].
-func (p *ConfigureResult) ReadSubscribeExtranonce() *SubscribeExtranonceConfigurationResult {
+// GetSubscribeExtranonce returns the [ExtensionSubscribeExtranonce] result from the [ConfigureResult].
+func (p *ConfigureResult) GetSubscribeExtranonce() bool {
 	v, ok := (*p)["subscribe-extranonce"]
 	if !ok {
-		return nil
+		return false
 	}
 
 	accepted, ok := v.(bool)
 	if !ok {
-		return nil
+		return false
 	}
 
-	return &SubscribeExtranonceConfigurationResult{
-		Accepted: accepted,
-	}
+	return accepted
 }
 
-// addSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [ConfigureResult].
-func (p *ConfigureResult) addSubscribeExtranonce(x SubscribeExtranonceConfigurationResult) error {
-	if p.Supports("subscribe-extranonce") {
-		return errors.New("result already contains subscribe_extranonce")
+// SetSubscribeExtranonce adds [ExtensionSubscribeExtranonce] to the [ConfigureResult].
+func (p *ConfigureResult) SetSubscribeExtranonce(accepted bool) error {
+	if _, ok := (*p)["subscribe-extranonce"]; ok {
+		return errors.New("result already contains subscribe-extranonce")
 	}
 
-	map[string]any(*p)["subscribe-extranonce"] = x.Accepted
+	(*p)["subscribe-extranonce"] = accepted
 
 	return nil
 }
 
-type InfoConfigurationRequest struct {
-	ConnectionURL *string
-	HWVersion     *string
-	SWVersion     *string
-	HWID          *string
-}
-
-// ReadInfo reads the info config from the [MiningConfigureParams].
-func (p *MiningConfigureParams) ReadInfo() *InfoConfigurationRequest {
-	if !p.Supports("info") {
-		return nil
-	}
-
-	var info InfoConfigurationRequest
-	var connectionUrl string
-	var hwVersion string
-	var swVersion string
-	var hwID string
-
-	if x, ok := p.Parameters["info.connection-url"]; ok {
-		connectionUrl, ok = x.(string)
-		if !ok {
-			return nil
-		}
-
-		info.ConnectionURL = &connectionUrl
-	}
-
-	if x, ok := p.Parameters["info.hw-version"]; ok {
-		hwVersion, ok = x.(string)
-		if !ok {
-			return nil
-		}
-
-		info.HWVersion = &hwVersion
-	}
-
-	if x, ok := p.Parameters["info.sw-version"]; ok {
-		swVersion, ok = x.(string)
-		if !ok {
-			return nil
-		}
-
-		info.SWVersion = &swVersion
-	}
-
-	if x, ok := p.Parameters["info.hw-id"]; ok {
-		hwID, ok = x.(string)
-		if !ok {
-			return nil
-		}
-
-		info.HWID = &hwID
-	}
-
-	return &info
-}
-
-// addInfo adds info to the [MiningConfigureParams].
-func (p *MiningConfigureParams) addInfo(x InfoConfigurationRequest) error {
-	if p.Supports("info") {
-		return errors.New("request already contains info")
-	}
-
-	p.Supported = append(p.Supported, "info")
-
-	p.Parameters["info.connection-url"] = x.ConnectionURL
-	p.Parameters["info.hw-version"] = x.HWVersion
-	p.Parameters["info.sw-version"] = x.SWVersion
-	p.Parameters["info.hw-id"] = x.HWID
-
-	return nil
-}
-
-type InfoConfigurationResult struct {
-	Accepted bool
-}
-
-// ReadInfo reads the info result from the [ConfigureResult].
-func (p *ConfigureResult) ReadInfo() *InfoConfigurationResult {
+// GetInfo gets the info result from the [ConfigureResult].
+func (p *ConfigureResult) GetInfo() bool {
 	v, ok := (*p)["info"]
 	if !ok {
-		return nil
+		return false
 	}
 
 	accepted, ok := v.(bool)
 	if !ok {
-		return nil
+		return false
 	}
 
-	return &InfoConfigurationResult{
-		Accepted: accepted,
-	}
+	return accepted
 }
 
-// addInfo adds info to the [ConfigureResult].
-func (p *ConfigureResult) addInfo(x InfoConfigurationResult) error {
-	if p.Supports("info") {
+// SetInfo adds the [ExtensionInfo] response to the [ConfigureResult].
+func (p *ConfigureResult) SetInfo(accepted bool) error {
+	if _, ok := (*p)["info"]; ok {
 		return errors.New("result already contains info")
 	}
 
-	map[string]any(*p)["info"] = x.Accepted
+	map[string]any(*p)["info"] = accepted
 
 	return nil
-}
-
-// Add adds an extension configuration to the [MiningConfigureParams].
-func (p *MiningConfigureParams) Add(z any) error {
-	switch x := z.(type) {
-	case VersionRollingConfigurationRequest:
-		return p.addVersionRolling(x)
-	case MinimumDifficultyConfigurationRequest:
-		return p.addMinimumDifficulty(x)
-	case SubscribeExtranonceConfigurationRequest:
-		return p.addSubscribeExtranonce(x)
-	case InfoConfigurationRequest:
-		return p.addInfo(x)
-	default:
-		return errors.New("unrecognized extension request")
-	}
-}
-
-// Add adds an extension result to the [ConfigureResult].
-func (p *ConfigureResult) Add(z any) error {
-	switch x := z.(type) {
-	case VersionRollingConfigurationResult:
-		return p.addVersionRolling(x)
-	case MinimumDifficultyConfigurationResult:
-		return p.addMinimumDifficulty(x)
-	case SubscribeExtranonceConfigurationResult:
-		return p.addSubscribeExtranonce(x)
-	case InfoConfigurationResult:
-		return p.addInfo(x)
-	default:
-		return errors.New("unrecognized extension request")
-	}
 }
