@@ -43,6 +43,7 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 - mining.notify
 - mining.ping
 - mining.set_difficulty
+- mining.set_extranonce
 - mining.set_version_mask
 - mining.submit
 - mining.subscribe
@@ -52,7 +53,6 @@ go get git.0xf0xx0.eth.limo/0xf0xx0/stratum@master
 
 - client.get_version
 - mining.get_transactions
-- mining.set_extranonce
 - mining.suggest_target
 
 ## Usage
