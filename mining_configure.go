@@ -67,7 +67,7 @@ func (p *MiningConfigureParams) GetVersionRolling() (*VersionRollingConfiguratio
 	}
 	mask, err := decodeBigEndian(rawMask.(string))
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("value: (%v) err: %s", rawMask, err))
+		return nil, fmt.Errorf("value: (%v) err: %w", rawMask, err)
 	}
 	b, ok := p.Parameters["version-rolling.min-bit-count"]
 	mbc := uint64(0)
@@ -201,7 +201,7 @@ func (p *MiningConfigureResult) FromResponse(r *Response) error {
 	if !ok {
 		return errors.New("invalid result type; should be map[string]interface{}")
 	}
-	p = &result
+	*p = result
 
 	return nil
 }
