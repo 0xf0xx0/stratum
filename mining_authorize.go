@@ -8,8 +8,10 @@ import (
 // MiningAuthorizeParams is sent from the client to the pool.
 // It is used to authorize a client, and is required before any shares can be submitted.
 type MiningAuthorizeParams struct {
-	// Username is required, and is typically the on-chain address to mine to.
+	// Username is the mining address, and optionally the name of the worker appended with `.`.
 	Username string
+	// Address is the on-chain address to mine to.
+	Address string
 	// Worker is optional, and typically appened to the username with `.`
 	Worker string
 	// Password is optional. Pools don't necessarily require this.
@@ -31,8 +33,10 @@ func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 		return errors.New("invalid username format")
 	}
 
+	p.Username = username
+
 	split := strings.Split(username, ".")
-	p.Username = split[0]
+	p.Address = split[0]
 	if len(split) > 1 {
 		p.Worker = split[1]
 	}
@@ -53,7 +57,7 @@ func (p *MiningAuthorizeParams) FromRequest(r *Request) error {
 
 // ToRequest creates a [Request] from the [MiningAuthorizeParams].
 func (p *MiningAuthorizeParams) ToRequest(id MessageID) *Request {
-	username := p.Username
+	username := p.Address
 	if p.Worker != "" {
 		username += "." + p.Worker
 	}
